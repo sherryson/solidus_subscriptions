@@ -3,8 +3,11 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_subscriptions'
   s.version     = '1.3.3.beta'
-  s.summary     = 'TODO: Add gem summary here'
-  s.description = 'TODO: Add (optional) gem description here'
+  s.summary     = 'A Spree extension to manage subscribable products.'
+  s.description = """
+    This Spree extension enables an e-commerce owner manage products that can be subscribed to,
+    via recurring payments and shipments at set intervals.
+  """
   s.required_ruby_version = '>= 1.8.7'
 
   s.author    = 'Bryan Mahoney'
