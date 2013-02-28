@@ -6,6 +6,7 @@ gem 'spree_auth_devise', :github => 'spree/spree_auth_devise', :branch => '1-3-s
 
 gem 'launchy', group: :test
 gem 'pry-rails', group: :test
+gem "shoulda-matchers", group: :test
 
 
 gemspec
