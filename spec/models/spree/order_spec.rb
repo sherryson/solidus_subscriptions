@@ -7,6 +7,7 @@ describe Spree::Order do
 
   it { should respond_to(:subscribable?) }
   it { should respond_to(:repeat_order?) }
+  it { should respond_to(:has_subscription?) }
 
   context "#finalize!" do
     let(:order) { Spree::Order.create}

@@ -15,6 +15,10 @@ module SpreeSubscriptions
           line_items.any? { |li| li.product.subscribable? }
         end
 
+        def has_subscription?
+          subscription_id.present?
+        end
+
         def finalize_with_create_subscription!
           finalize_without_create_subscription!
           create_subscription_if_eligible
