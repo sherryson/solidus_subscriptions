@@ -31,16 +31,15 @@ describe Spree::Order do
   end
 
   context "#add_variant" do
-    let(:order) { Spree::Order.new }
-    let(:variant)  { stub('Spree::Variant', price: '10') }
+    let(:order)    { Spree::Order.new }
+    let(:variant)  { stub('Spree::Variant').as_null_object }
+    let(:currency) { stub('current currency') }
 
     context "without an interval argument" do
-      let(:interval) { nil }
-
       it "defaults to Spree's natural behaviour" do
-        order.should_receive(:add_variant_without_interval).with(variant, 3, nil)
+        order.should_receive(:add_variant_without_interval).with(variant, 3, currency)
 
-        order.add_variant(variant, 3, interval)
+        order.add_variant(variant, 3, currency)
       end
     end
 
@@ -61,11 +60,8 @@ describe Spree::Order do
         end
 
         it "adds a subscription line-item to the order" do
-          line_item = stub('Spree::LineItem')
-          line_item.stub(:variant=)
-          line_item.stub(:price=)
-
           line_items = mock('line_items')
+          line_item = stub('Spree::LineItem').as_null_object
 
           order.stub(:line_items).and_return(line_items)
           order.stub(:reload)
@@ -76,7 +72,7 @@ describe Spree::Order do
 
           line_items.should_receive(:<<).with(line_item)
 
-          result = order.add_variant(variant, 3, interval)
+          result = order.add_variant(variant, 3, interval, currency)
 
           expect(result).to be(line_item)
         end

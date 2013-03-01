@@ -27,7 +27,10 @@ module SpreeSubscriptions
           self.subscription = ::Spree::Subscription.create!(ship_address_id: ship_address.id, user_id: user.id)
         end
 
-        def add_variant_with_interval(variant, quantity, interval = nil, currency = nil)
+        def add_variant_with_interval(variant, quantity, *args)
+          interval = args.shift if args.count > 1
+          currency = args.first
+
           return add_variant_without_interval(variant, quantity, currency) if interval.nil?
 
           current_item = find_line_item_by_variant(variant)
