@@ -30,4 +30,57 @@ describe Spree::Order do
     end
   end
 
+  context "#add_variant" do
+    let(:order) { Spree::Order.new }
+    let(:variant)  { stub('Spree::Variant', price: '10') }
+
+    context "without an interval argument" do
+      let(:interval) { nil }
+
+      it "defaults to Spree's natural behaviour" do
+        order.should_receive(:add_variant_without_interval).with(variant, 3, nil)
+
+        order.add_variant(variant, 3, interval)
+      end
+    end
+
+    context "with an interval argument" do
+      let(:interval) { '2' }
+
+      context "with an existing standard line-item" do
+        pending "discussion of how to handle this use-case"
+      end
+
+      context "with an existing subscription line-item" do
+        pending "discussion of how to handle this use-case"
+      end
+
+      context "without an existing line-item" do
+        before(:each) do
+          order.stub(:find_line_item_by_variant).and_return(nil)
+        end
+
+        it "adds a subscription line-item to the order" do
+          line_item = stub('Spree::LineItem')
+          line_item.stub(:variant=)
+          line_item.stub(:price=)
+
+          line_items = mock('line_items')
+
+          order.stub(:line_items).and_return(line_items)
+          order.stub(:reload)
+
+          ::Spree::LineItem.should_receive(:new).
+            with(quantity: 3, interval: '2').
+            and_return(line_item)
+
+          line_items.should_receive(:<<).with(line_item)
+
+          result = order.add_variant(variant, 3, interval)
+
+          expect(result).to be(line_item)
+        end
+      end
+    end
+  end
 end
