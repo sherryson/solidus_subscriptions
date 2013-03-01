@@ -30,7 +30,7 @@ module SpreeSubscriptions
         def add_variant_with_interval(variant, quantity, interval = nil, currency = nil)
           return add_variant_without_interval(variant, quantity, currency) if interval.nil?
 
-          current_item = find_line_item_by_variant(variant, interval)
+          current_item = find_line_item_by_variant(variant)
           if current_item
             raise "Unsupported behaviour"
           else

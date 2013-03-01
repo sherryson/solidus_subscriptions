@@ -57,7 +57,7 @@ describe Spree::Order do
 
       context "without an existing line-item" do
         before(:each) do
-          order.stub(:find_line_item_by_variant).and_return(nil)
+          order.stub(:find_line_item_by_variant).with(variant).and_return(nil)
         end
 
         it "adds a subscription line-item to the order" do
