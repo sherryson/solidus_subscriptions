@@ -3,12 +3,12 @@ module SpreeSubscriptions
     module Spree
       module LineItem
         extend ActiveSupport::Concern
-        
+
         included do
           attr_accessible :interval
-          validates_numericality_of :interval
+
+          validates_numericality_of :interval, allow_nil: true
         end
-      
       end
     end
   end
