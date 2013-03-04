@@ -7,12 +7,13 @@ module SpreeSubscriptions
         included do
           alias_method_chain :finalize!, :create_subscription
           alias_method_chain :add_variant, :interval
-          belongs_to :subscription
+
+          belongs_to :subscription, class_name: 'Spree::Subscription'
           attr_accessible :subscription_id
         end
 
         def subscribable?
-          line_items.any? { |li| li.product.subscribable? }
+          line_items.any? { |li| li.interval }
         end
 
         def has_subscription?
@@ -24,11 +25,17 @@ module SpreeSubscriptions
           create_subscription_if_eligible
         end
 
-
         def create_subscription_if_eligible
           return unless subscribable?
           return if repeat_order?
-          self.subscription = ::Spree::Subscription.create!(ship_address_id: ship_address.id, user_id: user.id)
+
+          attrs = {
+            ship_address_id: ship_address.id,
+            user_id: user.id,
+            interval: line_items.collect(&:interval).compact.first
+          }
+
+          self.subscription = ::Spree::Subscription.create!(attrs)
         end
 
         def add_variant_with_interval(variant, quantity, *args)

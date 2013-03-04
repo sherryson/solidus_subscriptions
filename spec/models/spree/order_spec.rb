@@ -10,24 +10,91 @@ describe Spree::Order do
   it { should respond_to(:has_subscription?) }
 
   context "#finalize!" do
-    let(:order) { Spree::Order.create}
-    it 'should receive a call to create a subscription when finalized' do
-      order.should_receive(:create_subscription_if_eligible)
-      order.finalize!
+    let(:order) {
+      FactoryGirl.create(:order,
+                         ship_address: FactoryGirl.create(:address)
+                        )
+    }
+
+    context "with an ineligible order" do
+      before do
+        order.stub(:subscribable?).and_return(false)
+        order.stub(:repeat_order?).and_return(false)
+      end
+
+      it "finalizes the order" do
+        order.should_receive(:finalize_without_create_subscription!)
+
+        order.finalize!
+      end
+
+      it "doesn't create a subscription" do
+        order.finalize!
+
+        expect(order.subscription).to be_nil
+      end
     end
 
-    it 'should create a subscription only if the order contains eligible products' do
-      order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
-      order.finalize!
-      order.subscription.should be_nil
+    context "with an eligible order" do
+      let(:subscription) { stub('Spree::Subscription') }
+      let(:interval) { 4 }
+
+      let(:line_items) {[
+        FactoryGirl.create(:line_item, interval: nil),
+        FactoryGirl.create(:line_item, interval: interval)
+      ]}
+
+      before do
+        order.stub(:subscribable?).and_return(true)
+        order.stub(:repeat_order?).and_return(false)
+        order.stub(:subscription=)
+
+        order.stub(:line_items).and_return(line_items)
+
+        ::Spree::Subscription.
+          stub(:create!).
+          with(ship_address_id: order.ship_address.id,
+               user_id: order.user.id,
+               interval: interval).
+          and_return(subscription)
+      end
+
+      it "creates a subscription and attaches it to the order" do
+        order.should_receive(:subscription=).with(subscription)
+
+        order.finalize!
+      end
+
+      it "does not set the repeat_order flag" do
+        order.finalize!
+
+        expect(order.repeat_order).to be_false
+      end
+    end
+  end
+
+  describe '#subscribable?' do
+    let(:order) {
+      FactoryGirl.create :order,
+                         ship_address: FactoryGirl.create(:address)
+    }
+
+    subject { order.subscribable? }
+
+    before do
+      order.stub(:line_items).and_return(line_items)
     end
 
-    it 'should create a subscription when an eligible product is present' do
-      order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
-      order.line_items << FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
-      order.finalize!
-      order.subscription.should be_valid
-      order.repeat_order.should be_false
+    context "without any subscription line-items" do
+      let(:line_items) {[ stub('Spree::LineItem', interval: nil) ]}
+
+      it { should be_false }
+    end
+
+    context "with one or more subscription line-items" do
+      let(:line_items) {[ stub('Spree::LineItem', interval: '2') ]}
+
+      it { should be_true }
     end
   end
 
