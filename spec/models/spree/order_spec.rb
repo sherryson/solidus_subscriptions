@@ -11,9 +11,7 @@ describe Spree::Order do
 
   context "#finalize!" do
     let(:order) {
-      FactoryGirl.create(:order,
-                         ship_address: FactoryGirl.create(:address)
-                        )
+      FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
     }
 
     context "with an ineligible order" do
@@ -60,9 +58,9 @@ describe Spree::Order do
       end
 
       it "creates a subscription and attaches it to the order" do
-        order.should_receive(:subscription=).with(subscription)
-
         order.finalize!
+        order.subscription.should_not be_nil
+        order.subscription.interval.should == interval
       end
 
       it "does not set the repeat_order flag" do

@@ -35,7 +35,7 @@ module SpreeSubscriptions
             interval: line_items.collect(&:interval).compact.first
           }
 
-          self.subscription = ::Spree::Subscription.create!(attrs)
+          self.create_subscription(attrs)
         end
 
         def add_variant_with_interval(variant, quantity, *args)
