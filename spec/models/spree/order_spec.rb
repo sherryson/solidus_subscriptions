@@ -45,20 +45,14 @@ describe Spree::Order do
       before do
         order.stub(:subscribable?).and_return(true)
         order.stub(:repeat_order?).and_return(false)
-        order.stub(:subscription=)
 
         order.stub(:line_items).and_return(line_items)
 
-        ::Spree::Subscription.
-          stub(:create!).
-          with(ship_address_id: order.ship_address.id,
-               user_id: order.user.id,
-               interval: interval).
-          and_return(subscription)
       end
 
       it "creates a subscription and attaches it to the order" do
         order.finalize!
+        order.reload
         order.subscription.should_not be_nil
         order.subscription.interval.should == interval
       end

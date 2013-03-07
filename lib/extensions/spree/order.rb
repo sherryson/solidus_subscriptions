@@ -21,8 +21,8 @@ module SpreeSubscriptions
         end
 
         def finalize_with_create_subscription!
-          finalize_without_create_subscription!
           create_subscription_if_eligible
+          finalize_without_create_subscription!
         end
 
         def create_subscription_if_eligible
