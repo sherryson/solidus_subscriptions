@@ -1,5 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Subscription do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_many(:orders) }
+  it { should belong_to(:user) }
 end

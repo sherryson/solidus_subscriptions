@@ -8,6 +8,10 @@ module SpreeSubscriptions
           has_many :subscriptions
         end
 
+        def subscription_orders
+          orders.joins(:subscription)
+        end
+
       end
     end
   end
