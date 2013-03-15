@@ -3,3 +3,11 @@
 
 en:
   subscribable: 'subscribable'
+  subscription: "subscription"
+  subscriptions: "subscriptions"
+  my_subscriptions: "My subscriptions"
+  products: "Products"
+  last_shipped_on: "Last Shipment"
+  next_shipment: "Next Shipment"
+  status: "Status"
+  you_have_no_subscriptions_yet: "You don't seem to have any subscriptions on file"

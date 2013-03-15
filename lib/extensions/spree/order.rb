@@ -12,14 +12,6 @@ module SpreeSubscriptions
           attr_accessible :subscription_id
         end
 
-        def subscribable?
-          line_items.any? { |li| li.interval }
-        end
-
-        def has_subscription?
-          subscription_id.present?
-        end
-
         def finalize_with_create_subscription!
           create_subscription_if_eligible
           finalize_without_create_subscription!
@@ -37,6 +29,19 @@ module SpreeSubscriptions
 
           self.create_subscription(attrs)
         end
+
+        def subscribable?
+          line_items.any? { |li| li.interval }
+        end
+
+        def has_subscription?
+          subscription_id.present?
+        end
+
+        def subscription_products
+          line_items.map { |li| li.variant.product }.select { |p| p.subscribable? }
+        end
+
 
         def add_variant_with_interval(variant, quantity, *args)
           interval = args.shift if args.count > 1
