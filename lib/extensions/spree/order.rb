@@ -24,15 +24,30 @@ module SpreeSubscriptions
           attrs = {
             ship_address_id: ship_address.id,
             user_id: user.id,
-            interval: line_items.collect(&:interval).compact.first
+            interval: subscription_interval
           }
 
           self.create_subscription(attrs)
         end
 
         def subscribable?
-          line_items.any? { |li| li.interval }
+          subscribable_option_values.any?
         end
+
+        def subscription_interval
+          subscribable_option_values.collect(&:name).max
+        end
+
+        def subscribable_option_values
+          variants.collect(&:option_values).flatten.select do |ov|
+           ov.name.to_i > 1 && ov.option_type.name == frequency_option_type
+          end
+        end
+
+        def frequency_option_type
+          ::Spree::OptionType.find_by_name('frequency').name
+        end
+
 
         def has_subscription?
           subscription_id.present?

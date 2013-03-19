@@ -1,13 +1,17 @@
 require 'spec_helper'
 
 describe Spree::Subscription do
+  before do
+    Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
+  end
+
   let(:user) { stub_model(Spree::User, email: "spree@example.com") }
   let(:order) {
-    FactoryGirl.create(:order, user: user, ship_address: FactoryGirl.create(:address))
+    FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
   }
   let(:line_items) {[
-    FactoryGirl.create(:line_item, interval: nil),
-    FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant), interval: 2)
+    FactoryGirl.create(:line_item),
+    FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
   ]}
 
 
@@ -15,26 +19,18 @@ describe Spree::Subscription do
   it { should belong_to(:user) }
 
 
+
   context "#products" do
-    before do
-      order.line_items << line_items
-    end
+
     it 'should return a collection of products' do
+      order.line_items << line_items
       order.finalize!
-      order.subscription.products.map(&:subscribable).all?.should be_true 
+      order.subscription.products.map(&:subscribable?).all?.should be_true 
     end
 
   end
 
   context "shipment dates" do
-
-    let(:subscription) { stub('Spree::Subscription') }
-    let(:interval) { 4 }
-
-    let(:line_items) {[
-      FactoryGirl.create(:line_item, interval: nil),
-      FactoryGirl.create(:line_item, interval: interval)
-    ]}
 
     before do
       order.line_items << line_items
@@ -51,7 +47,7 @@ describe Spree::Subscription do
     end
 
     it "should be able to calculate the date of the next shipment" do
-      order.subscription.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
+      order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
     end
   end
 

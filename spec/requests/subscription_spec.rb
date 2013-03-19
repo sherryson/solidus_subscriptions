@@ -15,7 +15,6 @@ describe "Subscription" do
     context "after order completion with subscribable product" do
       before do
         add_to_cart("Giant Steps")
-        Spree::LineItem.last.update_column(:interval, 2) #force the line item to have an interval so that a subscription gets created
         complete_checkout_with_login("subscriber@bbc.com", "secret")
       end
 

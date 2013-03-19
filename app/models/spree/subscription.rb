@@ -6,8 +6,6 @@ module Spree
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id
-    validates :interval, numericality: { only_integer: true }
-
 
     def products
       orders.last.subscription_products
@@ -24,7 +22,6 @@ module Spree
     def next_shipment_date
       last_order.updated_at.advance(weeks: interval)
     end
-    
 
   end
 end

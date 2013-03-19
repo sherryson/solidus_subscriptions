@@ -13,7 +13,7 @@ describe 'Orders' do
   context 'Orders Index' do
     it 'should allow administrators to filter by orders with a subscription' do
       within("table#listing_orders") do
-        page.should have_content('Subscription')
+        page.should have_content('subscription')
       end
       within("table.index tbody tr:first-child") do
         page.should have_content('false')

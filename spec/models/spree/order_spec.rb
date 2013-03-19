@@ -4,6 +4,10 @@ require 'spec_helper'
 describe Spree::Order do
   let(:user) { stub_model(Spree::LegacyUser, :email => "spree@example.com") }
   let(:order) { stub_model(Spree::Order, :user => user) }
+  let(:line_items) {[
+    FactoryGirl.create(:line_item),
+    FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
+  ]}
 
   it { should respond_to(:subscribable?) }
   it { should respond_to(:repeat_order?) }
@@ -34,61 +38,25 @@ describe Spree::Order do
     end
 
     context "with an eligible order" do
-      let(:subscription) { stub('Spree::Subscription') }
-      let(:interval) { 4 }
-
-      let(:line_items) {[
-        FactoryGirl.create(:line_item, interval: nil),
-        FactoryGirl.create(:line_item, interval: interval)
-      ]}
 
       before do
-        order.stub(:subscribable?).and_return(true)
+        Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
+        order.line_items << line_items
+        order.finalize!
         order.stub(:repeat_order?).and_return(false)
-
-        order.stub(:line_items).and_return(line_items)
-
       end
 
       it "creates a subscription and attaches it to the order" do
-        order.finalize!
-        order.reload
         order.subscription.should_not be_nil
-        order.subscription.interval.should == interval
       end
 
       it "does not set the repeat_order flag" do
-        order.finalize!
-
+        order.reload
         expect(order.repeat_order).to be_false
       end
     end
   end
 
-  describe '#subscribable?' do
-    let(:order) {
-      FactoryGirl.create :order,
-                         ship_address: FactoryGirl.create(:address)
-    }
-
-    subject { order.subscribable? }
-
-    before do
-      order.stub(:line_items).and_return(line_items)
-    end
-
-    context "without any subscription line-items" do
-      let(:line_items) {[ stub('Spree::LineItem', interval: nil) ]}
-
-      it { should be_false }
-    end
-
-    context "with one or more subscription line-items" do
-      let(:line_items) {[ stub('Spree::LineItem', interval: '2') ]}
-
-      it { should be_true }
-    end
-  end
 
   context "#add_variant" do
     let(:order)    { Spree::Order.new }

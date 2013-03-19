@@ -20,16 +20,5 @@ describe 'Product' do
     end
   end
 
-  context 'edit product' do
-    
-    it 'should allow admins to flag as subscribable' do
-      within('table.index tbody tr:nth-child(1)') { click_link "Edit" }
-      check('product_subscribable')
-      click_button 'Update'
-      page.should have_content('successfully updated!')
-      page.has_checked_field?('product_subscribable').should == true
-    end
-
-  end
 
 end
