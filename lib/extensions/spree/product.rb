@@ -17,6 +17,13 @@ module SpreeSubscriptions
         def frequency_option_type
           ::Spree::OptionType.find_by_name('frequency').name
         end
+         
+        def subscribable_variants
+          @subscribable_variants ||= variants.select do |v|
+            frequencies = v.option_values.joins(:option_type).where('spree_option_types.name = ?', 'frequency')
+            frequencies.select { |f| f.name.to_i > 0 }.any?
+          end
+        end
 
       end
     end
