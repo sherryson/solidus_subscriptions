@@ -4,11 +4,14 @@ module SpreeSubscriptions
       module Product
         extend ActiveSupport::Concern
 
-        def subscribable?
-          frequencies = variants.collect(&:option_values).flatten.select do |ov|
+        def subscribable_option_values
+          variants.collect(&:option_values).flatten.select do |ov|
            ov.name.to_i > 1 && ov.option_type.name == frequency_option_type
           end
-          frequencies.any?
+        end
+
+        def subscribable?
+          subscribable_option_values.any?
         end
 
         def frequency_option_type
