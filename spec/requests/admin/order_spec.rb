@@ -6,8 +6,7 @@ describe 'Orders' do
     create(:order, :created_at => Time.now - 1.day, :completed_at => Time.now - 1.day, :number => "R200")
     user = create(:admin_user, email: "test@example.com")
     sign_in_as!(user)
-    visit spree.admin_path
-    click_link "Orders"
+    visit spree.admin_orders_path
   end
 
   context 'Orders Index' do
@@ -20,5 +19,4 @@ describe 'Orders' do
       end
     end
   end
-
 end

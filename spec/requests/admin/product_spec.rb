@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe 'Product' do
-
   before do
     product = create(:product)
     product2 = create(:simple_product)
     user = create(:admin_user, email: "test@example.com")
     sign_in_as!(user)
-    visit spree.admin_path
-    click_link "Products"
+    visit spree.admin_products_path
   end
 
   context 'index page' do
@@ -19,6 +17,4 @@ describe 'Product' do
       end
     end
   end
-
-
 end
