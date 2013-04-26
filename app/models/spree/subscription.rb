@@ -23,5 +23,8 @@ module Spree
       last_order.updated_at.advance(weeks: interval)
     end
 
+    def cancelled?
+      state == 'cancelled'
+    end
   end
 end
