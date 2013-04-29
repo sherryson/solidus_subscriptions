@@ -26,5 +26,9 @@ module Spree
     def cancelled?
       state == 'cancelled'
     end
+
+    def cancel!
+      update_attribute(:state, 'cancelled')
+    end
   end
 end

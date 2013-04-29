@@ -65,4 +65,16 @@ describe Spree::Subscription do
       end
     end
   end
+
+  describe "#cancel!" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: nil) }
+
+    it "cancels the subscription" do
+      expect {
+        subscription.cancel!
+      }.to change {
+        subscription.state
+      }.from(nil).to('cancelled')
+    end
+  end
 end
