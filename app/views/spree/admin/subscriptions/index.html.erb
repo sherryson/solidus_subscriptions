@@ -1,0 +1,66 @@
+<% content_for :page_title do %>
+  <%= t(:listing_subscriptions) %>
+<% end %>
+
+<% unless @subscriptions.empty? %>
+  <table class="index responsive" id="listing_subscriptions" data-hook width="100%">
+    <colgroup>
+       <col style="width: 5%;">
+       <col style="width: 10%;">
+       <col style="width: 18%;">
+       <col style="width: 18%;">
+       <col style="width: 18%;">
+       <col style="width: 18%;">
+       <col style="width: 5%;">
+    </colgroup>
+    <thead>
+      <tr data-hook="admin_subscriptions_index_headers">
+        <th>ID</th>
+        <th>State</th>
+        <th>Products</th>
+        <th>Frequency</th>
+        <th>Last Order</th>
+        <th>Next Shipment Date</th>
+        <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @subscriptions.each do |subscription| %>
+      <tr data-hook="admin_subscriptions_index_rows" class="<%= cycle('odd', 'even') %>">
+        <td><%= subscription.id %></td>
+        <td><%= subscription.state %></td>
+        <td><%= subscription.products.collect(&:name).to_sentence  %>
+        <td>Every <%= subscription.interval %> weeks</td>
+        <td>
+          <%= link_to subscription.last_order.number, admin_order_path(subscription.last_order) %>
+          <br />
+          <%= l(subscription.last_order.completed_at, format: :long)  %>
+        </td>
+        <td>
+          <%=
+            unless subscription.cancelled?
+              l(subscription.next_shipment_date, format: :long)
+            else
+              "N/A"
+            end
+          -%>
+        </td>
+        <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
+          <%=
+            unless subscription.cancelled?
+              link_to_with_icon 'icon-cancel', 'Cancel', cancel_admin_subscription_path(subscription),
+                no_text: true, data: { confirm: t(:are_you_sure), action: 'remove' }
+            end
+          -%>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="no-objects-found">
+    <%= t(:no_subscriptions_found)%>
+  </div>
+<% end %>
+
+<%= paginate @subscriptions %>

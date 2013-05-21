@@ -11,10 +11,6 @@ module Spree
       orders.last.subscription_products
     end
 
-    def last_order
-      orders.last
-    end
-
     def last_shipment_date
       last_order.shipment.shipped_at
     end
@@ -29,6 +25,22 @@ module Spree
 
     def cancel!
       update_attribute(:state, 'cancelled')
+    end
+
+    def last_order
+      @last_order ||= orders.complete.order("completed_at DESC").last
+    end
+
+    def next_order
+      next_order = NullObject.new
+
+      next_order.class_eval do
+        def created_at
+          '???'
+        end
+      end
+
+      next_order
     end
   end
 end
