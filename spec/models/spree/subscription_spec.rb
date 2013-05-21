@@ -18,20 +18,15 @@ describe Spree::Subscription do
   it { should have_many(:orders) }
   it { should belong_to(:user) }
 
-
-
   context "#products" do
-
     it 'should return a collection of products' do
       order.line_items << line_items
       order.finalize!
       order.subscription.products.map(&:subscribable?).all?.should be_true 
     end
-
   end
 
   context "shipment dates" do
-
     before do
       order.line_items << line_items
       order.stub :shipping_method => mock_model(Spree::ShippingMethod, :create_adjustment => true, :adjustment_label => "Shipping")
@@ -51,4 +46,35 @@ describe Spree::Subscription do
     end
   end
 
+  describe "#cancelled?" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: subscription_state) }
+
+    context "when the subscription has been cancelled" do
+      let(:subscription_state) { 'cancelled' }
+
+      it "returns true" do
+        expect(subscription.cancelled?).to be_true
+      end
+    end
+
+    context "when the subscription has not been cancelled" do
+      let(:subscription_state) { nil }
+
+      it "returns false" do
+        expect(subscription.cancelled?).to be_false
+      end
+    end
+  end
+
+  describe "#cancel!" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: nil) }
+
+    it "cancels the subscription" do
+      expect {
+        subscription.cancel!
+      }.to change {
+        subscription.state
+      }.from(nil).to('cancelled')
+    end
+  end
 end
