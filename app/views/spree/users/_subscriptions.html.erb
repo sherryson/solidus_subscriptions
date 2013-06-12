@@ -17,7 +17,7 @@
             <td><%= subscription.products.collect(&:name).to_sentence %></td>
             <td><%= subscription.last_shipment_date %></td>
             <td><%= subscription.next_shipment_date %></td>
-            <td><%= t(subscription.state, :scope => 'subscription_state').titleize %></td>
+            <td><%= t(subscription.state, :scope => 'subscription_state', default: t('subscription_state.active')).titleize %></td>
           </tr>
         <% end %>
       </tbody>

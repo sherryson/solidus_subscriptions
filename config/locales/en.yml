@@ -11,3 +11,6 @@ en:
   next_shipment: "Next Shipment"
   status: "Status"
   you_have_no_subscriptions_yet: "You don't seem to have any subscriptions on file"
+  subscription_state:
+    active: Active
+    cancelled: Cancelled
