@@ -34,7 +34,7 @@
         <td>
           <%= link_to subscription.last_order.number, admin_order_path(subscription.last_order) %>
           <br />
-          <%= l(subscription.last_order.completed_at, format: :long)  %>
+          <%= l(subscription.last_order.created_at, format: :long)  %>
         </td>
         <td>
           <%=

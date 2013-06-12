@@ -6,16 +6,16 @@ module Spree
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id
-    
+
     class << self
       def active
         where(state: nil)
       end
-      
+
       def ready_for_next_order
         subs = active.select do |sub|
           sub.last_order &&
-            sub.last_order.completed_at < sub.interval.weeks.ago
+            sub.last_order.created_at < sub.interval.weeks.ago
         end
 
         where(id: subs.collect(&:id))
@@ -27,11 +27,11 @@ module Spree
     end
 
     def last_shipment_date
-      last_order.shipment.shipped_at
+      last_order.created_at if last_order
     end
 
     def next_shipment_date
-      last_order.updated_at.advance(weeks: interval)
+      last_order.created_at.advance(weeks: interval) if last_order
     end
 
     def cancelled?
@@ -43,7 +43,7 @@ module Spree
     end
 
     def last_order
-      @last_order ||= orders.complete.reorder("completed_at DESC").first
+      @last_order ||= orders.reorder("created_at DESC").first
     end
 
     def next_order
