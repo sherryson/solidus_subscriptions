@@ -28,7 +28,7 @@ module Spree
     end
 
     def last_order
-      @last_order ||= orders.complete.order("completed_at DESC").last
+      @last_order ||= orders.complete.reorder("completed_at DESC").first
     end
 
     def next_order
