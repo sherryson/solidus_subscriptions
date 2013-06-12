@@ -11,6 +11,15 @@ module Spree
       def active
         where(state: nil)
       end
+      
+      def ready_for_next_order
+        subs = active.select do |sub|
+          sub.last_order &&
+            sub.last_order.completed_at < sub.interval.weeks.ago
+        end
+
+        where(id: subs.collect(&:id))
+      end
     end
 
     def products
