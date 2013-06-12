@@ -6,6 +6,12 @@ module Spree
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id
+    
+    class << self
+      def active
+        where(state: nil)
+      end
+    end
 
     def products
       orders.last.subscription_products
