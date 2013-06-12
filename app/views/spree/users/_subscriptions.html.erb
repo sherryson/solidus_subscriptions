@@ -14,7 +14,7 @@
       <tbody>
         <% @user.subscriptions.each do |subscription| %>
           <tr>
-            <td><%= subscription.products %></td>
+            <td><%= subscription.products.collect(&:name).to_sentence %></td>
             <td><%= subscription.last_shipment_date %></td>
             <td><%= subscription.next_shipment_date %></td>
             <td><%= t(subscription.state, :scope => 'subscription_state').titleize %></td>
