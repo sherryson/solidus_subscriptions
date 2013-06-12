@@ -23,7 +23,7 @@ module Spree
     end
 
     def products
-      orders.last.subscription_products
+      last_order.subscription_products
     end
 
     def last_shipment_date
