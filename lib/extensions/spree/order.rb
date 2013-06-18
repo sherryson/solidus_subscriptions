@@ -39,7 +39,7 @@ module SpreeSubscriptions
 
         def subscribable_option_values
           variants.collect(&:option_values).flatten.select do |ov|
-           ov.name.to_i > 1 && ov.option_type.name == frequency_option_type
+           ov.name.to_i > 0 && ov.option_type.name == frequency_option_type
           end
         end
 
