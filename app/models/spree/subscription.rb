@@ -9,7 +9,7 @@ module Spree
 
     class << self
       def active
-        where(state: nil)
+        where('state <> ?', 'cancelled OR paused')
       end
 
       def ready_for_next_order
