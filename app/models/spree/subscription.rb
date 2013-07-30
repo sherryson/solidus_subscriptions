@@ -43,7 +43,7 @@ module Spree
     end
 
     def last_order
-      @last_order ||= orders.complete.reorder("created_at DESC").first
+      @last_order ||= orders.complete.where(payment_state: 'paid').reorder("created_at DESC").first
     end
 
     def next_order
