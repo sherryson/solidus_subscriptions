@@ -1,6 +1,6 @@
 module Spree
   class Subscription < ActiveRecord::Base
-    has_many :orders, order: 'created_at DESC'
+    has_many :orders, order: 'completed_at DESC'
     belongs_to :user
     attr_accessible :ship_address_id, :state, :user_id, :interval
 
@@ -15,7 +15,7 @@ module Spree
       def ready_for_next_order
         subs = active.select do |sub|
           sub.last_order &&
-            sub.last_order.created_at < sub.interval.weeks.ago
+            sub.last_order.completed_at < sub.interval.weeks.ago
         end
 
         where(id: subs.collect(&:id))
@@ -27,11 +27,11 @@ module Spree
     end
 
     def last_shipment_date
-      last_order.created_at if last_order
+      last_order.completed_at if last_order
     end
 
     def next_shipment_date
-      last_order.created_at.advance(weeks: interval) if last_order
+      last_order.completed_at.advance(weeks: interval) if last_order
     end
 
     def cancelled?
@@ -43,7 +43,7 @@ module Spree
     end
 
     def last_order
-      @last_order ||= orders.complete.where(payment_state: 'paid').reorder("created_at DESC").first
+      @last_order ||= orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
     end
 
     def next_order
