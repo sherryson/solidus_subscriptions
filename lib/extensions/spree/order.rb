@@ -17,17 +17,21 @@ module SpreeSubscriptions
         end
 
         def create_subscription_if_eligible
-          return unless subscribable?
-          return if repeat_order?
+          begin
+            return unless subscribable?
+            return if repeat_order?
 
-          attrs = {
-            ship_address_id: ship_address.id,
-            user_id: user.id,
-            state: 'active',
-            interval: subscription_interval
-          }
+            attrs = {
+              ship_address_id: ship_address.id,
+              user_id: user.id,
+              state: 'active',
+              interval: subscription_interval
+            }
 
-          self.create_subscription(attrs)
+            self.create_subscription(attrs)
+          rescue => e
+            # TODO: Hook into error reporting
+          end
         end
 
         def subscribable?
