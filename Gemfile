@@ -9,6 +9,7 @@ gem 'pry-rails', group: :test
 gem "shoulda-matchers", group: :test
 gem 'haml-rails'
 gem 'database_cleaner', '< 1.1.0', group: :test
+gem 'timecop', group: :test
 
 
 gemspec

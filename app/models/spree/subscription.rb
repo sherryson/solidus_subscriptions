@@ -2,7 +2,8 @@ module Spree
   class Subscription < ActiveRecord::Base
     has_many :orders, order: 'completed_at DESC'
     belongs_to :user
-    attr_accessible :ship_address_id, :state, :user_id, :interval
+    belongs_to :credit_card
+    attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id

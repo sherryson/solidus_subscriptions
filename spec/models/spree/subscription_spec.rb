@@ -17,6 +17,7 @@ describe Spree::Subscription do
 
   it { should have_many(:orders) }
   it { should belong_to(:user) }
+  it { should belong_to(:credit_card)}
 
   context "#products" do
     it 'should return a collection of products' do
@@ -28,6 +29,7 @@ describe Spree::Subscription do
 
   context "shipment dates" do
     before do
+      Timecop.freeze
       Factory(:payment_method)
       Factory(:shipping_method)
       order.line_items << line_items
@@ -47,6 +49,10 @@ describe Spree::Subscription do
 
     it "should be able to calculate the date of the next shipment" do
       order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+    end
+
+    after do
+      Timecop.return
     end
   end
 
