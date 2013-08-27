@@ -28,13 +28,17 @@ describe Spree::Subscription do
 
   context "shipment dates" do
     before do
+      Factory(:payment_method)
+      Factory(:shipping_method)
       order.line_items << line_items
-      order.stub :shipping_method => mock_model(Spree::ShippingMethod, :create_adjustment => true, :adjustment_label => "Shipping")
+      order.shipping_method = Spree::ShippingMethod.first
       order.create_shipment!
-      order.stub(:paid? => true, :complete? => true)
+      order.payments.create!({:payment_method => Spree::PaymentMethod.first, :amount => order.total}, :without_protection => true)
       order.finalize!
-      order.shipment.shipping_method = order.shipping_method
+      order.state = 'complete'
+      order.shipment.state = 'ready'
       order.shipment.ship!
+      order.update_column(:payment_state, 'paid')
     end
 
     it "should return the shipment date of the last order" do

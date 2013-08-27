@@ -41,6 +41,7 @@ module Spree
     def cancel
       update_attribute(:state, 'cancelled')
     end
+    alias_method :cancel!, :cancel
 
     def last_order
       @last_order ||= orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first

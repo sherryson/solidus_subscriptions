@@ -8,7 +8,7 @@ gem 'launchy', group: :test
 gem 'pry-rails', group: :test
 gem "shoulda-matchers", group: :test
 gem 'haml-rails'
-gem 'database_cleaner', group: :test
+gem 'database_cleaner', '< 1.1.0', group: :test
 
 
 gemspec
