@@ -14,6 +14,16 @@ describe Spree::Subscription do
     FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
   ]}
 
+  let(:gateway) do
+    gateway = Spree::Gateway::Bogus.create!({environment: 'test', active: true, name: 'Credit Card'}, :without_protection => true)
+    gateway.stub :source_required => true
+    gateway
+  end
+
+  let(:card) do
+    FactoryGirl.create(:credit_card)
+  end
+
 
   it { should have_many(:orders) }
   it { should belong_to(:user) }
@@ -27,20 +37,20 @@ describe Spree::Subscription do
     end
   end
 
+  context "#credit_card" do
+    before do
+      create_completed_subscription_order
+    end
+
+    it "should be automatically associated with a credit card when the initial order is completed" do
+      expect(order.subscription.credit_card).not_to be_nil
+    end
+  end
+
   context "shipment dates" do
     before do
       Timecop.freeze
-      Factory(:payment_method)
-      Factory(:shipping_method)
-      order.line_items << line_items
-      order.shipping_method = Spree::ShippingMethod.first
-      order.create_shipment!
-      order.payments.create!({:payment_method => Spree::PaymentMethod.first, :amount => order.total}, :without_protection => true)
-      order.finalize!
-      order.state = 'complete'
-      order.shipment.state = 'ready'
-      order.shipment.ship!
-      order.update_column(:payment_state, 'paid')
+      create_completed_subscription_order
     end
 
     it "should return the shipment date of the last order" do
@@ -86,5 +96,18 @@ describe Spree::Subscription do
         subscription.state
       }.from(nil).to('cancelled')
     end
+  end
+
+  def create_completed_subscription_order
+    Factory(:shipping_method)
+    order.line_items << line_items
+    order.shipping_method = Spree::ShippingMethod.first
+    order.create_shipment!
+    order.payments.create!({source: card, payment_method: gateway, amount: order.total}, without_protection: true)
+    order.finalize!
+    order.state = 'complete'
+    order.shipment.state = 'ready'
+    order.shipment.ship!
+    order.update_column(:payment_state, 'paid')
   end
 end

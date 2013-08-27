@@ -25,7 +25,8 @@ module SpreeSubscriptions
               ship_address_id: ship_address.id,
               user_id: user.id,
               state: 'active',
-              interval: subscription_interval
+              interval: subscription_interval,
+              credit_card_id: credit_card_id_if_available
             }
 
             self.create_subscription(attrs)
@@ -59,6 +60,10 @@ module SpreeSubscriptions
 
         def subscription_products
           line_items.map { |li| li.variant.product }.select { |p| p.subscribable? }
+        end
+
+        def credit_card_id_if_available
+          credit_cards.present? ? credit_cards.last.id : ''
         end
       end
     end
