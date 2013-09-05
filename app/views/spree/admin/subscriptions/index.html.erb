@@ -21,6 +21,7 @@
         <th>Frequency</th>
         <th>Last Order</th>
         <th>Next Shipment Date</th>
+        <th>Resume On</th>
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
@@ -45,6 +46,7 @@
             end
           -%>
         </td>
+        <td><%= l(subscription.resume_on, format: :long) %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
             unless subscription.cancelled?
