@@ -28,6 +28,7 @@ describe Spree::Subscription do
   it { should have_many(:orders) }
   it { should belong_to(:user) }
   it { should belong_to(:credit_card)}
+  it { should respond_to(:resume_on)}
 
   context "#products" do
     it 'should return a collection of products' do
