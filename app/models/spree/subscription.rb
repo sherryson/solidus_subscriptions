@@ -45,7 +45,7 @@ module Spree
     alias_method :cancel!, :cancel
 
     def last_order
-      @last_order ||= orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
+      orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
     end
 
     def next_order
