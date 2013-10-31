@@ -15,7 +15,7 @@ module Spree
 
       def ready_for_next_order
         subs = active.select do |sub|
-          sub.last_order &&
+          sub.last_order && sub.interval &&
             sub.last_order.completed_at < sub.interval.weeks.ago
         end
 
