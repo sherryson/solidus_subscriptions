@@ -24,7 +24,5 @@ describe "Subscription" do
       end
     end
 
-
-
   end
 end

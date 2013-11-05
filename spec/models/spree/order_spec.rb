@@ -48,6 +48,7 @@ describe Spree::Order do
 
       it "creates a subscription and attaches it to the order" do
         order.subscription.should_not be_nil
+        order.subscription.duration.should be_nil
       end
 
       it "does not set the repeat_order flag" do

@@ -64,5 +64,13 @@ module Spree
       ::Spree::Address.find(ship_address_id) || last_order.ship_address
     end
 
+    def prepaid?
+      duration && duration > 0
+    end
+
+    def prepaid_balance_remaining?
+      prepaid_amount > 0
+    end
+
   end
 end
