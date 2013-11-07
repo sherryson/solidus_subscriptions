@@ -8,26 +8,6 @@ describe Spree::Subscription do
     setup_subscribable_products
   end
 
-  let(:user) { stub_model(Spree::User, email: "spree@example.com") }
-  let(:order) {
-    FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
-  }
-  let(:line_items) {[
-    FactoryGirl.create(:line_item),
-    FactoryGirl.create(:line_item, variant: @subscribable_variant)
-  ]}
-
-  let(:gateway) do
-    gateway = Spree::Gateway::Bogus.create!({environment: 'test', active: true, name: 'Credit Card'}, :without_protection => true)
-    gateway.stub :source_required => true
-    gateway
-  end
-
-  let(:card) do
-    FactoryGirl.create(:credit_card)
-  end
-
-
   it { should have_many(:orders) }
   it { should belong_to(:user) }
   it { should belong_to(:credit_card)}
@@ -35,9 +15,8 @@ describe Spree::Subscription do
 
   context "#products" do
     it 'should return a collection of products' do
-      order.line_items << line_items
-      order.finalize!
-      order.subscription.products.map(&:subscribable?).all?.should be_true 
+      create_completed_subscription_order
+      @order.subscription.products.map(&:subscribable?).all?.should be_true 
     end
   end
 
@@ -47,7 +26,7 @@ describe Spree::Subscription do
     end
 
     it "should be automatically associated with a credit card when the initial order is completed" do
-      expect(order.subscription.credit_card).not_to be_nil
+      expect(@order.subscription.credit_card).not_to be_nil
     end
   end
 
@@ -58,11 +37,11 @@ describe Spree::Subscription do
     end
 
     it "should return the shipment date of the last order" do
-      order.subscription.last_shipment_date.to_i.should == Time.now.to_i
+      @order.subscription.last_shipment_date.to_i.should == Time.now.to_i
     end
 
     it "should be able to calculate the date of the next shipment" do
-      order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
     end
 
     after do
@@ -76,11 +55,11 @@ describe Spree::Subscription do
     end
 
     it "should know if it's been paid for in advance" do
-      order.subscription.prepaid?.should be_false
+      @order.subscription.prepaid?.should be_false
     end
 
     it "should know if it has a prepaid balance remaining" do
-      order.subscription.prepaid_balance_remaining?.should be_false
+      @order.subscription.prepaid_balance_remaining?.should be_false
     end
 
     it "should be set to prepaid when a prepaid order is submitted" do
