@@ -50,7 +50,7 @@ module SpreeSubscriptions
         end
 
         def subscription_prepaid_amount
-          total
+          prepayable_option_values.present? ? total : 0
         end
 
         def subscribable_option_values

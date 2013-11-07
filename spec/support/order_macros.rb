@@ -1,4 +1,5 @@
 module OrderMacros
+
   def create_completed_subscription_order
     country_zone = create(:zone, :name => 'CountryZone')
     @state = create(:state)
@@ -8,7 +9,6 @@ module OrderMacros
     order.line_items << line_items
     order.shipping_method = Spree::ShippingMethod.first
     order.create_shipment!
-    order.finalize!
     order.reload
     order.payments.create!({source: card, payment_method: gateway, amount: order.total, state: 'completed'}, without_protection: true)
     order.state = 'complete'
@@ -16,6 +16,7 @@ module OrderMacros
     order.shipment.ship!
     order.shipment_state = 'shipped'
     order.payment_state = 'paid'
+    order.finalize!
     order.save
   end
 end

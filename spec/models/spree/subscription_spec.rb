@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe Spree::Subscription do
+  include OrderMacros
+  include ProductMacros
+
   before do
-    Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
-    Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
+    setup_subscribable_products
   end
 
   let(:user) { stub_model(Spree::User, email: "spree@example.com") }
@@ -12,7 +14,7 @@ describe Spree::Subscription do
   }
   let(:line_items) {[
     FactoryGirl.create(:line_item),
-    FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
+    FactoryGirl.create(:line_item, variant: @subscribable_variant)
   ]}
 
   let(:gateway) do
@@ -118,16 +120,16 @@ describe Spree::Subscription do
     end
   end
 
-  def create_completed_subscription_order
-    Factory(:shipping_method)
-    order.line_items << line_items
-    order.shipping_method = Spree::ShippingMethod.first
-    order.create_shipment!
-    order.payments.create!({source: card, payment_method: gateway, amount: order.total}, without_protection: true)
-    order.finalize!
-    order.state = 'complete'
-    order.shipment.state = 'ready'
-    order.shipment.ship!
-    order.update_column(:payment_state, 'paid')
-  end
+  # def create_completed_subscription_order
+  #   Factory(:shipping_method)
+  #   order.line_items << line_items
+  #   order.shipping_method = Spree::ShippingMethod.first
+  #   order.create_shipment!
+  #   order.payments.create!({source: card, payment_method: gateway, amount: order.total}, without_protection: true)
+  #   order.finalize!
+  #   order.state = 'complete'
+  #   order.shipment.state = 'ready'
+  #   order.shipment.ship!
+  #   order.update_column(:payment_state, 'paid')
+  # end
 end
