@@ -41,6 +41,7 @@ describe Spree::Order do
 
       before do
         Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
+        Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
         order.line_items << line_items
         order.finalize!
         order.stub(:repeat_order?).and_return(false)
@@ -48,7 +49,7 @@ describe Spree::Order do
 
       it "creates a subscription and attaches it to the order" do
         order.subscription.should_not be_nil
-        order.subscription.duration.should be_nil
+        order.subscription.duration.should == 0 
       end
 
       it "does not set the repeat_order flag" do

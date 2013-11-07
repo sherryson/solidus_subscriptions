@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Spree::Subscription do
   before do
     Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
+    Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
   end
 
   let(:user) { stub_model(Spree::User, email: "spree@example.com") }

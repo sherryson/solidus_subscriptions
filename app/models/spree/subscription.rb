@@ -3,7 +3,7 @@ module Spree
     has_many :orders, order: 'completed_at DESC'
     belongs_to :user
     belongs_to :credit_card
-    attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on
+    attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on, :duration, :prepaid_amount
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id

@@ -26,6 +26,8 @@ module SpreeSubscriptions
               user_id: user.id,
               state: 'active',
               interval: subscription_interval,
+              duration: subscription_duration,
+              prepaid_amount: subscription_prepaid_amount,
               credit_card_id: credit_card_id_if_available
             }
 
@@ -43,14 +45,32 @@ module SpreeSubscriptions
           subscribable_option_values.collect(&:name).max
         end
 
+        def subscription_duration
+          prepayable_option_values.present? ? prepayable_option_values.first.name : 0
+        end
+
+        def subscription_prepaid_amount
+          total
+        end
+
         def subscribable_option_values
           variants.collect(&:option_values).flatten.select do |ov|
            ov.name.to_i > 0 && ov.option_type.name == frequency_option_type
           end
         end
 
+        def prepayable_option_values
+          variants.collect(&:option_values).flatten.select do |ov|
+           ov.name.to_i > 0 && ov.option_type.name == prepaid_option_type
+          end
+        end
+
         def frequency_option_type
           ::Spree::OptionType.find_by_name('frequency').name
+        end
+
+        def prepaid_option_type
+          ::Spree::OptionType.find_by_name('number_of_months').name
         end
 
 
