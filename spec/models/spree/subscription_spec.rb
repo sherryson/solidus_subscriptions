@@ -80,6 +80,10 @@ describe Spree::Subscription do
     it "should know if it has a prepaid balance remaining" do
       order.subscription.prepaid_balance_remaining?.should be_false
     end
+
+    it "should be set to prepaid when a prepaid order is submitted" do
+      create_completed_prepaid_subscription_order
+    end
   end
 
   describe "#cancelled?" do
