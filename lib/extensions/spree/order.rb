@@ -38,11 +38,11 @@ module SpreeSubscriptions
         end
 
         def subscribable?
-          subscribable_option_values.any?
+          subscribable_option_values.any? || prepayable_option_values.any?
         end
 
         def subscription_interval
-          subscribable_option_values.collect(&:name).max
+          subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
         end
 
         def subscription_duration

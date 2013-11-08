@@ -63,7 +63,12 @@ describe Spree::Subscription do
     end
 
     it "should be set to prepaid when a prepaid order is submitted" do
+      setup_prepayable_subscription_variants
       create_completed_prepaid_subscription_order
+      @order.subscribable?.should be_true
+      @order.subscription.duration.should == 6
+      @order.subscription.interval.should == 4
+      @order.subscription.prepaid?.should be_true
     end
   end
 
