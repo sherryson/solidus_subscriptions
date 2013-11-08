@@ -16,10 +16,18 @@ describe GenerateSubscriptionOrder do
       GenerateSubscriptionOrder.new(subscription).call
       Spree::Order.complete.count == 2
     end
+
+    it "should not generate orders for prepaid subscriptions" do
+      create_completed_prepaid_subscription_order
+      create_completed_subscription_order
+      Timecop.travel(2.months.from_now)
+      Spree::Subscription.ready_for_next_order.count.should == 1
+    end
   end
 
   context "prepaid" do
     it 'should reduce the remaining duration when processed' do
+      pending
       create_completed_prepaid_subscription_order
       subscription = @order.subscription
       Spree::Order.complete.count == 1
