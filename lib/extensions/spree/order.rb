@@ -9,6 +9,7 @@ module SpreeSubscriptions
 
           belongs_to :subscription, class_name: 'Spree::Subscription'
           attr_accessible :subscription_id
+          register_update_hook :reset_failure_count_for_subscription_orders
         end
 
         def finalize_with_create_subscription!
@@ -85,6 +86,13 @@ module SpreeSubscriptions
         def credit_card_id_if_available
           credit_cards.present? ? credit_cards.last.id : ''
         end
+
+        def reset_failure_count_for_subscription_orders
+          if completed? && has_subscription?
+            subscription.reset_failure_count
+          end
+        end
+
       end
     end
   end

@@ -5,6 +5,7 @@ describe GenerateSubscriptionOrder do
   include ProductMacros
   before do
     setup_subscribable_products
+    setup_prepayable_subscription_variants
   end
 
   context "#call" do
@@ -17,5 +18,16 @@ describe GenerateSubscriptionOrder do
     end
   end
 
+  context "prepaid" do
+    it 'should reduce the remaining duration when processed' do
+      create_completed_prepaid_subscription_order
+      subscription = @order.subscription
+      Spree::Order.complete.count == 1
+      @order.subscription.duration.should == 6
+      GenerateSubscriptionOrder.new(subscription).call
+      Spree::Order.complete.count == 2
+      @order.subscription.duration.should == 5
+    end
+  end
 
 end

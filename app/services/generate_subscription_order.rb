@@ -78,6 +78,7 @@ class GenerateSubscriptionOrder
       next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
       transition_order_from_payment_to_confirm!(next_order)
       transition_order_from_confirm_to_complete!(next_order, sub)
+      sub.decrement_prepaid_duration!
 
       puts "Order #{next_order.number} created for subscription ##{sub.id}."
       return true

@@ -72,5 +72,18 @@ module Spree
       prepaid_amount > 0
     end
 
+    def retry_count
+      5 - failure_count
+    end
+
+    def reset_failure_count
+      update_column(:failure_count, 0)
+    end
+
+    def decrement_prepaid_duration!
+      return unless prepaid?
+      update_column(:duration, duration-1)
+    end
+
   end
 end
