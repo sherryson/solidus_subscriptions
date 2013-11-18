@@ -8,6 +8,10 @@ module SpreeSubscriptions
           option_values.of_option_type('frequency').first
         end
 
+        def duration
+          option_values.of_option_type('number_of_months').first
+        end
+
         module ClassMethods
           def with_frequency(*option_values)
 
