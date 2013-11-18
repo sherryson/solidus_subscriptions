@@ -12,6 +12,14 @@ describe Spree::Product do
     @product.should respond_to :subscribable?
   end
 
+  it 'should have a class method to return subscribable products' do
+    ::Spree::Product.subscribable.should_not be_empty
+  end
+
+  it 'should have a class method to return prepayable products' do
+    ::Spree::Product.prepayable.should_not be_empty
+  end
+
   it "should be subscribable" do
     @product.reload.subscribable?.should be_true
   end
