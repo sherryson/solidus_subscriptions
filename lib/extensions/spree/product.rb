@@ -10,6 +10,11 @@ module SpreeSubscriptions
             where('spree_products.id IN (?)', ids).select { |p| p.subscribable? }
           end
 
+          def prepayable
+            ids = ::Spree::Variant.with_duration.map(&:product_id).uniq
+            where('spree_products.id IN (?)', ids).select { |p| p.subscribable? }
+          end
+
         end
 
         def subscribable_option_values

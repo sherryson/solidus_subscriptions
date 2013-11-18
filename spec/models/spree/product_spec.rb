@@ -17,7 +17,7 @@ describe Spree::Product do
   end
 
   it 'should have a class method to return prepayable products' do
-    ::Spree::Product.prepayable.should_not be_empty
+    ::Spree::Product.prepayable.should be_empty
   end
 
   it "should be subscribable" do
@@ -30,6 +30,10 @@ describe Spree::Product do
 
   it "should return a list of subscribable variants" do
     @product.reload.subscribable_variants.map(&:sku).should == ['subscribable']
+  end
+ 
+  it "should return a list of prepayable variants" do
+    @product.reload.prepayable_variants.map(&:sku).should == []
   end
 
 end
