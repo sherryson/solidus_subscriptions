@@ -42,6 +42,10 @@ module SpreeSubscriptions
           subscribable_option_values.any? || prepayable_option_values.any?
         end
 
+        def will_create_prepaid_subscription?
+          !repeat_order? && prepayable_option_values.any?
+        end
+
         def subscription_interval
           subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
         end
