@@ -59,5 +59,14 @@ module Spree
 
       next_order
     end
+
+    def ship_address
+      ::Spree::Address.find(ship_address_id) || last_order.ship_address
+    end
+
+    def bill_address
+      ::Spree::Address.find(bill_address_id) || last_order.bill_address
+    end
+
   end
 end
