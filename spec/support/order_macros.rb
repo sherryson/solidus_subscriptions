@@ -40,7 +40,7 @@ module OrderMacros
     @shipping_method = create(:shipping_method, :zone => country_zone)
 
     @user = stub_model(Spree::User, email: "spree@example.com")
-    @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
+    @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
 
     @line_items = [
       FactoryGirl.create(:line_item),

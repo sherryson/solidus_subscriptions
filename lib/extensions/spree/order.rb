@@ -24,6 +24,7 @@ module SpreeSubscriptions
 
             attrs = {
               ship_address_id: ship_address.id,
+              bill_address_id: bill_address.id,
               user_id: user.id,
               state: 'active',
               interval: subscription_interval,

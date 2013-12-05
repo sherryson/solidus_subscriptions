@@ -40,7 +40,7 @@ class GenerateSubscriptionOrder
         email: previous_order.email,
         repeat_order: true,
 
-        bill_address: previous_order.bill_address,
+        bill_address: sub.bill_address,
         ship_address: sub.ship_address
 
       }, without_protection: true)
