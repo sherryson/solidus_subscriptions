@@ -11,7 +11,7 @@ describe GenerateSubscriptionOrder do
 
   let(:user) { stub_model(Spree::User, email: "spree@example.com") }
   let(:order) {
-    FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
+    FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
   }
   let(:line_items) {[
     FactoryGirl.create(:line_item),
