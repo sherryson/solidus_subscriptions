@@ -15,7 +15,7 @@ describe Spree::Order do
 
   context "#finalize!" do
     let(:order) {
-      FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address))
+      FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
     }
 
     context "with an ineligible order" do

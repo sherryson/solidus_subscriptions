@@ -3,7 +3,8 @@ module Spree
     has_many :orders, order: 'completed_at DESC'
     belongs_to :user
     belongs_to :credit_card
-    attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on
+    belongs_to :bill_address
+    attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on, :bill_address_id
 
     validates_presence_of :ship_address_id
     validates_presence_of :user_id
@@ -15,7 +16,7 @@ module Spree
 
       def ready_for_next_order
         subs = active.select do |sub|
-          sub.last_order &&
+          sub.last_order && sub.interval &&
             sub.last_order.completed_at < sub.interval.weeks.ago
         end
 
