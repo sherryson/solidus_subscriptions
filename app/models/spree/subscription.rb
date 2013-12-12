@@ -6,6 +6,7 @@ module Spree
     attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on, :duration, :prepaid_amount, :bill_address_id
 
     validates_presence_of :ship_address_id
+    validates_presence_of :bill_address_id
     validates_presence_of :user_id
 
     class << self
