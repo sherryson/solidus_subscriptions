@@ -5,6 +5,9 @@ FactoryGirl.define do
     ship_address_id {
       FactoryGirl.create(:address).id
     }
+    bill_address_id {
+      FactoryGirl.create(:address).id
+    }
 
     association(:user)
   end
