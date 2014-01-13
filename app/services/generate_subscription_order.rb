@@ -25,10 +25,10 @@ class GenerateSubscriptionOrder
     order.next! unless order.completed?
   end
 
-  def transition_order_from_confirm_to_complete!(order, sub)
+  def transition_order_from_confirm_to_complete!(order)
     order.next! unless order.completed?
   rescue StateMachine::InvalidTransition
-    ::NotificationMailer.delay.subscription_payment_failure(order, sub.retry_count)
+    ::NotificationMailer.delay.subscription_payment_failure(order, subscription.retry_count)
     raise PaymentError
   end
 
@@ -59,7 +59,7 @@ class GenerateSubscriptionOrder
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
 
     transition_order_from_payment_to_confirm!(next_order)
-    transition_order_from_confirm_to_complete!(next_order, subscription)
+    transition_order_from_confirm_to_complete!(next_order)
 
     subscription.decrement_prepaid_duration!
 
@@ -90,7 +90,7 @@ class GenerateSubscriptionOrder
     end
   end
 
-  def store_credit_card_for_subscription(subscription)
+  def store_credit_card_for_subscription
     subscription.credit_card = subscription.last_order.payments.where('amount > 0').where(state: 'completed').last.source
     subscription.credit_card
   end
