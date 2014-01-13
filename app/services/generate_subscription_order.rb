@@ -37,12 +37,8 @@ class GenerateSubscriptionOrder
       next_order = create_next_order_with_payment
 
       return true
-    rescue => e
-      ::SubscriptionLog.create(order_id: next_order.id, reason: e.to_s)
-      subscription.failure_count += 1
-      subscription.save
-      puts "#{e}"
-      puts "Error Creating Order for #{subscription.id}. #{e}"
+    rescue => error
+      log_failure_and_continue(error)
     end
   end
 
@@ -100,6 +96,12 @@ class GenerateSubscriptionOrder
   end
 
   private
+
+  def log_failure_and_continue(error)
+    ::SubscriptionLog.create(order_id: next_order.id, reason: error.to_s)
+    subscription.failure_count += 1
+    subscription.save
+  end
 
   def credit_card
     @create_card ||= subscription.credit_card || store_credit_card_for_subscription(subscription)
