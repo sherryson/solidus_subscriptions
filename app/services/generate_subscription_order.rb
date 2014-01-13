@@ -1,4 +1,5 @@
 class GenerateSubscriptionOrder
+  attr_reader :subscription
 
   class PaymentError < StandardError
   end
@@ -21,74 +22,81 @@ class GenerateSubscriptionOrder
   end
 
   def transition_order_from_payment_to_confirm!(order)
-    order.next!
+    order.next! unless order.completed?
   end
 
   def transition_order_from_confirm_to_complete!(order, sub)
-    order.next!
+    order.next! unless order.completed?
   rescue StateMachine::InvalidTransition
     ::NotificationMailer.delay.subscription_payment_failure(order, sub.retry_count)
     raise PaymentError
   end
 
   def call
-    sub = @subscription
     begin
-      previous_order = sub.last_order
-      next_order = sub.orders.build({
-        user: previous_order.user,
-        email: previous_order.email,
-        repeat_order: true,
+      next_order = create_next_order_with_payment(subscription)
 
-        bill_address: sub.bill_address,
-        ship_address: sub.ship_address
-
-      }, without_protection: true)
-
-      next_order.save!
-
-      order_populator = ::Spree::OrderPopulator.new(next_order, ::Spree::Config[:currency])
-
-      variants = previous_order.line_items.inject({}) do |hash, li|
-        if li.variant.product.subscribable_variants.include? li.variant
-          hash[li.variant.id] = li.quantity
-        end
-
-        hash
-      end
-
-      order_populator.populate({variants: variants})
-
-      transition_order_from_cart_to_address!(next_order)
-      transition_order_from_address_to_delivery!(next_order)
-      transition_order_from_delivery_to_payment!(next_order)
-
-
-      cc = find_or_create_credit_card(sub)
-      ensure_profile_exists_for_payment_source(cc, previous_order)
-      ensure_credit_card_has_expiration_month(cc)
-
-      next_order.payments.create!({
-        payment_method: previous_order.payments.last.payment_method,
-        source: cc,
-        amount: next_order.update_totals,
-        state: 'checkout'
-      }, without_protection: true)
-
-      next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
       transition_order_from_payment_to_confirm!(next_order)
-      transition_order_from_confirm_to_complete!(next_order, sub)
-      sub.decrement_prepaid_duration!
+      transition_order_from_confirm_to_complete!(next_order, subscription)
 
-      puts "Order #{next_order.number} created for subscription ##{sub.id}."
+      subscription.decrement_prepaid_duration!
+
+      puts "Order #{next_order.number} created for subscription ##{subscription.id}."
       return true
     rescue => e
       ::SubscriptionLog.create(order_id: next_order.id, reason: e.to_s)
-      sub.failure_count += 1
-      sub.save
+      subscription.failure_count += 1
+      subscription.save
       puts "#{e}"
-      puts "Error Creating Order for #{sub.id}. #{e}"
+      puts "Error Creating Order for #{subscription.id}. #{e}"
     end
+  end
+
+  def create_next_order_with_payment(subscription)
+    previous_order = subscription.last_order
+
+    next_order = subscription.orders.build({
+      user: previous_order.user,
+      email: previous_order.email,
+      repeat_order: true,
+
+      bill_address: subscription.bill_address,
+      ship_address: subscription.ship_address
+
+    }, without_protection: true)
+
+    next_order.save!
+
+    order_populator = ::Spree::OrderPopulator.new(next_order, ::Spree::Config[:currency])
+
+    variants = previous_order.line_items.inject({}) do |hash, li|
+      if li.variant.product.subscribable_variants.include? li.variant
+        hash[li.variant.id] = li.quantity
+      end
+
+      hash
+    end
+
+    order_populator.populate({variants: variants})
+
+    transition_order_from_cart_to_address!(next_order)
+    transition_order_from_address_to_delivery!(next_order)
+    transition_order_from_delivery_to_payment!(next_order)
+
+    cc = find_or_create_credit_card(subscription)
+    ensure_profile_exists_for_payment_source(cc, previous_order)
+    ensure_credit_card_has_expiration_month(cc)
+
+    next_order.payments.create!({
+      payment_method: previous_order.payments.last.payment_method,
+      source: cc,
+      amount: next_order.update_totals,
+      state: 'checkout'
+    }, without_protection: true)
+
+    next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
+
+    next_order
   end
 
   def ensure_profile_exists_for_payment_source(cc, previous_order)

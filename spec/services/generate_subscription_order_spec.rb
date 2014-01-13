@@ -27,7 +27,6 @@ describe GenerateSubscriptionOrder do
 
   context "prepaid" do
     it 'should reduce the remaining duration when processed' do
-      pending
       create_completed_prepaid_subscription_order
       subscription = @order.subscription
       Spree::Order.complete.count == 1
