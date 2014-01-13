@@ -36,7 +36,6 @@ class GenerateSubscriptionOrder
     begin
       next_order = create_next_order_with_payment
 
-      puts "Order #{next_order.number} created for subscription ##{subscription.id}."
       return true
     rescue => e
       ::SubscriptionLog.create(order_id: next_order.id, reason: e.to_s)
