@@ -98,6 +98,10 @@ module Spree
       5 - failure_count
     end
 
+    def increment_failure_count
+      update_column(:failure_count, failure_count + 1)
+    end
+
     def reset_failure_count
       update_column(:failure_count, 0)
     end

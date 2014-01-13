@@ -61,8 +61,7 @@ class GenerateSubscriptionOrder
 
   def log_failure_and_continue(error)
     ::SubscriptionLog.create(order_id: next_order.id, reason: error.to_s)
-    subscription.failure_count += 1
-    subscription.save
+    subscription.increment_failure_count
   end
 
   def credit_card
