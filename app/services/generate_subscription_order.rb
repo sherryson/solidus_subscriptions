@@ -66,8 +66,7 @@ class GenerateSubscriptionOrder
   end
 
   def store_credit_card_for_subscription
-    subscription.credit_card = subscription.last_order.payments.where('amount > 0').where(state: 'completed').last.source
-    subscription.credit_card
+    subscription.credit_card = subscription.last_order_credit_card
   end
 
   private

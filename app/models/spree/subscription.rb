@@ -50,6 +50,10 @@ module Spree
       orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
     end
 
+    def last_order_credit_card
+      last_order.payments.where('amount > 0').where(state: 'completed').last.source
+    end
+
     def next_order
       next_order = NullObject.new
 
