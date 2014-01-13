@@ -42,19 +42,7 @@ class GenerateSubscriptionOrder
   end
 
   def ensure_profile_exists_for_payment_source(previous_order)
-    if credit_card.gateway_payment_profile_id.nil? && previous_order.payments.last.payment_method.type != "Spree::Gateway::Stripe"
-
-      authnet_gateway = ::ActiveMerchant::Billing::AuthorizeNetCimGateway.new(login: ENV['AUTHORIZE_NET_LOGIN'],
-                                                                              password: ENV['AUTHORIZE_NET_TRANSACTION_KEY'])
-
-      customer_profile = authnet_gateway.get_customer_profile(customer_profile_id: credit_card.gateway_customer_profile_id)
-
-      if customer_profile.success?
-        payment_profile  = customer_profile.params['profile']['payment_profiles'] if customer_profile.params
-        puts payment_profile['customer_payment_profile_id']
-        credit_card.update_column(:gateway_payment_profile_id, payment_profile['customer_payment_profile_id'])
-      end
-    end
+    GatewayCustomerProfile.new(credit_card, previous_order)
   end
 
   def ensure_credit_card_has_expiration_month
