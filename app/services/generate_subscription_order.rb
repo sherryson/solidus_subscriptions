@@ -34,12 +34,7 @@ class GenerateSubscriptionOrder
 
   def call
     begin
-      next_order = create_next_order_with_payment(subscription)
-
-      transition_order_from_payment_to_confirm!(next_order)
-      transition_order_from_confirm_to_complete!(next_order, subscription)
-
-      subscription.decrement_prepaid_duration!
+      next_order = create_next_order_with_payment
 
       puts "Order #{next_order.number} created for subscription ##{subscription.id}."
       return true
@@ -52,7 +47,7 @@ class GenerateSubscriptionOrder
     end
   end
 
-  def create_next_order_with_payment(subscription)
+  def create_next_order_with_payment
     previous_order = subscription.last_order
 
     next_order = subscription.create_next_order!
@@ -85,6 +80,11 @@ class GenerateSubscriptionOrder
     }, without_protection: true)
 
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
+
+    transition_order_from_payment_to_confirm!(next_order)
+    transition_order_from_confirm_to_complete!(next_order, subscription)
+
+    subscription.decrement_prepaid_duration!
 
     next_order
   end
