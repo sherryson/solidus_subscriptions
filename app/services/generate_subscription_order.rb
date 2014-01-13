@@ -1,4 +1,5 @@
 class GenerateSubscriptionOrder
+  include SubscriptionTransitions
   attr_reader :subscription
 
   class PaymentError < StandardError
@@ -8,35 +9,9 @@ class GenerateSubscriptionOrder
     @subscription = subscription
   end
 
-  def transition_order_from_cart_to_address!(order)
-    order.next!
-    order.shipping_method = order.rate_hash.first.shipping_method
-  end
-
-  def transition_order_from_address_to_delivery!(order)
-    order.next!
-  end
-
-  def transition_order_from_delivery_to_payment!(order)
-    order.next!
-  end
-
-  def transition_order_from_payment_to_confirm!(order)
-    order.next! unless order.completed?
-  end
-
-  def transition_order_from_confirm_to_complete!(order)
-    order.next! unless order.completed?
-  rescue StateMachine::InvalidTransition
-    ::NotificationMailer.delay.subscription_payment_failure(order, subscription.retry_count)
-    raise PaymentError
-  end
-
   def call
     begin
-      next_order = create_next_order_with_payment
-
-      return true
+      create_next_order_with_payment
     rescue => error
       log_failure_and_continue(error)
     end
@@ -63,7 +38,7 @@ class GenerateSubscriptionOrder
 
     subscription.decrement_prepaid_duration!
 
-    next_order
+    true
   end
 
   def ensure_profile_exists_for_payment_source(previous_order)
