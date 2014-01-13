@@ -10,7 +10,8 @@
        <col style="width: 18%;">
        <col style="width: 18%;">
        <col style="width: 18%;">
-       <col style="width: 18%;">
+       <col style="width: 9%;">
+       <col style="width: 9%;">
        <col style="width: 5%;">
     </colgroup>
     <thead>
@@ -22,6 +23,7 @@
         <th>Last Order</th>
         <th>Next Shipment Date</th>
         <th>Resume On</th>
+        <th>Prepaid</th>
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
@@ -55,6 +57,7 @@
             end
           -%>
         </td>
+        <td><%= subscription.prepaid? %></td>
       </tr>
     <% end %>
     </tbody>

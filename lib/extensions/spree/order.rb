@@ -92,6 +92,8 @@ module SpreeSubscriptions
           line_items.inject({}) do |hash, li|
             if li.variant.product.subscribable_variants.include? li.variant
               hash[li.variant.id] = li.quantity
+            elsif li.variant.product.prepayable_variants.include? li.variant
+              hash[li.variant.id] = li.quantity
             end
 
             hash
