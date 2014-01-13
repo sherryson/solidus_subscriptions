@@ -71,12 +71,7 @@ class GenerateSubscriptionOrder
     ensure_profile_exists_for_payment_source(cc, previous_order)
     ensure_credit_card_has_expiration_month(cc)
 
-    next_order.payments.create!({
-      payment_method: previous_order.payments.last.payment_method,
-      source: cc,
-      amount: next_order.update_totals,
-      state: 'checkout'
-    }, without_protection: true)
+    next_order.create_payment!(previous_order.payment_method, cc)
 
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
 
