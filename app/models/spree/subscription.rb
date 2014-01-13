@@ -23,6 +23,11 @@ module Spree
 
         where(id: subs.collect(&:id))
       end
+
+      def prepaid
+        where('duration > 1')
+      end
+
     end
 
     def products
