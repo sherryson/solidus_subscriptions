@@ -15,7 +15,7 @@ module SubscriptionTransitions
   def transition_order_from_payment_to_confirm!(order)
     if subscription.prepaid?
       order.reload
-      order.adjustments.create!(amount: order.total*-1, label: "Prepaid Subscription: #{subscription.remaining_shipments} shipment(s) remain for this subscription")
+      order.adjustments.create!(amount: order.total*-1, label: "Prepaid Subscription (#{subscription.remaining_shipments} shipment(s) remain for this subscription)")
     end
     order.next! unless order.completed?
   end

@@ -10,6 +10,7 @@ class GenerateSubscriptionOrder
   end
 
   def call
+    return false unless @subscription.eligible_for_processing?
     begin
       create_next_order_with_payment
     rescue => error

@@ -42,6 +42,10 @@ module Spree
       last_order.completed_at.advance(weeks: interval) if last_order
     end
 
+    def active?
+      self.state == 'active'
+    end
+
     def cancelled?
       state == 'cancelled'
     end
@@ -93,6 +97,10 @@ module Spree
 
     def prepaid?
       duration && duration > 0
+    end
+
+    def eligible_for_processing?
+      active? && (!prepaid? || duration > 1)
     end
 
     def prepaid_balance_remaining?
