@@ -13,10 +13,15 @@ module SubscriptionTransitions
   end
 
   def transition_order_from_payment_to_confirm!(order)
+    if subscription.prepaid?
+      order.reload
+      order.adjustments.create!(amount: order.total*-1, label: 'Prepaid subscription: reorder')
+    end
     order.next! unless order.completed?
   end
 
   def transition_order_from_confirm_to_complete!(order)
+    order.payments.clear if subscription.prepaid?
     order.next! unless order.completed?
   rescue StateMachine::InvalidTransition
     ::NotificationMailer.delay.subscription_payment_failure(order, subscription.retry_count)

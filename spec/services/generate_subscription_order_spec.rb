@@ -34,6 +34,8 @@ describe GenerateSubscriptionOrder do
       GenerateSubscriptionOrder.new(subscription).call
       Spree::Order.complete.count == 2
       @order.subscription.duration.should == 5
+      @order.total.should be > 0
+      @order.subscription.orders.first.total.to_f.should == 0.0
     end
   end
 
