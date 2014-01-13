@@ -36,7 +36,7 @@ class GatewayCustomerProfile
   end
 
   def customer_profile
-    @customer_profile = authnet_gateway.get_customer_profile(
+    @customer_profile ||= authnet_gateway.get_customer_profile(
       customer_profile_id: credit_card.gateway_customer_profile_id)
   end
 end
