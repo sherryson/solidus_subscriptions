@@ -62,6 +62,18 @@ module Spree
       next_order
     end
 
+    def create_next_order!
+      orders.create!({
+        user: last_order.user,
+        email: last_order.email,
+        repeat_order: true,
+
+        bill_address: bill_address,
+        ship_address: ship_address
+
+      }, without_protection: true)
+    end
+
     def ship_address
       ::Spree::Address.find(ship_address_id) || last_order.ship_address
     end

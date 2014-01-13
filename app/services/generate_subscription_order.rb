@@ -55,17 +55,7 @@ class GenerateSubscriptionOrder
   def create_next_order_with_payment(subscription)
     previous_order = subscription.last_order
 
-    next_order = subscription.orders.build({
-      user: previous_order.user,
-      email: previous_order.email,
-      repeat_order: true,
-
-      bill_address: subscription.bill_address,
-      ship_address: subscription.ship_address
-
-    }, without_protection: true)
-
-    next_order.save!
+    next_order = subscription.create_next_order!
 
     order_populator = ::Spree::OrderPopulator.new(next_order, ::Spree::Config[:currency])
 
