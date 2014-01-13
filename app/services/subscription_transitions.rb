@@ -22,4 +22,15 @@ module SubscriptionTransitions
     ::NotificationMailer.delay.subscription_payment_failure(order, subscription.retry_count)
     raise PaymentError
   end
+
+  def transition_order_from_payment_to_complete!(order)
+    transition_order_from_payment_to_confirm!(next_order)
+    transition_order_from_confirm_to_complete!(next_order)
+  end
+
+  def transition_order_from_cart_to_payment!(order)
+    transition_order_from_cart_to_address!(next_order)
+    transition_order_from_address_to_delivery!(next_order)
+    transition_order_from_delivery_to_payment!(next_order)
+  end
 end

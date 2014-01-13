@@ -19,22 +19,17 @@ class GenerateSubscriptionOrder
 
   def create_next_order_with_payment
     previous_order = subscription.last_order
-
     order_populator.populate({variants: previous_order.line_items_variants})
 
-    transition_order_from_cart_to_address!(next_order)
-    transition_order_from_address_to_delivery!(next_order)
-    transition_order_from_delivery_to_payment!(next_order)
+    transition_order_from_cart_to_payment!(next_order)
 
     ensure_profile_exists_for_payment_source(previous_order)
     ensure_credit_card_has_expiration_month
 
     next_order.create_payment!(previous_order.payment_method, credit_card)
-
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
 
-    transition_order_from_payment_to_confirm!(next_order)
-    transition_order_from_confirm_to_complete!(next_order)
+    transition_order_from_payment_to_complete!(next_order)
 
     subscription.decrement_prepaid_duration!
 
