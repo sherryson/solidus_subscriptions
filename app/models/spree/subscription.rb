@@ -115,5 +115,10 @@ module Spree
       return unless prepaid?
       update_column(:duration, duration-1)
     end
+
+    def remaining_shipments
+      duration - 2
+    end
+
   end
 end
