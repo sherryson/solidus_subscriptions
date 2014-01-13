@@ -88,6 +88,16 @@ module SpreeSubscriptions
           line_items.map { |li| li.variant.product }.select { |p| p.subscribable? }
         end
 
+        def line_items_variants
+          line_items.inject({}) do |hash, li|
+            if li.variant.product.subscribable_variants.include? li.variant
+              hash[li.variant.id] = li.quantity
+            end
+
+            hash
+          end
+        end
+
         def credit_card_id_if_available
           credit_cards.present? ? credit_cards.last.id : ''
         end
