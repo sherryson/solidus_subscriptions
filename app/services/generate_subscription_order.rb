@@ -61,7 +61,7 @@ class GenerateSubscriptionOrder
   end
 
   def credit_card
-    @credit_card ||= subscription.credit_card || store_credit_card_for_subscription(subscription)
+    @credit_card ||= subscription.credit_card || store_credit_card_for_subscription
   end
 
   def order_populator
