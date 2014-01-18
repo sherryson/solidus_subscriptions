@@ -1,4 +1,8 @@
 module SubscriptionTransitions
+
+  class PaymentError < StandardError
+  end
+
   def transition_order_from_cart_to_address!(order)
     order.next!
     order.shipping_method = order.rate_hash.first.shipping_method
