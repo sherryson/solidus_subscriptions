@@ -27,7 +27,7 @@ class GenerateSubscriptionOrder
     ensure_profile_exists_for_payment_source(previous_order)
     ensure_credit_card_has_expiration_month
 
-    next_order.create_payment!(previous_order.payment_method, credit_card)
+    next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
 
     transition_order_from_payment_to_complete!(next_order)
@@ -39,6 +39,16 @@ class GenerateSubscriptionOrder
 
   def ensure_profile_exists_for_payment_source(previous_order)
     GatewayCustomerProfile.new(credit_card, previous_order)
+  end
+
+  def payment_gateway_for_card(credit_card)
+    @eligible_gateways ||= ::Spree::PaymentMethod.where(environment: Rails.env)
+    if credit_card.payment_provider == 'Stripe'
+      gateway = @eligible_gateways.where(type: 'Spree::Gateway::StripeGateway').first
+    elsif credit_card.payment_provider == 'Auth.net'
+      gateway = @eligible_gateways.where(type: 'Spree::Gateway::AuthorizeNetCim').first
+    end
+    gateway.present? ? gateway : @eligible_gateways.first
   end
 
   def ensure_credit_card_has_expiration_month

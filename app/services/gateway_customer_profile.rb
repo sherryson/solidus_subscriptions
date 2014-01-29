@@ -10,7 +10,7 @@ class GatewayCustomerProfile
   private
 
   def fetch_customer_profile
-    if missing_gateway_profile_id? && payment_gateway_is_stripe?
+    if missing_gateway_profile_id? && !payment_gateway_is_stripe?
       if customer_profile.success?
         payment_profile = customer_profile.params['profile']['payment_profiles'] if customer_profile.params
         credit_card.update_column(:gateway_payment_profile_id, payment_profile['customer_payment_profile_id'])
@@ -25,7 +25,7 @@ class GatewayCustomerProfile
   end
 
   def payment_gateway_is_stripe?
-    order.payments.last.payment_method.type != "Spree::Gateway::Stripe"
+    order.payments.last.payment_method.type == "Spree::Gateway::Stripe"
   end
 
   def authnet_gateway 
