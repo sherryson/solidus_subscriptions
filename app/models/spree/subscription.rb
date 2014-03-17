@@ -52,7 +52,9 @@ module Spree
 
     def cancel
       update_attribute(:state, 'cancelled')
+      update_attribute(:cancelled_at, Time.now)
     end
+
     alias_method :cancel!, :cancel
 
     def last_order
