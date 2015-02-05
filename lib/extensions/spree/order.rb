@@ -8,7 +8,7 @@ module SpreeSubscriptions
           alias_method_chain :finalize!, :create_subscription
 
           belongs_to :subscription, class_name: 'Spree::Subscription'
-          attr_accessible :subscription_id
+          # attr_accessible :subscription_id
           register_update_hook :reset_failure_count_for_subscription_orders
         end
 

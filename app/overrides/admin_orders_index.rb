@@ -6,5 +6,5 @@ Deface::Override.new(:virtual_path => 'spree/admin/orders/index',
 Deface::Override.new(:virtual_path => 'spree/admin/orders/index',
                      :name         => 'subscription_to_table',
                      :insert_before => "[data-hook='admin_orders_index_row_actions']",
-                     :text         => "<td><%= order.has_subscription? %></td>")
+                     :text         => "<td><%= order.subscribable? %></td>")
 
