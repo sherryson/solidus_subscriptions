@@ -32,7 +32,13 @@
       <tr data-hook="admin_subscriptions_index_rows" class="<%= cycle('odd', 'even') %>">
         <td><%= subscription.id %></td>
         <td><%= subscription.state %></td>
-        <td><%= subscription.products.collect(&:name).to_sentence  %>
+        <td>
+            <% subscription.last_order.line_items.each do |line_item|  %>
+            <%= line_item.variant.product.name %> <%= "(#{line_item.variant.options_text})" unless line_item.variant.option_values.empty? %>
+            <br/>
+            Qty: <%= line_item.quantity %>
+            <% end %>
+        </td>        
         <td>Every <%= pluralize(subscription.interval, 'month') %></td>
         <td>
           <%= link_to subscription.last_order.number, admin_order_path(subscription.last_order) %>

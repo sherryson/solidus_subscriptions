@@ -18,7 +18,7 @@ module Spree
         subs = active.select do |sub|
           sub.last_order &&
             !sub.prepaid? &&
-            sub.last_order.completed_at < sub.interval.weeks.ago
+            sub.last_order.completed_at < sub.interval.months.ago
         end
 
         where(id: subs.collect(&:id))
@@ -39,7 +39,7 @@ module Spree
     end
 
     def next_shipment_date
-      last_order.completed_at.advance(weeks: interval) if last_order
+      last_order.completed_at.advance(months: interval) if last_order
     end
 
     def active?
