@@ -115,12 +115,12 @@ module SpreeSubscriptions
         end
 
         def create_payment!(payment_method, cc)
-          payments.create!({
+          payments.create!(
             payment_method: payment_method,
             source: cc,
             amount: update_totals,
             state: 'checkout'
-          }, without_protection: true)
+          )
         end
       end
     end
