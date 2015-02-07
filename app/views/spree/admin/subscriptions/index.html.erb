@@ -23,7 +23,7 @@
         <th>Last Order</th>
         <th>Next Shipment Date</th>
         <th>Resume On</th>
-        <th>Prepaid</th>
+        <th>Prepaid</th>        
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
@@ -33,7 +33,7 @@
         <td><%= subscription.id %></td>
         <td><%= subscription.state %></td>
         <td><%= subscription.products.collect(&:name).to_sentence  %>
-        <td>Every <%= subscription.interval %> weeks</td>
+        <td>Every <%= pluralize(subscription.interval, 'month') %></td>
         <td>
           <%= link_to subscription.last_order.number, admin_order_path(subscription.last_order) %>
           <br />
@@ -42,22 +42,22 @@
         <td>
           <%=
             unless subscription.cancelled?
-              l(subscription.next_shipment_date, format: :long)
+              l(subscription.next_shipment_date, format: :long) if subscription.next_shipment_date
             else
               "N/A"
             end
           -%>
         </td>
-        <td><%= l(subscription.resume_on, format: :long) %></td>
+        <td><%= l(subscription.resume_on, format: :long) if subscription.resume_on %></td>
+        <td><%= subscription.prepaid? %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
             unless subscription.cancelled?
-              link_to_with_icon 'icon-cancel', 'Cancel', cancel_admin_subscription_path(subscription),
+              link_to_with_icon 'cancel', 'Cancel', cancel_admin_subscription_path(subscription),
                 no_text: true, data: { confirm: t(:are_you_sure), action: 'remove' }
             end
           -%>
         </td>
-        <td><%= subscription.prepaid? %></td>
       </tr>
     <% end %>
     </tbody>

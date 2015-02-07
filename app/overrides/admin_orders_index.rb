@@ -6,4 +6,4 @@ Deface::Override.new(:virtual_path => 'spree/admin/orders/index',
 Deface::Override.new(:virtual_path => 'spree/admin/orders/index',
                      :name         => 'subscription_to_table',
                      :insert_before => "[data-hook='admin_orders_index_row_actions']",
-                     :text         => "<td><%= pluralize order.subscription.interval, 'month' %></td>")
+                     :text         => "<td><%= pluralize(order.subscription.interval, 'month') if order.subscription %></td>")
