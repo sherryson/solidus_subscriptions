@@ -19,8 +19,8 @@ module SpreeSubscriptions
 
         def create_subscription_if_eligible
           begin
-            return unless subscribable?
-            return if repeat_order?
+            # return unless subscribable?
+            # return if repeat_order?
 
             attrs = {
               ship_address_id: ship_address.id,
@@ -29,7 +29,7 @@ module SpreeSubscriptions
               state: 'active',
               interval: subscription_interval,
               duration: subscription_duration,
-              prepaid_amount: subscription_prepaid_amount,
+              # prepaid_amount: subscription_prepaid_amount,
               credit_card_id: credit_card_id_if_available
             }
 

@@ -20,6 +20,7 @@ class GenerateSubscriptionOrder
 
   def create_next_order_with_payment
     previous_order = subscription.last_order
+    # create a new order and populate the next order with the same line items
     order_populator.populate({variants: previous_order.line_items_variants})
 
     transition_order_from_cart_to_payment!(next_order)
