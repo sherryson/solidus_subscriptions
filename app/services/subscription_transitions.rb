@@ -5,7 +5,7 @@ module SubscriptionTransitions
 
   def transition_order_from_cart_to_address!(order)
     order.next!
-    order.shipments << order.shipments.last
+    order.create_proposed_shipments
   end
 
   def transition_order_from_address_to_delivery!(order)
