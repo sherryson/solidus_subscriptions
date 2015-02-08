@@ -10,6 +10,8 @@ module SpreeSubscriptions
           belongs_to :subscription, class_name: 'Spree::Subscription'
           # attr_accessible :subscription_id
           register_update_hook :reset_failure_count_for_subscription_orders
+
+          attr_accessor :subscription_interval, :subscription_duration
         end
 
         def finalize_with_create_subscription!
@@ -47,13 +49,13 @@ module SpreeSubscriptions
           !repeat_order? && prepayable_option_values.any?
         end
 
-        def subscription_interval
-          subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
-        end
+        # def subscription_interval
+        #   subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
+        # end
 
-        def subscription_duration
-          prepayable_option_values.present? ? prepayable_option_values.first.name : 0
-        end
+        # def subscription_duration
+        #   prepayable_option_values.present? ? prepayable_option_values.first.name : 0
+        # end
 
         def subscription_prepaid_amount
           prepayable_option_values.present? ? total : 0
