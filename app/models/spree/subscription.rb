@@ -3,7 +3,6 @@ module Spree
     has_many :orders, -> { order 'completed_at desc' }
     belongs_to :user
     belongs_to :credit_card
-    # attr_accessible :ship_address_id, :state, :user_id, :interval, :credit_card_id, :resume_on, :duration, :prepaid_amount, :bill_address_id
 
     validates_presence_of :ship_address_id
     validates_presence_of :bill_address_id
@@ -22,16 +21,6 @@ module Spree
         where('interval > 0')
       end
 
-      # def ready_for_next_order
-      #   subs = active.select do |sub|
-      #     sub.last_order &&
-      #       !sub.prepaid? &&
-      #       sub.last_order.completed_at < sub.interval.weeks.ago
-      #   end
-
-      #   where(id: subs.collect(&:id))
-      # end
-
       def prepaid
         where('duration > 1')
       end
@@ -44,7 +33,7 @@ module Spree
         subs = active.with_interval.good_standing.select do |sub|
           last_order = sub.last_order
           next unless last_order
-          last_order.completed_at.at_beginning_of_day < sub.interval.weeks.ago
+          last_order.completed_at.at_beginning_of_day < sub.interval.days.ago
         end
 
         where(id: subs.collect(&:id))
@@ -61,7 +50,7 @@ module Spree
     end
 
     def next_shipment_date
-      last_order.completed_at.advance(weeks: interval) if last_order
+      last_order.completed_at.advance(days: interval) if last_order
     end
 
     def is_next_shipment_date_today?
