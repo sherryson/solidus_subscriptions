@@ -23,7 +23,6 @@
         <th>Last Order</th>
         <th>Next Shipment Date</th>
         <th>Resume On</th>
-        <th>Prepaid</th>        
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
@@ -41,7 +40,7 @@
         </td>        
         <td>Every <%= pluralize(subscription.interval, 'month') %></td>
         <td>
-          <%= link_to subscription.last_order.number, admin_order_path(subscription.last_order) %>
+          <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order) %>
           <br />
           <%= l(subscription.last_order.created_at, format: :long)  %>
         </td>
@@ -54,8 +53,7 @@
             end
           -%>
         </td>
-        <td><%= l(subscription.resume_on, format: :long) if subscription.resume_on %></td>
-        <td><%= subscription.prepaid? %></td>
+        <td><%= l(subscription.resume_on, format: :long) if subscription.resume_on %></td>        
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
             unless subscription.cancelled?

@@ -5,7 +5,7 @@ module SpreeSubscriptions
         extend ActiveSupport::Concern
 
         included do
-          has_many :subscriptions
+          has_many :subscriptions, -> { order 'created_at desc' }
         end
 
         def subscription_orders
