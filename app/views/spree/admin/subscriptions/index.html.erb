@@ -47,9 +47,9 @@
         <td>
           <%=
             unless subscription.cancelled?
-              l(subscription.next_shipment_date, format: :long) if subscription.next_shipment_date
+              subscription.next_shipment_date.strftime '%a, %b %d, %Y' if subscription.next_shipment_date
             else
-              "N/A"
+              'N/A'
             end
           -%>
         </td>
