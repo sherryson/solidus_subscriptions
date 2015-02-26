@@ -14,18 +14,40 @@ module Spree
         where(state: 'active')
       end
 
-      def ready_for_next_order
-        subs = active.select do |sub|
-          sub.last_order &&
-            !sub.prepaid? &&
-            sub.last_order.completed_at < sub.interval.months.ago
-        end
-
-        where(id: subs.collect(&:id))
+      def paused
+        where(state: 'paused')
       end
+
+      def with_interval
+        where('interval > 0')
+      end
+
+      # def ready_for_next_order
+      #   subs = active.select do |sub|
+      #     sub.last_order &&
+      #       !sub.prepaid? &&
+      #       sub.last_order.completed_at < sub.interval.weeks.ago
+      #   end
+
+      #   where(id: subs.collect(&:id))
+      # end
 
       def prepaid
         where('duration > 1')
+      end
+
+      def good_standing
+        where('failure_count < 6')
+      end
+
+      def ready_for_next_order
+        subs = active.with_interval.good_standing.select do |sub|
+          last_order = sub.last_order
+          next unless last_order
+          last_order.completed_at.at_beginning_of_day < sub.interval.weeks.ago
+        end
+
+        where(id: subs.collect(&:id))
       end
 
     end
@@ -39,7 +61,11 @@ module Spree
     end
 
     def next_shipment_date
-      last_order.completed_at.advance(months: interval) if last_order
+      last_order.completed_at.advance(weeks: interval) if last_order
+    end
+
+    def is_next_shipment_date_today?
+      next_shipment_date.to_date == Date.today
     end
 
     def active?
