@@ -33,6 +33,7 @@ module Spree
         subs = active.with_interval.good_standing.select do |sub|
           last_order = sub.last_order
           next unless last_order
+          next unless skip_next_date_at <= next_shipment_date
           last_order.completed_at.at_beginning_of_day < sub.interval.days.ago
         end
 
@@ -50,7 +51,11 @@ module Spree
     end
 
     def next_shipment_date
-      last_order.completed_at.advance(days: interval) if last_order
+      if skip_order_at
+        skip_order_at.advance(days: interval)
+      elsif last_order
+        last_order.completed_at.advance(days: interval)
+      end
     end
 
     def is_next_shipment_date_today?
@@ -72,7 +77,7 @@ module Spree
 
     alias_method :cancel!, :cancel
 
-    def last_order
+    def last_order      
       orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
     end
 
@@ -145,6 +150,22 @@ module Spree
 
     def remaining_shipments
       duration - 2
+    end
+
+    def skip_next_order
+      self.skip_order_at = last_order.completed_at.advance(days: interval)
+      save
+    end
+
+    def undo_skip_next_order
+      self.skip_order_at = nil
+      save
+    end
+
+    def as_json(options = { })
+      super((options || { }).merge({
+          :methods => [:next_shipment_date]
+      }))
     end
 
   end
