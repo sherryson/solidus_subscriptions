@@ -35,9 +35,20 @@ module SpreeSubscriptions
               credit_card_id: credit_card_id_if_available
             }
 
-            self.create_subscription(attrs)
+            subscription = self.create_subscription(attrs)
+
+            # create subscription items
+            self.line_items.each do |line_item|
+              ::Spree::SubscriptionItem.create!(
+                subscription: subscription, 
+                variant: line_item.variant,
+                quantity: line_item.quantity
+              )
+            end
           rescue => e
             # TODO: Hook into error reporting
+            Rails.logger.error e.message
+            Rails.logger.error e.backtrace
           end
         end
 
