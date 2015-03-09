@@ -1,6 +1,7 @@
 module Spree
   class Subscription < ActiveRecord::Base
     has_many :orders, -> { order 'completed_at desc' }
+    has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
     belongs_to :user
     belongs_to :credit_card
 
