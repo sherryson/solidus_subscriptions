@@ -34,7 +34,7 @@ module Spree
         subs = active.with_interval.good_standing.select do |sub|
           last_order = sub.last_order
           next unless last_order
-          next unless skip_next_date_at <= next_shipment_date
+          next unless self.skip_order_at <= next_shipment_date
           last_order.completed_at.at_beginning_of_day < sub.interval.days.ago
         end
 
