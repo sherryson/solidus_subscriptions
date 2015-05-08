@@ -78,8 +78,8 @@ module Spree
 
     alias_method :cancel!, :cancel
 
-    def last_order      
-      orders.complete.where(payment_state: 'paid').reorder("completed_at DESC").first
+    def last_order
+      orders.complete.reorder("completed_at desc").first
     end
 
     def last_order_credit_card
@@ -104,7 +104,7 @@ module Spree
         email: last_order.email,
         repeat_order: true,
         bill_address: bill_address,
-        ship_address: ship_address      
+        ship_address: ship_address
       )
     end
 
