@@ -2,28 +2,41 @@ module Spree
   module Api
     class SubscriptionsController < Spree::Api::BaseController
       before_action :find_subscription
+      before_action :authenticate_user
 
       def skip_next_order
-        @subscription.skip_next_order    
-        
-        render json: @subscription.to_json        
-      end      
+        @subscription.skip_next_order
+
+        render json: @subscription.to_json
+      end
 
       def undo_skip_next_order
-        @subscription.undo_skip_next_order    
-        
+        @subscription.undo_skip_next_order
+
         render json: @subscription.to_json
       end
 
       def show
         render json: @subscription.to_json
-      end    
+      end
 
       def update
-        # authorize! :update, @order, order_token
         result = @subscription.update_attributes(subscription_params)
 
-        if result          
+        if result
+          render json: @subscription.to_json
+        else
+          invalid_resource!(@subscription)
+        end
+      end
+
+      def update_address
+        result = @subscription.update_attributes(subscription_params)
+
+        if result
+          # update the corresponding last order
+          update_last_order_address
+
           render json: @subscription.to_json
         else
           invalid_resource!(@osubscriptionrder)
@@ -31,6 +44,13 @@ module Spree
       end
 
       private
+
+      def update_last_order_address
+        last_order = @subscription.last_order
+        last_order.ship_address_id = @subscription.ship_address_id
+        last_order.bill_address_id = @subscription.bill_address_id
+        last_order.save
+      end
 
       def find_subscription
         @subscription = Spree::Subscription.find(params[:id])
@@ -42,10 +62,10 @@ module Spree
 
       def permitted_subscription_attributes
         [
-          :interval, :billing_address_id, :shipment_address_id
+          :interval, :bill_address_id, :ship_address_id
         ]
       end
-        
+
     end
   end
 end
