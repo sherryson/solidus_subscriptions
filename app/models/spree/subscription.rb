@@ -59,10 +59,6 @@ module Spree
       end
     end
 
-    def is_next_shipment_date_today?
-      next_shipment_date.to_date == Date.today
-    end
-
     def active?
       self.state == 'active'
     end
