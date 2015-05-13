@@ -34,7 +34,7 @@ module Spree
         subscriptions = active.with_interval.good_standing.select do |subscription|
           last_order = subscription.last_order
           next unless last_order
-          next unless subscription.skip_order_at <= subscription.next_shipment_date
+          next unless subscription.skip_order_at <= subscription.next_shipment_date if subscription.skip_order_at
           last_order.completed_at.at_beginning_of_day < subscription.interval.days.ago
         end
 
