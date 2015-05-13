@@ -31,14 +31,14 @@ module Spree
       end
 
       def ready_for_next_order
-        subs = active.with_interval.good_standing.select do |sub|
-          last_order = sub.last_order
+        subscriptions = active.with_interval.good_standing.select do |subscription|
+          last_order = subscription.last_order
           next unless last_order
-          next unless self.skip_order_at <= next_shipment_date
-          last_order.completed_at.at_beginning_of_day < sub.interval.days.ago
+          next unless subscription.skip_order_at <= next_shipment_date
+          last_order.completed_at.at_beginning_of_day < subscription.interval.days.ago
         end
 
-        where(id: subs.collect(&:id))
+        where(id: subscriptions.collect(&:id))
       end
 
     end
