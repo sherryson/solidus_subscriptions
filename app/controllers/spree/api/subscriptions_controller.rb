@@ -62,7 +62,7 @@ module Spree
 
       def permitted_subscription_attributes
         [
-          :interval, :bill_address_id, :ship_address_id
+          :interval, :bill_address_id, :ship_address_id, :credit_card_id
         ]
       end
 
