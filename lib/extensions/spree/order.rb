@@ -11,7 +11,7 @@ module SpreeSubscriptions
           # attr_accessible :subscription_id
           register_update_hook :reset_failure_count_for_subscription_orders
 
-          attr_accessor :subscription_interval, :subscription_duration
+          attr_accessor :subscription_duration
         end
 
         def finalize_with_create_subscription!
@@ -40,7 +40,7 @@ module SpreeSubscriptions
             # create subscription items
             self.line_items.each do |line_item|
               ::Spree::SubscriptionItem.create!(
-                subscription: subscription, 
+                subscription: subscription,
                 variant: line_item.variant,
                 quantity: line_item.quantity
               )
