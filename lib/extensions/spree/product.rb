@@ -2,7 +2,12 @@ module SpreeSubscriptions
   module Extensions
     module Spree
       module Product
-        extend ActiveSupport::Concern
+
+        def self.prepended(base)
+          class << base
+            prepend ClassMethods
+          end
+        end
 
         module ClassMethods
           def subscribable
@@ -54,4 +59,4 @@ module SpreeSubscriptions
   end
 end
 
-::Spree::Product.send(:include, SpreeSubscriptions::Extensions::Spree::Product)
+::Spree::Product.prepend SpreeSubscriptions::Extensions::Spree::Product

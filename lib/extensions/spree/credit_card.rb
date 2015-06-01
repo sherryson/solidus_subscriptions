@@ -2,7 +2,6 @@ module SpreeSubscriptions
   module Extensions
     module Spree
       module CreditCard
-        extend ActiveSupport::Concern
 
         def payment_provider
           gateway_customer_profile_id.include?('cus_') ? 'Stripe' : 'Auth.net'
@@ -15,4 +14,4 @@ module SpreeSubscriptions
   end
 end
 
-::Spree::CreditCard.send(:include, SpreeSubscriptions::Extensions::Spree::CreditCard)
+::Spree::CreditCard.prepend SpreeSubscriptions::Extensions::Spree::CreditCard

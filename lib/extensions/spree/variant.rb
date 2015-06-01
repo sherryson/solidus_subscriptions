@@ -2,7 +2,12 @@ module SpreeSubscriptions
   module Extensions
     module Spree
       module Variant
-        extend ActiveSupport::Concern
+
+        def self.prepended(base)
+          class << base
+            prepend ClassMethods
+          end
+        end
 
         def frequency
           option_values.of_option_type('frequency').first
@@ -50,4 +55,4 @@ module SpreeSubscriptions
   end
 end
 
-::Spree::Variant.send(:include, SpreeSubscriptions::Extensions::Spree::Variant)
+::Spree::Variant.prepend SpreeSubscriptions::Extensions::Spree::Variant

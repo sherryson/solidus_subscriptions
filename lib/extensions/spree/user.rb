@@ -2,10 +2,9 @@ module SpreeSubscriptions
   module Extensions
     module Spree
       module User
-        extend ActiveSupport::Concern
 
-        included do
-          has_many :subscriptions, -> { order 'created_at desc' }
+        def self.prepended(base)
+          base.has_many :subscriptions, -> { order 'created_at desc' }
         end
 
         def subscription_orders
@@ -17,4 +16,4 @@ module SpreeSubscriptions
   end
 end
 
-::Spree::User.send(:include, SpreeSubscriptions::Extensions::Spree::User)
+::Spree::User.prepend SpreeSubscriptions::Extensions::Spree::User

@@ -2,14 +2,13 @@ module SpreeSubscriptions
   module Extensions
     module Spree
       module Order
-        extend ActiveSupport::Concern
 
-        included do
-          alias_method_chain :finalize!, :create_subscription
+        def self.prepended(base)
+          base.alias_method_chain :finalize!, :create_subscription
 
-          belongs_to :subscription, class_name: 'Spree::Subscription'
-          # attr_accessible :subscription_id
-          register_update_hook :reset_failure_count_for_subscription_orders
+          base.belongs_to :subscription, class_name: 'Spree::Subscription'
+
+          base.register_update_hook :reset_failure_count_for_subscription_orders
 
           attr_accessor :subscription_duration
         end
@@ -140,4 +139,4 @@ module SpreeSubscriptions
   end
 end
 
-::Spree::Order.send(:include, SpreeSubscriptions::Extensions::Spree::Order)
+::Spree::Order.prepend SpreeSubscriptions::Extensions::Spree::Order
