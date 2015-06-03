@@ -16,6 +16,12 @@ module Spree
         render json: @subscription.to_json
       end
 
+      def cancel
+        @subscription.cancel
+
+        render json: @subscription.to_json
+      end
+
       def show
         render json: @subscription.to_json
       end
