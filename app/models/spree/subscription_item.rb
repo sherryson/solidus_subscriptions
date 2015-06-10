@@ -1,6 +1,6 @@
 module Spree
   class SubscriptionItem < ActiveRecord::Base
-    belongs_to :subscription, class_name: "Spree::Subscription"
+    belongs_to :subscription, class_name: "Spree::Subscription", touch: true
     belongs_to :variant, class_name: "Spree::Variant"
     belongs_to :tax_category, class_name: "Spree::TaxCategory"
 
