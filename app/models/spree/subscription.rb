@@ -100,7 +100,8 @@ module Spree
         email: last_order.email,
         repeat_order: true,
         bill_address: bill_address,
-        ship_address: ship_address
+        ship_address: ship_address,
+        channel: 'subscription'
       )
     end
 

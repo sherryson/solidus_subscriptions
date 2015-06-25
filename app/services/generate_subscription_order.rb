@@ -50,11 +50,11 @@ class GenerateSubscriptionOrder
     if credit_card.payment_provider == 'Stripe'
       gateway = @eligible_gateways.where(type: 'Spree::Gateway::StripeGateway').first
     elsif credit_card.payment_provider == 'Auth.net'
-      gateway = @eligible_gateways.where(type: 'Spree::Gateway::AuthorizeNetCim').first   
+      gateway = @eligible_gateways.where(type: 'Spree::Gateway::AuthorizeNetCim').first
     end
-    # attempt to use the credit card bogus gateway    
-    gateway = @eligible_gateways.where(type: 'Spree::Gateway::Bogus').first unless gateway.present?         
-        
+    # attempt to use the credit card bogus gateway
+    gateway = @eligible_gateways.where(type: 'Spree::Gateway::Bogus').first unless gateway.present?
+
     gateway.present? ? gateway : @eligible_gateways.first
   end
 
