@@ -5,6 +5,15 @@ module Spree
     belongs_to :user
     belongs_to :credit_card
 
+    belongs_to :bill_address, foreign_key: :bill_address_id, class_name: 'Spree::SubscriptionAddress'
+    alias_attribute :billing_address, :bill_address
+
+    belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
+    alias_attribute :shipping_address, :ship_address    
+
+    accepts_nested_attributes_for :ship_address
+    accepts_nested_attributes_for :bill_address
+
     validates_presence_of :ship_address_id
     validates_presence_of :bill_address_id
     validates_presence_of :user_id
@@ -103,18 +112,6 @@ module Spree
         ship_address: ship_address,
         channel: 'subscription'
       )
-    end
-
-    def ship_address
-      ::Spree::Address.find(ship_address_id) || last_order.ship_address
-    rescue
-      last_order.ship_address
-    end
-
-    def bill_address
-      ::Spree::Address.find(bill_address_id) || last_order.bill_address
-    rescue
-      last_order.bill_address
     end
 
     def prepaid?

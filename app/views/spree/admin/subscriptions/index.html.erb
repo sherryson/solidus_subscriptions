@@ -38,7 +38,7 @@
             Qty: <%= line_item.quantity %>
             <% end %>
         </td>
-        <td>Every <%= pluralize(subscription.interval, 'month') %></td>
+        <td>Every <%= pluralize(subscription.interval, 'day') %></td>
         <td>
           <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           <br />
@@ -57,6 +57,9 @@
         </td>
         <td><%= l(subscription.cancelled_at, format: :long) if subscription.cancelled_at %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
+          <%=
+            link_to_with_icon 'edit', 'Edit', edit_admin_subscription_path(subscription), no_text: true
+          -%>
           <%=
             unless subscription.cancelled?
               link_to_with_icon 'cancel', 'Cancel', cancel_admin_subscription_path(subscription),

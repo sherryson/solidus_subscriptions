@@ -1,6 +1,6 @@
 class CreateSubscriptionAddresses < ActiveRecord::Migration
   def change
-    create_table :subscription_addresses do |t|
+    create_table :spree_subscription_addresses do |t|
       t.string     :firstname
       t.string     :lastname
       t.string     :address1
