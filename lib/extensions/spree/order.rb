@@ -24,8 +24,6 @@ module SpreeSubscriptions
             return if repeat_order?
 
             attrs = {
-              ship_address_id: ship_address.id,
-              bill_address_id: bill_address.id,
               user_id: user.id,
               state: 'active',
               interval: subscription_interval,
@@ -35,6 +33,10 @@ module SpreeSubscriptions
             }
 
             subscription = self.create_subscription(attrs)
+
+            # create subscription addresses
+            subscription.build_ship_address(ship_address.as_json.merge({user_id: user.id}))
+            subscription.build_bill_address(bill_address.as_json.merge({user_id: user.id}))
 
             # create subscription items
             self.line_items.each do |line_item|
