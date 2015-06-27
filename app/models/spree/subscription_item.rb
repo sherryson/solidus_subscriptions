@@ -6,9 +6,6 @@ module Spree
 
     has_one :product, through: :variant
 
-    #has_many :adjustments, as: :adjustable, dependent: :destroy
-    #has_many :inventory_units, inverse_of: :subscription_item
-
     before_validation :copy_price
     before_validation :copy_tax_category
 
@@ -19,7 +16,6 @@ module Spree
       message: Spree.t('validation.must_be_int')
     }
     validates :price, numericality: true
-    # validates_with Stock::AvailabilityValidator
 
     def copy_price
       if variant
