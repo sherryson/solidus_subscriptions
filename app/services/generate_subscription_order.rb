@@ -25,10 +25,18 @@ class GenerateSubscriptionOrder
       order_populator.populate line_item.variant, line_item.quantity
     end
 
-    transition_order_from_cart_to_payment!(next_order)
+    transition_order_from_cart_to_address!(next_order)
+
+    # update address to use subscription's
+    next_order.ship_address.update_attributes(subscription.ship_address.as_json)
+    next_order.bill_address.update_attributes(subscription.bill_address.as_json)
+
+    transition_order_from_address_to_delivery!(next_order)
 
     ensure_profile_exists_for_payment_source(previous_order)
     ensure_credit_card_has_expiration_month
+
+    transition_order_from_delivery_to_payment!(next_order)
 
     next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
