@@ -38,17 +38,18 @@ module Spree
 
       def update_address
         result = @subscription.send(params[:attribute]).update_attributes(address_params)
+
         if result
           @subscription.touch
 
-          render json: @subscription.to_json
+          render json: @subscription.send(params[:attribute]).to_json
         else
-          invalid_resource!(@subscription)
+          invalid_resource!(@subscription.send(params[:attribute]))
         end
       end
 
       private
-      
+
       def find_subscription
         @subscription = Spree::Subscription.find(params[:id])
       end
