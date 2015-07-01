@@ -148,13 +148,11 @@ module Spree
     end
 
     def skip_next_order
-      self.skip_order_at = last_order.completed_at.advance(weeks: interval * 4)
-      save
+      update_column(:skip_order_at, next_shipment_date)      
     end
 
     def undo_skip_next_order
-      self.skip_order_at = nil
-      save
+      update_column(:skip_order_at, nil)
     end
 
     def as_json(options = { })

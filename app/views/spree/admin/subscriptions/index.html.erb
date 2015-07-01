@@ -6,10 +6,11 @@
   <table class="index responsive" id="listing_subscriptions" data-hook width="100%">
     <colgroup>
        <col style="width: 5%;">
-       <col style="width: 10%;">
-       <col style="width: 18%;">
-       <col style="width: 18%;">
-       <col style="width: 18%;">
+       <col style="width: 7%;">
+       <col style="width: 25%;">
+       <col style="width: 12%;">
+       <col style="width: 23%;">
+       <col style="width: 9%;">
        <col style="width: 9%;">
        <col style="width: 9%;">
        <col style="width: 5%;">
@@ -21,8 +22,9 @@
         <th>Products</th>
         <th>Frequency</th>
         <th>Last Order</th>
-        <th>Next Shipment Date</th>
-        <th>Cancelled At</th>
+        <th>Next Shipment</th>
+        <th>Skipping</th>
+        <th>Cancelled</th>
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
@@ -33,7 +35,8 @@
         <td><%= subscription.state %></td>
         <td>
             <% subscription.last_order.line_items.each do |line_item|  %>
-            <%= line_item.variant.product.name %> <%= "(#{line_item.variant.options_text})" unless line_item.variant.option_values.empty? %>
+            <%= line_item.variant.product.name %> <br/>
+            <%= "(#{line_item.variant.options_text})" unless line_item.variant.option_values.empty? %>
             <br/>
             Qty: <%= line_item.quantity %>
             <% end %>
@@ -55,8 +58,14 @@
             end
           -%>
         </td>
+        <td>
+          <%= subscription.skip_order_at.nil? ? 'No' : 'Yes' %>
+        </td>
         <td><%= l(subscription.cancelled_at, format: :long) if subscription.cancelled_at %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
+          <%=
+            link_to_with_icon 'refresh', 'Renew', renew_admin_subscription_path(subscription), no_text: true
+          -%>
           <%=
             link_to_with_icon 'edit', 'Edit', edit_admin_subscription_path(subscription), no_text: true
           -%>

@@ -16,3 +16,8 @@ en:
     active: Active
     cancelled: Cancelled
   are_you_sure: "Are you sure?"
+
+  spree:
+    successfully_cancelled: successfully cancelled subscription
+    successfully_renewed: successfully renewed subscription
+    error_renew: failed to renew subscription
