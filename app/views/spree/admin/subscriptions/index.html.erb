@@ -38,7 +38,7 @@
             Qty: <%= line_item.quantity %>
             <% end %>
         </td>
-        <td>Every <%= pluralize(subscription.interval, 'day') %></td>
+        <td>Every <%= subscription.interval * 4 %> weeks</td>
         <td>
           <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           <br />
