@@ -47,7 +47,7 @@
           <br />
           <%= l(subscription.last_order.created_at, format: :long)  %>
           <br />
-          <%= link_to subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank' %>
+          <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
         </td>
         <td>
           <%=
