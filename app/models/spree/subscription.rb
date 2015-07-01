@@ -44,7 +44,7 @@ module Spree
           last_order = subscription.last_order
           next unless last_order
           next unless subscription.skip_order_at <= subscription.next_shipment_date if subscription.skip_order_at
-          last_order.completed_at.at_beginning_of_day < (subscription.interval * 4).weeks.ago
+          last_order.completed_at.at_beginning_of_day < subscription.interval.days.ago
         end
 
         where(id: subscriptions.collect(&:id))
@@ -62,9 +62,9 @@ module Spree
 
     def next_shipment_date
       if skip_order_at
-        skip_order_at.advance(weeks: interval * 4)
+        skip_order_at.advance(days: interval)
       elsif last_order
-        last_order.completed_at.advance(weeks: interval * 4)
+        last_order.completed_at.advance(days: interval)
       end
     end
 
