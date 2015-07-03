@@ -36,6 +36,20 @@ module Spree
         end
       end
 
+      def create_address
+        new_address = Spree::SubscriptionAddress.create(address_params)        
+        
+        if new_address.errors.empty?
+          # attribute is either ship_address or bill_address
+          @subscription.send("#{params[:attribute]}=", new_address)
+          @subscription.save
+
+          render json: @subscription.send(params[:attribute]).to_json
+        else
+          invalid_resource!(new_address)
+        end        
+      end
+
       def update_address
         result = @subscription.send(params[:attribute]).update_attributes(address_params)
 
@@ -63,7 +77,7 @@ module Spree
       end
 
       def permitted_address_params
-        [:firstname, :lastname, :address1, :address2, :city, :phone, :zipcode, :state_id, :state_name, :country_id]
+        [:firstname, :lastname, :address1, :address2, :city, :phone, :zipcode, :state_id, :state_name, :country_id, :user_id]
       end
 
       def permitted_subscription_attributes
@@ -71,11 +85,6 @@ module Spree
           :interval, :credit_card_id
         ]
       end
-
-      def address_attributes
-        [:id, :firstname, :lastname, :address1, :address2, :city, :phone, :zipcode, :state_id, :state_name, :country_id]
-      end
-
     end
   end
 end
