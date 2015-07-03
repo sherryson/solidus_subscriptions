@@ -62,6 +62,15 @@ module Spree
         end
       end
 
+      def select_address        
+        @subscription.send("#{params[:attribute]}_id=", params[:address_id])
+        if @subscription.save
+          render json: @subscription.send(params[:attribute]).to_json
+        else
+          invalid_resource!(@subscription.send(params[:attribute]))
+        end
+      end
+
       private
 
       def find_subscription
