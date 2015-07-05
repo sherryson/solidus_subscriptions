@@ -2,7 +2,6 @@ module Spree
   module Api
     class SubscriptionsController < Spree::Api::BaseController
       before_action :find_subscription
-      before_action :authenticate_user
 
       def skip_next_order
         @subscription.skip_next_order

@@ -44,7 +44,8 @@ module Spree
           last_order = subscription.last_order
           next unless last_order
           next unless subscription.skip_order_at <= subscription.next_shipment_date if subscription.skip_order_at
-          last_order.completed_at.at_beginning_of_day < subscription.interval.days.ago
+          subscription.next_shipment_date.to_date <= Date.today
+          # last_order.completed_at.at_beginning_of_day < subscription.num_days_for_next_shipment.days.ago
         end
 
         where(id: subscriptions.collect(&:id))
@@ -62,10 +63,28 @@ module Spree
 
     def next_shipment_date
       if skip_order_at
-        skip_order_at.advance(days: interval)
+        skip_order_at.advance(days: num_days_for_next_shipment)
       elsif last_order
-        last_order.completed_at.advance(days: interval)
+        last_order.completed_at.advance(days: num_days_for_next_shipment)
       end
+    end
+
+    def num_days_for_next_shipment
+      date = skip_order_at ? skip_order_at.to_date : last_order.completed_at.to_date
+
+      # 26, 52 if standard shipping 
+      # 21, 48 if expedited
+      days_to_advance = interval == 1 ? 26 : 52
+      if completed_orders.count == 1
+        days_to_advance = interval == 1 ? 21 : 48 if shipping_method.name.include?('Expedited')
+      end
+      
+      # don't fall on a weekend or holiday
+      while date.advance(days: days_to_advance).saturday? || date.advance(days: days_to_advance).sunday? || date.advance(days: days_to_advance).holiday?
+        days_to_advance += 1
+      end
+
+      days_to_advance
     end
 
     def active?
@@ -148,11 +167,31 @@ module Spree
     end
 
     def skip_next_order
-      update_column(:skip_order_at, next_shipment_date)      
+      update_attribute(:skip_order_at, next_shipment_date)      
     end
 
     def undo_skip_next_order
-      update_column(:skip_order_at, nil)
+      update_attribute(:skip_order_at, nil)
+    end
+
+    def completed_orders
+      orders.complete
+    end
+
+    def shipment
+      last_order.shipments.last
+    end
+
+    def shipping_method
+      shipment.shipping_method
+    end
+
+    def failed_last_renewal?
+      !orders.first.complete?
+    end
+
+    def subscription_log_for(order)
+      ::SubscriptionLog.where(order_id: order.id).last
     end
 
     def as_json(options = { })
