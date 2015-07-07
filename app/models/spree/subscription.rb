@@ -45,7 +45,7 @@ module Spree
           next unless last_order
           next unless subscription.skip_order_at <= subscription.next_shipment_date if subscription.skip_order_at
           subscription.next_shipment_date.to_date <= Date.today
-          # last_order.completed_at.at_beginning_of_day < subscription.num_days_for_next_shipment.days.ago
+          # last_order.completed_at.at_beginning_of_day < subscription.num_days_for_renewal.days.ago
         end
 
         where(id: subscriptions.collect(&:id))
@@ -63,13 +63,13 @@ module Spree
 
     def next_shipment_date
       if skip_order_at
-        skip_order_at.advance(days: num_days_for_next_shipment)
+        skip_order_at.advance(days: num_days_for_renewal)
       elsif last_order
-        last_order.completed_at.advance(days: num_days_for_next_shipment)
+        last_order.completed_at.advance(days: num_days_for_renewal)
       end
     end
 
-    def num_days_for_next_shipment
+    def num_days_for_renewal
       date = skip_order_at ? skip_order_at.to_date : last_order.completed_at.to_date
 
       # 26, 52 if standard shipping 
@@ -80,11 +80,16 @@ module Spree
       end
       
       # don't fall on a weekend or holiday
-      while date.advance(days: days_to_advance).saturday? || date.advance(days: days_to_advance).sunday? || date.advance(days: days_to_advance).holiday?
-        days_to_advance += 1
-      end
+      # while date.advance(days: days_to_advance).saturday? || date.advance(days: days_to_advance).sunday? || date.advance(days: days_to_advance).holiday?
+      #   days_to_advance += 1
+      # end
 
       days_to_advance
+    end
+
+    def estimated_arrival_date
+      date = skip_order_at ? skip_order_at.to_date : last_order.completed_at.to_date      
+      9.business_days.after(date.advance(days: num_days_for_renewal))
     end
 
     def active?
