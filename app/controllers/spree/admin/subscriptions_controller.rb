@@ -1,18 +1,6 @@
 module Spree
   module Admin
     class SubscriptionsController < ResourceController
-      def index
-        params[:q]     ||= {}
-        params[:q][:s] ||= 'created_at desc'
-
-        @search = Subscription.ransack(params[:q])
-        @subscriptions = @search.result.includes([:user, :orders]).
-          page(params.fetch(:page, 1)).
-          per(params.fetch(:per_page, Spree::Config[:orders_per_page]))
-
-        respond_with(@subscriptions)
-      end
-
       def renew
         failure_count = @object.failure_count
         ::GenerateSubscriptionOrder.new(@object).call
@@ -41,6 +29,26 @@ module Spree
           end
         end
       end
+
+      protected
+        def collection
+          return @collection if defined?(@collection)
+          params[:q] ||= HashWithIndifferentAccess.new
+          params[:q][:s] ||= 'id desc'
+
+          @collection = super
+          @search = @collection.ransack(params[:q])
+          @collection = @search.result(distinct: true).
+            includes(subscription_includes).
+            page(params[:page]).
+            per(params[:per_page] || Spree::Config[:promotions_per_page])
+
+          @collection
+        end     
+
+        def subscription_includes
+          [:user, :orders]
+        end         
     end
   end
 end
