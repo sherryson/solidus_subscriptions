@@ -31,5 +31,8 @@ module Spree
       end
     end
 
+    def amount
+      price * quantity
+    end
   end
 end
