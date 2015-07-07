@@ -40,9 +40,9 @@
        <col style="width: 5%;">
        <col style="width: 10%;">
        <col style="width: 25%;">
-       <col style="width: 12%;">
-       <col style="width: 23%;">
        <col style="width: 10%;">
+       <col style="width: 23%;">
+       <col style="width: 12%;">
        <col style="width: 3%;">
        <col style="width: 9%;">
        <col style="width: 9%;">
@@ -66,8 +66,8 @@
     <tbody>
     <% @subscriptions.each do |subscription| %>
       <tr data-hook="admin_subscriptions_index_rows" class="<%= cycle('odd', 'even') %>">
-        <td><%= subscription.id %></td>
-        <td>
+        <td class="align-center"><%= subscription.id %></td>
+        <td class="align-center">
             <span class="state <%= subscription.active? ? 'success' : 'canceled' %>"><%= subscription.state %></span>
         </td>
         <td>
@@ -78,7 +78,7 @@
             Qty: <%= item.quantity %>
             <% end %>
         </td>
-        <td>Every  <%= pluralize(subscription.interval, 'month') %></td>
+        <td class="align-center">Every  <%= pluralize(subscription.interval, 'month') %></td>
         <td>
           <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           <br />
@@ -90,20 +90,20 @@
         </td>
         <td>
           <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>          
-        <td>
+        <td class="align-center">
           <%= subscription.skip_order_at.nil? ? 'No' : 'Yes' unless subscription.cancelled? %>
         </td>
-        <td>
+        <td class="align-center">
           <%=
             unless subscription.cancelled?
               subscription.next_shipment_date.strftime '%a, %b %d, %Y' if subscription.next_shipment_date
             end
           -%>
         </td>
-        <td>
+        <td class="align-center">
           <%= subscription.estimated_arrival_date.strftime '%a, %b %d, %Y' %>
         </td>
-        <td><%= l(subscription.cancelled_at, format: :long) if subscription.cancelled_at %></td>
+        <td class="align-center"><%= l(subscription.cancelled_at, format: :long) if subscription.cancelled_at %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
             unless subscription.cancelled?
