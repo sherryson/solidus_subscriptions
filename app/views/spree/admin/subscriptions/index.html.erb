@@ -86,7 +86,7 @@
           <br />
           <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
           <br />
-          <%= subscription.shipping_method.name %>
+          <%= subscription.shipping_method.name if subscription.shipment %>
         </td>
         <td>
           <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>          
