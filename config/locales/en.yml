@@ -21,3 +21,8 @@ en:
     successfully_cancelled: successfully cancelled subscription
     successfully_renewed: successfully renewed subscription
     error_renew: failed to renew subscription
+    order_number: Order Number
+
+  time:
+    formats:
+      subscription_date_format: "%a, %b %d, %Y" 
