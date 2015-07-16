@@ -7,10 +7,7 @@ module SpreeSubscriptions
           base.alias_method_chain :finalize!, :create_subscription
 
           base.belongs_to :subscription, class_name: 'Spree::Subscription'
-
-          base.register_update_hook :reset_failure_count_for_subscription_orders
-
-          attr_accessor :subscription_duration
+          base.register_update_hook :reset_failure_count_for_subscription_orders          
         end
 
         def finalize_with_create_subscription!
@@ -20,24 +17,23 @@ module SpreeSubscriptions
 
         def create_subscription_if_eligible
           begin
-            # return unless subscribable?
+            return unless subscribable?
             return if repeat_order?
-
+            
             attrs = {
               user_id: user.id,
               state: 'active',
               interval: subscription_interval,
               duration: subscription_duration,
-              # prepaid_amount: subscription_prepaid_amount,
+              prepaid_amount: subscription_prepaid_amount,
               credit_card_id: credit_card_id_if_available
             }
-
             subscription = self.create_subscription(attrs)
 
             # create subscription addresses
-            subscription.build_ship_address(ship_address.as_json.merge({user_id: user.id}))
-            subscription.build_bill_address(bill_address.as_json.merge({user_id: user.id}))
-
+            subscription.create_ship_address!(ship_address.dup.attributes.merge({user_id: user.id}))
+            subscription.create_bill_address!(bill_address.dup.attributes.merge({user_id: user.id}))
+            
             # create subscription items
             self.line_items.each do |line_item|
               ::Spree::SubscriptionItem.create!(
@@ -61,13 +57,13 @@ module SpreeSubscriptions
           !repeat_order? && prepayable_option_values.any?
         end
 
-        # def subscription_interval
-        #   subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
-        # end
+        def subscription_interval
+          subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
+        end
 
-        # def subscription_duration
-        #   prepayable_option_values.present? ? prepayable_option_values.first.name : 0
-        # end
+        def subscription_duration
+          prepayable_option_values.present? ? prepayable_option_values.first.name.to_i : 0          
+        end
 
         def subscription_prepaid_amount
           prepayable_option_values.present? ? total : 0
