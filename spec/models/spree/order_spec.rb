@@ -14,9 +14,7 @@ describe Spree::Order do
   it { should respond_to(:has_subscription?) }
 
   context "#finalize!" do
-    let(:order) {
-      FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
-    }
+    let(:order) { create(:order) }
 
     context "with an ineligible order" do
       before do
@@ -38,16 +36,12 @@ describe Spree::Order do
     end
 
     context "with an eligible order" do
-
-      before do
-        Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
-        Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
-        order.line_items << line_items
-        order.finalize!
-        order.stub(:repeat_order?).and_return(false)
+      before do    
+        order.line_items << line_items        
+        order.finalize!                        
       end
 
-      it "creates a subscription and attaches it to the order" do
+      it "creates a subscription and attaches it to the order" do        
         order.subscription.should_not be_nil
         order.subscription.duration.should == 0
       end
