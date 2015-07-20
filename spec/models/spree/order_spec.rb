@@ -37,6 +37,8 @@ describe Spree::Order do
 
     context "with an eligible order" do
       before do    
+        Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
+        Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
         order.line_items << line_items        
         order.finalize!                        
       end

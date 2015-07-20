@@ -34,12 +34,9 @@ module OrderMacros
 
     @user = stub_model(Spree::User, email: "spree@example.com")
     @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
-    
     @line_items = [
-      # FactoryGirl.create(:line_item),
       FactoryGirl.create(:line_item, variant: @subscribable_variant)
     ]
-
     @gateway = Spree::Gateway::Bogus.create!({environment: 'test', active: true, name: 'Credit Card'})
     @card = FactoryGirl.create(:credit_card)
   end
