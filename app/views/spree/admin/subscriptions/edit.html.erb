@@ -37,10 +37,12 @@
 <% end %>
 
 <% if @subscription.subscription_items.exists? %>
+
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription.current_items") %></legend>
   </fieldset>
-  <table class="line-items index" data-hook="line-items">
+
+  <table class="subscription-items index" data-hook="subscription-items">
     <colgroup>
       <col style="width: 10%;" />
       <col style="width: 40%;" />
@@ -53,25 +55,32 @@
       <th><%= Spree.t(:price) %></th>
       <th><%= Spree.t(:quantity) %></th>
       <th><%= Spree.t(:total_price) %></th>
-      <th class="orders-actions actions" data-hook="admin_order_form_line_items_header_actions">&nbsp;</th>
+      <th class="orders-actions actions" data-hook="admin_subscription_form_subscription_items_header_actions">&nbsp;</th>
     </thead>
 
     <tbody>
       <% @subscription.subscription_items.each do |item| %>
         
-        <tr class="line-item" id="line-item-<%= item.id %>">
-          <td class="line-item-image"><%= mini_image(item.variant) %></td>
-          <td class="line-item-name">
+        <tr class="subscription-item" id="subscription-item-<%= item.id %>">
+          <td class="subscription-item-image"><%= mini_image(item.variant) %></td>
+          <td class="subscription-item-name">
             <%= item.variant.product.name %><br><%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
           </td>
-          <td class="line-item-price align-center"><%= number_to_currency(item.variant.price) %></td>
-          <td class="line-item-qty-show align-center">
+          <td class="subscription-item-price align-center"><%= number_to_currency(item.variant.price) %></td>
+          <td class="subscription-item-qty-show align-center">
             <%= item.quantity %>
           </td>
-          <td class="line-item-qty-edit hidden">
-            <%= number_field_tag :quantity, item.quantity, :min => 0, :class => "line_item_quantity", :size => 5 %>
+          <td class="subscription-item-qty-edit hidden">
+            <%= number_field_tag :quantity, item.quantity, :min => 0, :class => "subscription_item_quantity", :size => 5 %>
           </td>
-          <td class="line-item-total align-center"><%= line_item_shipment_price(item, item.quantity) %></td>
+          <td class="subscription-item-total align-center"><%= line_item_shipment_price(item, item.quantity) %></td>
+          <td class="cart-subscription-item-delete actions" data-hook="cart_subscription_item_delete">
+            <% if can? :update, item %>
+              <%= link_to '', '#', :class => 'save-subscription-item fa fa-ok no-text with-tip', :data => { 'subscription-item-id' => item.id, :action => 'save'}, :title => Spree.t('actions.save'), :style => 'display: none' %>
+              <%= link_to '', '#', :class => 'cancel-subscription-item fa fa-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel'), :style => 'display: none' %>
+              <%= link_to '', '#', :class => 'edit-subscription-item fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>              
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -82,7 +91,7 @@
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription.orders") %></legend>
   </fieldset>
-  <table class="line-items index" data-hook="line-items">
+  <table class="subscription-items index" data-hook="subscription-items">
     <colgroup>
        <col style="width: 13%;">
        <col style="width: 10%;">
