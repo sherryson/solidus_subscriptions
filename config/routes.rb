@@ -1,7 +1,7 @@
-Spree::Core::Engine.routes.draw do
+Spree::Core::Engine.add_routes do
   namespace :admin do
     resources :subscriptions do
-      member do 
+      member do
         get :cancel
         get :renew
       end

@@ -1,15 +1,11 @@
 require 'spec_helper'
 
-describe 'Subscription' do
-  before do
-    user = create(:admin_user, email: "test@example.com")
-    sign_in_as!(user)
-    visit spree.admin_path
-  end
-
+feature 'Subscription' do
+  stub_authorization!
 
   context "listing subscriptions" do
-    it "should list all subscriptions" do
+    scenario "should list all subscriptions" do
+      visit spree.admin_path
       click_link "Subscriptions"
     end
 
