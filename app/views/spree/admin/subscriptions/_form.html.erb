@@ -1,4 +1,4 @@
-<div data-hook="admin_store_credit_form_fields" class="row">
+<div data-hook="admin_subscription_form_fields" class="row">
   <div class="alpha twelve columns">
     <%= f.field_container :interval do %>
       <%= f.label :interval, Spree.t(:frequency) %> <span class="required">*</span><br />
@@ -7,3 +7,8 @@
     <% end %>
   </div>
 </div>
+
+
+<%= javascript_tag do -%>
+    var subscription_id = '<%= @subscription.id %>';
+<% end -%>    
