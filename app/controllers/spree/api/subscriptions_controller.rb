@@ -2,7 +2,6 @@ module Spree
   module Api
     class SubscriptionsController < Spree::Api::BaseController
       before_action :find_subscription
-      before_action :authenticate_user
 
       def skip_next_order
         @subscription.skip_next_order
@@ -36,42 +35,64 @@ module Spree
         end
       end
 
+      def create_address
+        new_address = Spree::SubscriptionAddress.create(address_params)        
+        
+        if new_address.errors.empty?
+          # attribute is either ship_address or bill_address
+          @subscription.send("#{params[:attribute]}=", new_address)
+          @subscription.save
+
+          render json: @subscription.send(params[:attribute]).to_json
+        else
+          invalid_resource!(new_address)
+        end        
+      end
+
       def update_address
-        result = @subscription.update_attributes(subscription_params)
+        result = @subscription.send(params[:attribute]).update_attributes(address_params)
 
         if result
-          # update the corresponding last order
-          update_last_order_address
+          @subscription.touch
 
-          render json: @subscription.to_json
+          render json: @subscription.send(params[:attribute]).to_json
         else
-          invalid_resource!(@osubscriptionrder)
+          invalid_resource!(@subscription.send(params[:attribute]))
+        end
+      end
+
+      def select_address        
+        @subscription.send("#{params[:attribute]}_id=", params[:address_id])
+        if @subscription.save
+          render json: @subscription.send(params[:attribute]).to_json
+        else
+          invalid_resource!(@subscription.send(params[:attribute]))
         end
       end
 
       private
 
-      def update_last_order_address
-        last_order = @subscription.last_order
-        last_order.ship_address_id = @subscription.ship_address_id
-        last_order.bill_address_id = @subscription.bill_address_id
-        last_order.save
-      end
-
       def find_subscription
         @subscription = Spree::Subscription.find(params[:id])
+      end
+
+      def address_params
+        params.require(:address).permit(permitted_address_params)
       end
 
       def subscription_params
         params.require(:subscription).permit(permitted_subscription_attributes)
       end
 
-      def permitted_subscription_attributes
-        [
-          :interval, :bill_address_id, :ship_address_id, :credit_card_id
-        ]
+      def permitted_address_params
+        [:firstname, :lastname, :address1, :address2, :city, :phone, :zipcode, :state_id, :state_name, :country_id, :user_id]
       end
 
+      def permitted_subscription_attributes
+        [
+          :interval, :credit_card_id
+        ]
+      end
     end
   end
 end

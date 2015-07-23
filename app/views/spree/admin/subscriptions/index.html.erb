@@ -2,17 +2,50 @@
   <%= t(:listing_subscriptions) %>
 <% end %>
 
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:search) %>
+<% end %>
+
+<% content_for :table_filter do %>
+  <div data-hook="admin_subscriptions_index_search">
+    <%= search_form_for [:admin, @search] do |f| %>
+      <div class="four columns alpha">
+        <div class="field">
+          <%= label_tag :q_user_email_cont, Spree.t(:email) %>
+          <%= f.text_field :user_email_cont, tabindex: 1 %>
+        </div>
+      </div>
+
+      <div class="four columns">
+        <div class="field">
+          <%= label_tag :q_orders_number_cont, Spree.t(:order_number) %>
+          <%= f.text_field :orders_number_cont, tabindex: 1 %>
+        </div>
+      </div>      
+
+      <div class="clearfix"></div>
+
+      <div class="actions filter-actions">
+        <div data-hook="admin_promotions_index_search_buttons">
+          <%= button Spree.t(:filter_results), 'search' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
 <% unless @subscriptions.empty? %>
   <table class="index responsive" id="listing_subscriptions" data-hook width="100%">
     <colgroup>
        <col style="width: 5%;">
        <col style="width: 10%;">
-       <col style="width: 18%;">
-       <col style="width: 18%;">
-       <col style="width: 18%;">
+       <col style="width: 25%;">
+       <col style="width: 10%;">
+       <col style="width: 23%;">
+       <col style="width: 12%;">
+       <col style="width: 3%;">
+       <col style="width: 9%;">       
        <col style="width: 9%;">
-       <col style="width: 9%;">
-       <col style="width: 5%;">
     </colgroup>
     <thead>
       <tr data-hook="admin_subscriptions_index_headers">
@@ -21,42 +54,53 @@
         <th>Products</th>
         <th>Frequency</th>
         <th>Last Order</th>
-        <th>Next Shipment Date</th>
-        <th>Cancelled At</th>
+        <th>Order State</th>
+        <th>Skip</th>
+        <th>Renew Date</th>
+        <th>Cancelled</th>
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
       </tr>
     </thead>
     <tbody>
     <% @subscriptions.each do |subscription| %>
       <tr data-hook="admin_subscriptions_index_rows" class="<%= cycle('odd', 'even') %>">
-        <td><%= subscription.id %></td>
-        <td><%= subscription.state %></td>
+        <td class="align-center"><%= subscription.id %></td>
+        <td class="align-center">
+            <span class="state <%= subscription.active? ? 'success' : 'canceled' %>"><%= subscription.state %></span>
+        </td>
         <td>
-            <% subscription.last_order.line_items.each do |line_item|  %>
-            <%= line_item.variant.product.name %> <%= "(#{line_item.variant.options_text})" unless line_item.variant.option_values.empty? %>
-            <br/>
-            Qty: <%= line_item.quantity %>
+            <% subscription.subscription_items.each do |item|  %>
+              <%= item.product.name %> <br/>
+              <%= "(#{item.variant.options_text})" unless item.variant.option_values.empty? %>
+              <br/>
+              Qty: <%= item.quantity %>
             <% end %>
         </td>
-        <td>Every <%= pluralize(subscription.interval, 'month') %></td>
+        <td class="align-center">Every  <%= pluralize(subscription.interval, 'month') %></td>
         <td>
           <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           <br />
-          <%= l(subscription.last_order.created_at, format: :long)  %>
+          <%= l(subscription.last_order.completed_at, format: :long)  %>
           <br />
-          <%= link_to subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank' %>
+          <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
+          <br />
+          <%= subscription.shipping_method.name if subscription.shipment %>          
         </td>
         <td>
+          <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>       
+        </td>
+        <td class="align-center"><%= subscription.skip_order_at.nil? ? 'No' : 'Yes' unless subscription.cancelled? %></td>
+        <td class="align-center"><%= l(subscription.next_shipment_date, format: :subscription_date_format) unless subscription.cancelled? %></td>        
+        <td class="align-center"><%= l(subscription.cancelled_at, format: :subscription_date_format) if subscription.cancelled? %></td>
+        <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
             unless subscription.cancelled?
-              subscription.next_shipment_date.strftime '%a, %b %d, %Y' if subscription.next_shipment_date
-            else
-              'N/A'
+            link_to_with_icon 'refresh', 'Renew', renew_admin_subscription_path(subscription), no_text: true, data: { confirm: 'Are you sure you want to renew the subscription?' }
             end
           -%>
-        </td>
-        <td><%= l(subscription.cancelled_at, format: :long) if subscription.cancelled_at %></td>
-        <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
+          <%=          
+            link_to_with_icon 'edit', 'Edit', edit_admin_subscription_path(subscription), no_text: true
+          -%>
           <%=
             unless subscription.cancelled?
               link_to_with_icon 'cancel', 'Cancel', cancel_admin_subscription_path(subscription),

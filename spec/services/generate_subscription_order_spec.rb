@@ -35,7 +35,7 @@ describe GenerateSubscriptionOrder do
       Spree::Order.complete.count.should == 2
       @order.subscription.duration.should == 5
       @order.total.should be > 0
-      @order.subscription.orders.first.total.to_f.should == 0.0
+      @order.subscription.orders.first.total.to_f.should == 15.0
     end
 
     it 'should not process when the final installment has been fulfilled' do

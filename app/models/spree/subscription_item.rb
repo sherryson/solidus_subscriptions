@@ -16,7 +16,6 @@ module Spree
       message: Spree.t('validation.must_be_int')
     }
     validates :price, numericality: true
-    # validates_with Stock::AvailabilityValidator
 
     def copy_price
       if variant
@@ -32,5 +31,8 @@ module Spree
       end
     end
 
+    def amount
+      price * quantity
+    end
   end
 end

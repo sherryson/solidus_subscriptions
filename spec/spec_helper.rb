@@ -13,6 +13,7 @@ Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
 # Requires factories defined in spree_core
 require 'spree/testing_support/factories'
+require 'spree/testing_support/url_helpers'
 
 Dir["#{File.dirname(__FILE__)}/factories/**/*.rb"].each do |f|
   fp =  File.expand_path(f)
@@ -31,7 +32,7 @@ RSpec.configure do |config|
   #
   # visit spree.admin_path
   # current_path.should eql(spree.products_path)
-  config.include Spree::Core::UrlHelpers
+  config.include Spree::TestingSupport::UrlHelpers
 
   # == Mock Framework
   #

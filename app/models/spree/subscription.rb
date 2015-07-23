@@ -1,9 +1,18 @@
 module Spree
   class Subscription < ActiveRecord::Base
-    has_many :orders, -> { order 'completed_at desc' }
+    has_many :orders, -> { order 'updated_at desc' }
     has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
     belongs_to :user
     belongs_to :credit_card
+
+    belongs_to :bill_address, foreign_key: :bill_address_id, class_name: 'Spree::SubscriptionAddress'
+    alias_attribute :billing_address, :bill_address
+
+    belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
+    alias_attribute :shipping_address, :ship_address    
+
+    accepts_nested_attributes_for :ship_address
+    accepts_nested_attributes_for :bill_address
 
     validates_presence_of :ship_address_id
     validates_presence_of :bill_address_id
@@ -34,8 +43,8 @@ module Spree
         subscriptions = active.with_interval.good_standing.select do |subscription|
           last_order = subscription.last_order
           next unless last_order
-          next unless subscription.skip_order_at <= subscription.next_shipment_date if subscription.skip_order_at
-          last_order.completed_at.at_beginning_of_day < subscription.interval.days.ago
+          next if subscription.prepaid?
+          subscription.next_shipment_date.to_date <= Date.today          
         end
 
         where(id: subscriptions.collect(&:id))
@@ -53,10 +62,14 @@ module Spree
 
     def next_shipment_date
       if skip_order_at
-        skip_order_at.advance(days: interval)
+        skip_order_at.advance(calc_next_renewal_date)
       elsif last_order
-        last_order.completed_at.advance(days: interval)
+        last_order.completed_at.advance(calc_next_renewal_date)
       end
+    end
+
+    def calc_next_renewal_date
+      { weeks: interval }      
     end
 
     def active?
@@ -95,26 +108,18 @@ module Spree
     end
 
     def create_next_order!
+      # just keeping safe
+      non_existing_attributes = Spree::SubscriptionAddress.dup.attribute_names - Spree::Address.attribute_names
+      
+      # use subscription's addresses for the new order
       orders.create!(
         user: last_order.user,
         email: last_order.email,
         repeat_order: true,
-        bill_address: bill_address,
-        ship_address: ship_address,
+        bill_address: Spree::Address.new(bill_address.dup.attributes.except(*non_existing_attributes)),
+        ship_address: Spree::Address.new(ship_address.dup.attributes.except(*non_existing_attributes)),
         channel: 'subscription'
       )
-    end
-
-    def ship_address
-      ::Spree::Address.find(ship_address_id) || last_order.ship_address
-    rescue
-      last_order.ship_address
-    end
-
-    def bill_address
-      ::Spree::Address.find(bill_address_id) || last_order.bill_address
-    rescue
-      last_order.bill_address
     end
 
     def prepaid?
@@ -151,13 +156,31 @@ module Spree
     end
 
     def skip_next_order
-      self.skip_order_at = last_order.completed_at.advance(days: interval)
-      save
+      update_attribute(:skip_order_at, next_shipment_date)      
     end
 
     def undo_skip_next_order
-      self.skip_order_at = nil
-      save
+      update_attribute(:skip_order_at, nil)
+    end
+
+    def completed_orders
+      orders.complete
+    end
+
+    def shipment
+      last_order.shipments.last
+    end
+
+    def shipping_method
+      shipment.shipping_method
+    end
+
+    def failed_last_renewal?
+      !orders.first.complete?
+    end
+
+    def subscription_log_for(order)
+      ::SubscriptionLog.where(order_id: order.id).last
     end
 
     def as_json(options = { })

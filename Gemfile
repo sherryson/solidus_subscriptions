@@ -9,5 +9,14 @@ gem 'haml-rails'
 gem 'database_cleaner', '< 1.1.0', group: :test
 gem 'timecop', group: :test
 
+group :test do
+  gem 'factory_girl', '4.5.0'
+  gem 'launchy'
+  gem 'pry-rails'
+  gem "shoulda-matchers"
+  gem 'haml-rails'
+  gem 'database_cleaner', '1.4.1'
+  gem 'timecop'
+end
 
 gemspec

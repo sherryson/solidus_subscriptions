@@ -6,7 +6,7 @@ describe Spree::Product do
   before do
     setup_subscribable_products
   end
-  let(:simple_product) { Factory(:simple_product) }
+  let(:simple_product) { create(:base_product) }
 
   it 'should respond to subscribable' do
     @product.should respond_to :subscribable?
@@ -29,7 +29,7 @@ describe Spree::Product do
   end 
 
   it "should return a list of subscribable variants" do
-    @product.reload.subscribable_variants.map(&:sku).should == ['subscribable']
+    @product.reload.subscribable_variants.map(&:sku).should == ['subscribable - 1']
   end
  
   it "should return a list of prepayable variants" do
