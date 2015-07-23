@@ -4,7 +4,7 @@ module SpreeSubscriptions
       module CreditCard
 
         def payment_provider
-          gateway_customer_profile_id.include?('cus_') ? 'Stripe' : 'Auth.net'
+          gateway_customer_profile_id.include?('cus_') ? 'Stripe' : 'Unknown'
         rescue
           'Unknown'
         end
