@@ -36,8 +36,8 @@ module Spree
       end
 
       def create_address
-        new_address = Spree::SubscriptionAddress.create(address_params)        
-        
+        new_address = Spree::SubscriptionAddress.create(address_params)
+
         if new_address.errors.empty?
           # attribute is either ship_address or bill_address
           @subscription.send("#{params[:attribute]}=", new_address)
@@ -46,7 +46,7 @@ module Spree
           render json: @subscription.send(params[:attribute]).to_json
         else
           invalid_resource!(new_address)
-        end        
+        end
       end
 
       def update_address
@@ -61,7 +61,7 @@ module Spree
         end
       end
 
-      def select_address        
+      def select_address
         @subscription.send("#{params[:attribute]}_id=", params[:address_id])
         if @subscription.save
           render json: @subscription.send(params[:attribute]).to_json
@@ -72,7 +72,7 @@ module Spree
 
       private
 
-      def find_subscription        
+      def find_subscription
         @subscription = current_api_user.subscriptions.find(params[:id])
       end
 

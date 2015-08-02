@@ -21,7 +21,7 @@
           <%= label_tag :q_orders_number_cont, Spree.t(:order_number) %>
           <%= f.text_field :orders_number_cont, tabindex: 1 %>
         </div>
-      </div>      
+      </div>
 
       <div class="clearfix"></div>
 
@@ -44,7 +44,7 @@
        <col style="width: 23%;">
        <col style="width: 12%;">
        <col style="width: 3%;">
-       <col style="width: 9%;">       
+       <col style="width: 9%;">
        <col style="width: 9%;">
     </colgroup>
     <thead>
@@ -76,7 +76,11 @@
               Qty: <%= item.quantity %>
             <% end %>
         </td>
-        <td class="align-center">Every  <%= pluralize(subscription.interval, 'month') %></td>
+        <td class="align-center">
+          <% if subscription.can_renew? %>
+          Every  <%= pluralize(subscription.interval, 'month') %>
+          <% end %>
+        </td>
         <td>
           <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           <br />
@@ -84,21 +88,21 @@
           <br />
           <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
           <br />
-          <%= subscription.shipping_method.name if subscription.shipment && subscription.shipment.shipping_method %>          
+          <%= subscription.shipping_method.name if subscription.shipment && subscription.shipment.shipping_method %>
         </td>
         <td>
-          <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>       
+          <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>
         </td>
-        <td class="align-center"><%= subscription.skip_order_at ? 'Yes' : '' unless subscription.cancelled? %></td>
-        <td class="align-center"><%= l(subscription.next_shipment_date, format: :subscription_date_format) unless subscription.cancelled? %></td>        
+        <td class="align-center"><%= subscription.skip_order_at ? 'Yes' : '' if subscription.can_renew? %></td>
+        <td class="align-center"><%= l(subscription.next_shipment_date, format: :subscription_date_format) if subscription.can_renew? %></td>
         <td class="align-center"><%= l(subscription.cancelled_at, format: :subscription_date_format) if subscription.cancelled? %></td>
         <td class='actions align-center' data-hook="admin_subscriptions_index_row_actions">
           <%=
-            unless subscription.cancelled?
+            if subscription.can_renew?
             link_to_with_icon 'refresh', 'Renew', renew_admin_subscription_path(subscription), no_text: true, data: { confirm: 'Are you sure you want to renew the subscription?' }
             end
           -%>
-          <%=          
+          <%=
             link_to_with_icon 'edit', 'Edit', edit_admin_subscription_path(subscription), no_text: true
           -%>
           <%=

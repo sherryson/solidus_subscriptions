@@ -179,6 +179,10 @@ module Spree
       !orders.first.complete?
     end
 
+    def can_renew?
+      interval && !cancelled?
+    end
+
     def subscription_log_for(order)
       ::SubscriptionLog.where(order_id: order.id).last
     end
