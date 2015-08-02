@@ -16,10 +16,9 @@ module Spree
       private
 
       def find_subscription_item
-        @subscription_item = current_api_user.subscriptions
-        .select { |subscription|
-          subscription.subscription_items.where(id: nil).any?
-        }.first
+        @subscription_item = current_api_user
+          .subscriptions.map(&:subscription_items).flatten
+          .find { |item| item.id == params[:id].to_i }
       end
 
       def subscription_items_params
