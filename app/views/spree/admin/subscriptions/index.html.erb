@@ -2,6 +2,10 @@
   <%= t(:listing_subscriptions) %>
 <% end %>
 
+<% content_for :page_actions do %>
+  <li></li>
+<% end %>
+
 <% content_for :table_filter_title do %>
   <%= Spree.t(:search) %>
 <% end %>
