@@ -72,8 +72,8 @@ module Spree
 
       private
 
-      def find_subscription
-        @subscription = Spree::Subscription.find(params[:id])
+      def find_subscription        
+        @subscription = current_api_user.subscriptions.find(params[:id])
       end
 
       def address_params

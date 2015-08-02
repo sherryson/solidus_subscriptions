@@ -4,10 +4,9 @@ module Spree
       before_action :find_subscription_item
 
       def update
-        # authorize! :update, @order, order_token
         result = @subscription_item.update_attributes(subscription_items_params)
 
-        if result          
+        if result
           render json: @subscription_item.to_json
         else
           invalid_resource!(@subscription_item)
@@ -17,7 +16,10 @@ module Spree
       private
 
       def find_subscription_item
-        @subscription_item = Spree::SubscriptionItem.find(params[:id])
+        @subscription_item = current_api_user.subscriptions
+        .select { |subscription|
+          subscription.subscription_items.where(id: nil).any?
+        }.first
       end
 
       def subscription_items_params
@@ -29,7 +31,6 @@ module Spree
           :quantity, :variant_id
         ]
       end
-        
     end
   end
 end
