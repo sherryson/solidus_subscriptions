@@ -15,10 +15,8 @@ module Spree
 
       private
 
-      def find_subscription_item
-        @subscription_item = current_api_user
-          .subscriptions.map(&:subscription_items).flatten
-          .find { |item| item.id == params[:id].to_i }
+      def find_subscription_item        
+        @subscription_item ||= Spree::SubscriptionItem.accessible_by(current_ability, :read).find(params[:id])
       end
 
       def subscription_items_params

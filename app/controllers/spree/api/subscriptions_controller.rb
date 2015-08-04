@@ -73,7 +73,7 @@ module Spree
       private
 
       def find_subscription
-        @subscription = current_api_user.subscriptions.find(params[:id])
+        @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
       end
 
       def address_params
