@@ -17,20 +17,21 @@ module Spree
       setup_subscribable_products
     end
 
-    it "can only view my subscriptions" do
+    it "restricts access to subscriptions" do
       create_completed_subscription_order
       @subscription = Spree::Subscription.last
       api_get :show, id: @subscription.id
       expect(json_response[:id]).to be nil
     end
 
+    it "should allow the owner of the subscription to access it" do
+      create_completed_subscription_order
+      @subscription = Spree::Subscription.last
+      @subscription.user = current_api_user
+      @subscription.save
+      api_get :show, id: @subscription.id
+      expect(json_response[:id]).to be @subscription.id
+    end
 
-    # context "PUT 'update'" do
-    #
-    #   it "should let me update my subscription" do
-    #     expect("test").to be false
-    #   end
-    #
-    # end
   end
 end

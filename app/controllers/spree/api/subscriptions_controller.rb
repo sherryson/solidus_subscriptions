@@ -22,6 +22,7 @@ module Spree
       end
 
       def show
+        authorize! :show, @subscription
         render json: @subscription.to_json
       end
 
@@ -73,7 +74,7 @@ module Spree
       private
 
       def find_subscription
-        @subscription = current_api_user.subscriptions.find(params[:id])
+        @subscription = Spree::Subscription.find(params[:id])
       end
 
       def address_params
