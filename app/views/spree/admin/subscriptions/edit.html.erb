@@ -2,8 +2,10 @@
   <%= t(:editing_subscription) %>
 <% end %>
 
-<%= render :partial => "spree/admin/subscriptions/addresses" %>
+<%= render partial: 'spree/admin/subscriptions/sidebar' %>
 
-<%= render :partial => "spree/admin/subscriptions/items" %>
+<%= render partial: 'spree/admin/subscriptions/addresses' %>
 
-<%= render :partial => "spree/admin/subscriptions/orders" %>
+<%= render partial: 'spree/admin/subscriptions/items' %>
+
+<%= render partial: 'spree/admin/subscriptions/orders' %>
