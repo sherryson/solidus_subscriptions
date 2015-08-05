@@ -4,7 +4,7 @@
     <%= render :partial => 'form', :locals => { :f => f } %>
   </fieldset>
 
-<div class="omega six columns" data-hook="ship_address_wrapper">
+<div class="alpha six columns" data-hook="ship_address_wrapper">
     <fieldset class="no-border-bottom">
       <legend align="center"><%= Spree.t(:billing_address) %></legend>
       <%= f.fields_for :bill_address do |ba_form| %>
@@ -13,7 +13,7 @@
     </fieldset>
   </div>
 
-<div data-hook="shipping_address_wrapper" class="alpha six columns">
+<div data-hook="shipping_address_wrapper" class="omega six columns">
   <fieldset class="no-border-bottom">
     <legend align="center"><%= Spree.t(:shipping_address) %></legend>
     <%= f.fields_for :ship_address do |sa_form| %>
