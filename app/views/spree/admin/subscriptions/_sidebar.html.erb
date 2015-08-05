@@ -1,5 +1,5 @@
 <% content_for :sidebar_title do %>
-  <%= Spree.t(:subscription_information) %>
+  <%= Spree.t(:addl_information) %>
 <% end %>
 
 <% content_for :sidebar do %>
@@ -16,11 +16,21 @@
       <dd><%= l(@subscription.next_shipment_date, format: :subscription_date_format) %></dd>
       <dt>Skip order</dt>
       <dd><%= @subscription.skip_order_at ? 'Yes' : 'No' %></dd>
+      <% if @subscription.skip_order_at %>
+        <dt>Skip order at</dt>
+        <dd><%= l(@subscription.skip_order_at, format: :subscription_date_format) %></dd>
+      <% end %>
       <dt>Failed renewals</dt>
       <dd><%= @subscription.failure_count %></dd>
     <% end %>
+    <dt>Completed orders</dt>
+    <dd><%= @subscription.orders.complete.count %></dd>
+    <dt>User</dt>
+    <dd><%= link_to(@subscription.user.email, edit_admin_user_path(@subscription.user), target: '_blank') %></dd>
+    <dt>Shipping Method</dt>
+    <dd><%= @subscription.shipping_method.name if @subscription.shipment && @subscription.shipping_method %></dd>
     <dt>Last updated</dt>
-    <dd><%= l(@subscription.updated_at, format: :long) %></dd>
+    <dd><%= l(@subscription.updated_at, format: :long) %></dd>    
   </dt>
   </header>
 <% end %>
