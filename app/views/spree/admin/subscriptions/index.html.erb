@@ -42,10 +42,10 @@
   <table class="index responsive" id="listing_subscriptions" data-hook width="100%">
     <colgroup>
        <col style="width: 5%;">
+       <col style="width: 8%;">
        <col style="width: 10%;">
-       <col style="width: 10%;">
-       <col style="width: 23%;">
-       <col style="width: 12%;">
+       <col style="width: 15%;">
+       <col style="width: 15%;">
        <col style="width: 3%;">       
        <col style="width: 9%;">
     </colgroup>
@@ -55,7 +55,7 @@
         <th>State</th>
         <th>Frequency</th>
         <th>Last Order</th>
-        <th>Order State</th>
+        <th>User</th>
         <th>Skip</th>
         <th>Renew Date</th>
         <th data-hook="admin_subscriptions_index_header_actions" class="actions"></th>
@@ -74,16 +74,16 @@
           <% end %>
         </td>
         <td>
-          <%= link_to subscription.last_order.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
+          <span class="state <%= subscription.orders.first.state.downcase %>">
+            <%= link_to subscription.orders.first.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
+          </span>
           <br />
-          <%= l(subscription.last_order.completed_at, format: :long)  %>
-          <br />
-          <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
+          <%= l(subscription.orders.first.completed_at, format: :long)  %>
           <br />
           <%= subscription.shipping_method.name if subscription.shipment && subscription.shipment.shipping_method %>
         </td>
         <td class="align-center">
-          <span class="state <%= subscription.orders.first.state.downcase %>"><%= Spree.t("order_state.#{subscription.orders.first.state.downcase}") %></span>
+          <%= link_to(subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank') if subscription.user %>
         </td>
         <td class="align-center"><%= subscription.skip_order_at ? 'Yes' : '' if subscription.can_renew? %></td>
         <td class="align-center"><%= l(subscription.next_shipment_date, format: :subscription_date_format) if subscription.can_renew? %></td>
