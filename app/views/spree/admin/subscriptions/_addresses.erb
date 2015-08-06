@@ -7,6 +7,7 @@
 <div class="alpha six columns" data-hook="ship_address_wrapper">
     <fieldset class="no-border-bottom">
       <legend align="center"><%= Spree.t(:billing_address) %></legend>
+      <span class="info right">Last updated: <%= l(@subscription.bill_address.updated_at, format: :long)  %></span>
       <%= f.fields_for :bill_address do |ba_form| %>
         <%= render :partial => 'spree/admin/shared/address_form', :locals => { :f => ba_form, :type => "billing" } %>
       <% end %>
@@ -16,6 +17,7 @@
 <div data-hook="shipping_address_wrapper" class="omega six columns">
   <fieldset class="no-border-bottom">
     <legend align="center"><%= Spree.t(:shipping_address) %></legend>
+    <span class="info right">Last updated: <%= l(@subscription.ship_address.updated_at, format: :long)  %></span>
     <%= f.fields_for :ship_address do |sa_form| %>
       <%= render :partial => 'spree/admin/shared/address_form', :locals => { :f => sa_form, :type => "shipping" } %>
     <% end %>
