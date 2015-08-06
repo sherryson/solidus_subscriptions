@@ -95,6 +95,10 @@ module Spree
       last_order.payments.where('amount > 0').where(state: 'completed').last.source
     end
 
+    def last_order_date
+      orders.first.complete? ? orders.first.completed_at : orders.first.created_at
+    end
+
     def next_order
       next_order = NullObject.new
 

@@ -85,7 +85,7 @@
             <%= link_to subscription.orders.first.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
           </span>
           <br />
-          <%= l(subscription.orders.first.completed_at, format: :long)  %>
+          <%= l(subscription.last_order_date, format: :long)  %>
           <br />
           <%= subscription.shipping_method.name if subscription.shipment && subscription.shipment.shipping_method %>
         </td>
