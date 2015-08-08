@@ -1,4 +1,4 @@
-<% if @subscription.subscription_items.exists? %>
+<% if @subscription.subscription_items.any? %>
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription.current_items") %></legend>
   </fieldset>
@@ -36,10 +36,12 @@
           </td>
           <td class="subscription-item-total align-center"><%= line_item_shipment_price(item, item.quantity) %></td>
           <td class="cart-subscription-item-delete actions" data-hook="cart_subscription_item_delete">
-            <% if can? :update, item %>
-              <%= link_to '', '#', :class => 'save-subscription-item fa fa-ok no-text with-tip', :data => { 'subscription-item-id' => item.id, :action => 'save'}, :title => Spree.t('actions.save'), :style => 'display: none' %>
-              <%= link_to '', '#', :class => 'cancel-subscription-item fa fa-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel'), :style => 'display: none' %>
-              <%= link_to '', '#', :class => 'edit-subscription-item fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>              
+            <% unless @subscription.new_record? %>
+              <% if can? :update, item %>
+                <%= link_to '', '#', :class => 'save-subscription-item fa fa-ok no-text with-tip', :data => { 'subscription-item-id' => item.id, :action => 'save'}, :title => Spree.t('actions.save'), :style => 'display: none' %>
+                <%= link_to '', '#', :class => 'cancel-subscription-item fa fa-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel'), :style => 'display: none' %>
+                <%= link_to '', '#', :class => 'edit-subscription-item fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>              
+              <% end %>
             <% end %>
           </td>
         </tr>

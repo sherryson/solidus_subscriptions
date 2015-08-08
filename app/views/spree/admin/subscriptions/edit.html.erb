@@ -4,8 +4,17 @@
 
 <%= render partial: 'spree/admin/subscriptions/sidebar' %>
 
-<%= render partial: 'spree/admin/subscriptions/addresses' %>
+<%= form_for @subscription, :url => admin_subscriptions_path(@subscription) do |f| %>
 
-<%= render partial: 'spree/admin/subscriptions/items' %>
+  <fieldset class="index no-border-bottom">
+    <legend align="center"><%= Spree.t("admin.subscription") %></legend>
+    <%= render :partial => 'form', :locals => { :f => f } %>
+  </fieldset>
 
-<%= render partial: 'spree/admin/subscriptions/orders' %>
+  <%= render partial: 'spree/admin/subscriptions/addresses', :locals => { :f => f } %>
+
+  <%= render partial: 'spree/admin/subscriptions/items' %>
+
+  <%= render partial: 'spree/admin/subscriptions/orders' %>
+
+<% end %>

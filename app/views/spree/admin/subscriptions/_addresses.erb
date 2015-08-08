@@ -1,35 +1,34 @@
-<%= form_for @subscription, :url => admin_subscription_url(@subscription) do |f| %>
-  <fieldset class="index no-border-bottom">
-    <legend align="center"><%= Spree.t("admin.subscription") %></legend>
-    <%= render :partial => 'form', :locals => { :f => f } %>
-  </fieldset>
-
-<div class="alpha six columns" data-hook="ship_address_wrapper">
+<div class="alpha <%= @subscription.new_record? ? "eight" : "six" %> columns" data-hook="ship_address_wrapper">
     <fieldset class="no-border-bottom">
       <legend align="center"><%= Spree.t(:billing_address) %></legend>
-      <span class="info right">Last updated: <%= l(@subscription.bill_address.updated_at, format: :long)  %></span>
+      <% unless @subscription.new_record? %>
+        <span class="info right">Last updated: <%= l(@subscription.bill_address.updated_at, format: :long)  %></span>
+      <% end %>
       <%= f.fields_for :bill_address do |ba_form| %>
         <%= render :partial => 'spree/admin/shared/address_form', :locals => { :f => ba_form, :type => "billing" } %>
       <% end %>
     </fieldset>
   </div>
 
-<div data-hook="shipping_address_wrapper" class="omega six columns">
+<div data-hook="shipping_address_wrapper" class="omega <%= @subscription.new_record? ? "eight" : "six" %> columns">
   <fieldset class="no-border-bottom">
     <legend align="center"><%= Spree.t(:shipping_address) %></legend>
-    <span class="info right">Last updated: <%= l(@subscription.ship_address.updated_at, format: :long)  %></span>
+    <% unless @subscription.new_record? %>
+      <span class="info right">Last updated: <%= l(@subscription.ship_address.updated_at, format: :long)  %></span>
+    <% end %>
     <%= f.fields_for :ship_address do |sa_form| %>
       <%= render :partial => 'spree/admin/shared/address_form', :locals => { :f => sa_form, :type => "shipping" } %>
     <% end %>
   </fieldset>
 </div>  
 
+<% unless @subscription.new_record? %>
   <div class="clear"></div>
   <fieldset class="index no-border-top">
     <div class="form-buttons filter-actions actions" data-hook="buttons">
       <%= button Spree.t('actions.update'), 'refresh' %>
       <span class="or"><%= Spree.t(:or) %></span>
-      <%= button_link_to Spree.t('actions.back'), collection_url, :icon => 'remove' %>
+      <%= button_link_to Spree.t('actions.back'), collection_url, :icon => 'arrow-left' %>
     </div>
   </fieldset>
 <% end %>
