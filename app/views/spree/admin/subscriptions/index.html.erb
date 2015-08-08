@@ -30,22 +30,22 @@
 
       <div class="four columns">
         <div class="field">
-          <%= label_tag :q_id_eq, Spree.t(:id) %>
-          <%= f.text_field :id_eq, tabindex: 1 %>
-        </div>
-      </div>
-
-      <div class="four columns">
-        <div class="field">
           <%= label_tag :q_user_email_cont, Spree.t(:email) %>
           <%= f.text_field :user_email_cont, tabindex: 2 %>
         </div>
       </div>
 
-      <div class="four columns omega">
+      <div class="four columns">
         <div class="field">
           <%= label_tag :q_orders_number_cont, Spree.t(:order_number) %>
           <%= f.text_field :orders_number_cont, tabindex: 3 %>
+        </div>
+      </div>
+
+      <div class="four columns omega">
+        <div class="field">
+          <%= label_tag :q_id_eq, Spree.t(:id) %>
+          <%= f.text_field :id_eq, tabindex: 1 %>
         </div>
       </div>
 
