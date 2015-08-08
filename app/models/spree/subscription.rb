@@ -9,14 +9,14 @@ module Spree
     alias_attribute :billing_address, :bill_address
 
     belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
-    alias_attribute :shipping_address, :ship_address    
+    alias_attribute :shipping_address, :ship_address
 
     accepts_nested_attributes_for :ship_address
     accepts_nested_attributes_for :bill_address
 
-    validates_presence_of :ship_address_id
-    validates_presence_of :bill_address_id
-    validates_presence_of :user_id
+    validates_presence_of :ship_address
+    validates_presence_of :bill_address
+    validates_presence_of :user
 
     class << self
       def active
@@ -171,10 +171,12 @@ module Spree
       orders.complete
     end
 
+    # fetch the last completed order shipment
     def shipment
       last_order.shipments.last
     end
 
+    # fetch the last completed order shipping method
     def shipping_method
       shipment.shipping_method
     end
