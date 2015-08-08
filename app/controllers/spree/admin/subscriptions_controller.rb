@@ -69,13 +69,14 @@ module Spree
           @collection = @search.result(distinct: true).
             includes(subscription_includes).
             page(params[:page]).
-            per(params[:per_page] || Spree::Config[:promotions_per_page])
+            per(params[:per_page] || Spree::Config[:orders_per_page])
 
           @collection
         end     
 
+      private
         def require_order_id
-          if params[:order_id].nil?
+          if params[:order_id].blank?
             redirect_to admin_subscriptions_url
             flash[:error] = flash_message_for(@object, :requires_order_id)
           end

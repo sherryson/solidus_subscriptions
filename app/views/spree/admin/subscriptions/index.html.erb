@@ -14,20 +14,35 @@
   <div data-hook="admin_subscriptions_index_search">
     <%= search_form_for [:admin, @search] do |f| %>
       <div class="four columns alpha">
+        <div class="date-range-filter field">
+          <%= label_tag :q_created_at_gt, Spree.t(:date_range) %>
+          <div class="date-range-fields">
+            <%= f.text_field :created_at_gt, :class => 'datepicker datepicker-from', :value => params[:q][:created_at_gt], :placeholder => Spree.t(:start) %>
+
+            <span class="range-divider">
+              <i class="fa fa-arrow-right"></i>
+            </span>
+
+            <%= f.text_field :created_at_lt, :class => 'datepicker datepicker-to', :value => params[:q][:created_at_lt], :placeholder => Spree.t(:stop) %>
+          </div>
+        </div>
+      </div>
+
+      <div class="four columns">
         <div class="field">
           <%= label_tag :q_id_eq, Spree.t(:id) %>
           <%= f.text_field :id_eq, tabindex: 1 %>
         </div>
       </div>
 
-      <div class="four columns alpha">
+      <div class="four columns">
         <div class="field">
           <%= label_tag :q_user_email_cont, Spree.t(:email) %>
           <%= f.text_field :user_email_cont, tabindex: 2 %>
         </div>
       </div>
 
-      <div class="four columns">
+      <div class="four columns omega">
         <div class="field">
           <%= label_tag :q_orders_number_cont, Spree.t(:order_number) %>
           <%= f.text_field :orders_number_cont, tabindex: 3 %>
@@ -46,6 +61,9 @@
 <% end %>
 
 <% unless @subscriptions.empty? %>
+  <div class="pagination">
+    <%= page_entries_info @collection %>
+  </div>
   <table class="index responsive" id="listing_subscriptions" data-hook width="100%">
     <colgroup>
        <col style="width: 5%;">
