@@ -1,0 +1,35 @@
+<% content_for :page_title do %>
+  <%= t(:new_subscription) %>
+<% end %>
+
+<%= form_for @subscription, :url => admin_subscriptions_path(@subscription) do |f| %>
+  <%= f.hidden_field :order_ids, value: params[:order_id] %>
+
+  <%= f.hidden_field :state %>
+  <%= f.hidden_field :user_id %>
+  <%= f.hidden_field :duration %>
+  <%= f.hidden_field :prepaid_amount %>
+  <%= f.hidden_field :credit_card_id %>
+
+  <fieldset class="index no-border-bottom">
+    <legend align="center"><%= Spree.t("admin.subscription") %></legend>
+    <%= render :partial => 'form', :locals => { :f => f } %>
+  </fieldset>
+
+  <%= render partial: 'spree/admin/subscriptions/addresses', :locals => { :f => f } %>
+
+  <%= render partial: 'spree/admin/subscriptions/items' %>
+
+  <div class="clear"></div>
+  <fieldset class="index no-border-top">
+    <div class="form-buttons filter-actions actions" data-hook="buttons">
+      <%= button Spree.t('actions.create'), 'create' %>
+      <span class="or"><%= Spree.t(:or) %></span>
+      <% if @subscription.orders.any? %>
+        <%= button_link_to Spree.t('actions.back'), collection_url, :icon => 'arrow-left' %>
+      <% else %>
+      <% end %>
+    </div>
+  </fieldset>
+
+<% end %>
