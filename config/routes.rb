@@ -9,7 +9,7 @@ Spree::Core::Engine.routes.draw do
   end
 
   namespace :api, defaults: { format: 'json' } do
-    resources :subscriptions do
+    resources :subscriptions, except: [:index, :create, :new, :destroy] do
       member do
         put :skip_next_order
         put :undo_skip_next_order
