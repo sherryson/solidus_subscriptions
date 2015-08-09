@@ -4,7 +4,7 @@
 
 <%= render partial: 'spree/admin/subscriptions/sidebar' %>
 
-<%= form_for @subscription, :url => admin_subscriptions_path(@subscription) do |f| %>
+<%= form_for @subscription, :url => admin_subscription_path(@subscription) do |f| %>
 
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription") %></legend>

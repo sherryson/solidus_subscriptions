@@ -1,6 +1,6 @@
 Spree::Core::Engine.routes.draw do
   namespace :admin do
-    resources :subscriptions do
+    resources :subscriptions, except: [:show, :destroy] do
       member do 
         get :cancel
         get :renew
