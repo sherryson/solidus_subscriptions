@@ -189,6 +189,15 @@ module Spree
       interval && !cancelled?
     end
 
+    def add_new_credit_card(params)
+      ::Spree::CreditCard.transaction do
+        credit_card = user.credit_cards.create(params)
+        update_column(:credit_card_id, credit_card.id)
+
+        CardStore.store_card_for_user(user, credit_card, credit_card.verification_value)
+      end
+    end
+
     def subscription_log_for(order)
       ::SubscriptionLog.where(order_id: order.id).last
     end
