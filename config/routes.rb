@@ -4,6 +4,8 @@ Spree::Core::Engine.routes.draw do
       member do 
         get :cancel
         get :renew
+        get :credit_card
+        post :credit_card
       end
     end
   end
@@ -20,5 +22,6 @@ Spree::Core::Engine.routes.draw do
       end
     end
     resources :subscription_items
+    resources :credit_cards, only: [:create]
   end
 end

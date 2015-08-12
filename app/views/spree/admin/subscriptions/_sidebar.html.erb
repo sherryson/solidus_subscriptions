@@ -5,6 +5,8 @@
 <% content_for :sidebar do %>
   <header id="subscription_tab_summary" data-hook>
   <dl class="additional-info">
+    <dt>Id:</dt>
+    <dd><%= @subscription.id %></dd>
     <dt>Status</dt>
     <dd><span class="state <%= @subscription.active? ? 'success' : 'canceled' %>"><%= Spree.t(@subscription.state, :scope => :subscription_state) %></span></dd>
     <% if @subscription.cancelled? %>
@@ -29,6 +31,8 @@
     <dd><%= link_to(@subscription.user.email, edit_admin_user_path(@subscription.user), target: '_blank') %></dd>
     <dt>Shipping Method</dt>
     <dd><%= @subscription.shipping_method.name if @subscription.shipment && @subscription.shipping_method %></dd>
+    <dt>Credit card </dt>
+    <dd><%= link_to @subscription.credit_card.display_number, credit_card_admin_subscription_path(@subscription) %></dd>
     <dt>Last updated</dt>
     <dd><%= l(@subscription.updated_at, format: :long) %></dd>    
   </dt>

@@ -58,6 +58,20 @@ module Spree
         end
       end
 
+      def credit_card
+        if request.post?
+          begin
+            subscription = Spree::Subscription.find(params[:id])
+            # get the payment_method_id
+            credit_card_params = object_params[:source_attributes].merge Hash[*object_params.first]
+            subscription.add_new_credit_card(credit_card_params)
+          rescue Spree::Core::GatewayError, CardStore::CardError => e
+            flash[:error] = "#{e.message}"
+          end
+        end
+        @payment_methods = PaymentMethod.available(:back_end).select{ |method| method.type =~ /Gateway/ }
+      end
+
       protected
         def collection
           return @collection if defined?(@collection)
@@ -105,9 +119,16 @@ module Spree
           end
         end
 
+        def object_params
+          if params[:payment] and params[:payment_source] and source_params = params.delete(:payment_source)[params[:payment][:payment_method_id]]
+            params[:payment][:source_attributes] = source_params
+          end
+          params.require(:payment).permit(permitted_payment_attributes)
+        end
+
         def subscription_includes
           [:user, :orders]
-        end         
+        end
     end
   end
 end
