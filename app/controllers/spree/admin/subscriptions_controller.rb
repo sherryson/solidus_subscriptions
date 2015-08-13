@@ -1,7 +1,9 @@
 module Spree
   module Admin
     class SubscriptionsController < ResourceController
+      
       before_action :require_order_id, only: [:new]
+      before_action :load_payment_methods, only: [:credit_card]
 
       def new
         order_id = params[:order_id]
@@ -69,7 +71,6 @@ module Spree
             flash[:error] = "#{e.message}"
           end
         end
-        @payment_methods = PaymentMethod.available(:back_end).select{ |method| method.type =~ /Gateway/ }
       end
 
       protected
@@ -117,6 +118,11 @@ module Spree
               price: line_item.price
             )
           end
+        end
+
+        def load_payment_methods
+          @payment_methods = PaymentMethod.available(:back_end).select{ |method| method.type =~ /Gateway/ }
+          @payment_method = @payment_methods.first
         end
 
         def object_params
