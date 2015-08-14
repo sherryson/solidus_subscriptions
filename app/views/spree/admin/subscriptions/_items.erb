@@ -3,6 +3,9 @@
     <legend align="center"><%= Spree.t("admin.subscription.current_items") %></legend>
   </fieldset>
 
+
+  <%= render :partial => 'add_subscription_item' %>
+
   <table class="subscription-items index" data-hook="subscription-items">
     <colgroup>
       <col style="width: 10%;" />
