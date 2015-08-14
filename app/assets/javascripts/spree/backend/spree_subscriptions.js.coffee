@@ -72,7 +72,7 @@ adjustSubscriptionItem = (subscription_item_id, quantity) ->
     $('a.edit-subscription-item').trigger 'click'
 
 deleteSubscriptionItem = (subscription_item_id) ->
-  url = subscriptionItemURL(subscription_item_id)
+  url = Spree.pathFor('api/subscriptions/' + subscription_id + '/subscription_items/' + subscription_item_id)
   $.ajax(
     type: "DELETE"
     url: Spree.url(url)

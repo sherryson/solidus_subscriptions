@@ -1,8 +1,8 @@
 module Spree
   module Api
     class SubscriptionItemsController < Spree::Api::BaseController
-      before_action :find_subscription, only: :create
-      before_action :find_subscription_item, only: :update
+      before_action :find_subscription
+      before_action :find_subscription_item, only: [:update, :destroy]
 
       def create
         variant = Spree::Variant.find(params[:subscription_item][:variant_id])
@@ -29,13 +29,19 @@ module Spree
         end
       end
 
+      def destroy
+        @subscription.subscription_items.destroy(params[:id])
+
+        respond_with(@subscription_item, status: 204)
+      end
+
       private
       def find_subscription
         @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:subscription_id])
       end
 
 
-      def find_subscription_item        
+      def find_subscription_item
         @subscription_item ||= Spree::SubscriptionItem.accessible_by(current_ability, :read).find(params[:id])
       end
 
