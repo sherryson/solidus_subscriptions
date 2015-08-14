@@ -23,7 +23,6 @@ Spree::Core::Engine.routes.draw do
 
       resources :subscription_items
     end
-    resources :subscription_items
     resources :credit_cards, only: [:create]
   end
 end

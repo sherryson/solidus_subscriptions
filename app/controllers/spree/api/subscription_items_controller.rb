@@ -1,7 +1,7 @@
 module Spree
   module Api
     class SubscriptionItemsController < Spree::Api::BaseController
-      before_action :find_subscription
+      before_action :find_subscription, only: [:create, :destroy]
       before_action :find_subscription_item, only: [:update, :destroy]
 
       def create
