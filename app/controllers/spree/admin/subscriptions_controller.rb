@@ -28,7 +28,7 @@ module Spree
 
         subscription.save
 
-        redirect_to admin_subscriptions_url
+        redirect_to location_after_save
       end
 
       def renew
@@ -47,7 +47,7 @@ module Spree
           flash[:success] = flash_message_for(@object, :successfully_renewed)
         end
         respond_with(@object) do |format|
-          format.html { redirect_to collection_url }
+          format.html { redirect_to location_after_save }
         end
       end
 

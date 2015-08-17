@@ -3,8 +3,8 @@ Spree::Core::Engine.routes.draw do
     resources :subscriptions, except: [:show, :destroy] do
       member do 
         get :cancel
-        get :renew
         get :credit_card
+        put :renew
         post :credit_card
       end
     end
