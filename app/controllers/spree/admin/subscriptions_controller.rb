@@ -87,7 +87,11 @@ module Spree
             per(params[:per_page] || Spree::Config[:orders_per_page])
 
           @collection
-        end     
+        end    
+
+        def location_after_save
+          edit_object_url(@object)
+        end
 
       private
         def require_order_id
