@@ -60,6 +60,7 @@ module Spree
         end
       end
 
+      # creates a new credit card and attaches it to the subscription
       def credit_card
         if request.post?
           begin

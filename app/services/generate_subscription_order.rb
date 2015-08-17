@@ -20,9 +20,10 @@ class GenerateSubscriptionOrder
 
   def create_next_order_with_payment
     previous_order = subscription.last_order
+
     # create a new order and populate the next order with the same line items
     subscription.subscription_items.each do |line_item|
-      order_populator.populate line_item.variant, line_item.quantity
+      next_order.contents.add(line_item.variant, line_item.quantity)
     end
 
     transition_order_from_cart_to_address!(next_order)
