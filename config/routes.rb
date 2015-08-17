@@ -19,10 +19,9 @@ Spree::Core::Engine.routes.draw do
         put :update_address
         put :select_address
         put :cancel
+        post :create_credit_card
       end
-
       resources :subscription_items
     end
-    resources :credit_cards, only: [:create]
   end
 end

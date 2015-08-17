@@ -70,6 +70,31 @@ module Spree
         end
       end
 
+      # create a new credit card
+      # then assign it to the subscription
+      def create_credit_card
+        order = @subscription.last_order
+        credit_card = nil
+        begin
+          ::Spree::CreditCard.transaction do
+            credit_card = try_spree_current_user.credit_cards.build(credit_card_params)
+            credit_card.save
+
+            @subscription.credit_card = credit_card
+            @subscription.save
+
+            CardStore.store_card_for_user(try_spree_current_user, credit_card, credit_card.verification_value)
+          end
+          render json: @subscription,
+            scope: try_spree_current_user,
+            serializer: SubscriptionSerializer,
+            root: false
+        rescue CardStore::CardError
+          @resource = credit_card
+          render "sprangular/errors/invalid", status: 422
+        end
+      end
+
       private
 
       def find_subscription
@@ -82,6 +107,10 @@ module Spree
 
       def subscription_params
         params.require(:subscription).permit(permitted_subscription_attributes)
+      end
+
+      def credit_card_params
+        params.require(:credit_card).permit!
       end
 
       def permitted_address_params
