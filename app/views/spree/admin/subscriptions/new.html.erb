@@ -24,11 +24,6 @@
   <fieldset class="index no-border-top">
     <div class="form-buttons filter-actions actions" data-hook="buttons">
       <%= button Spree.t('actions.create'), 'create' %>
-      <span class="or"><%= Spree.t(:or) %></span>
-      <% if @subscription.orders.any? %>
-        <%= button_link_to Spree.t('actions.back'), collection_url, :icon => 'arrow-left' %>
-      <% else %>
-      <% end %>
     </div>
   </fieldset>
 

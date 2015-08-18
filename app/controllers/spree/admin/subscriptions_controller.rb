@@ -23,12 +23,18 @@ module Spree
       end
 
       def create
-        subscription = Spree::Subscription.new(params[:subscription].permit!)
-        build_subscription_items(subscription, subscription.orders.first)
+        @subscription = Spree::Subscription.new(permitted_resource_params)
+        build_subscription_items(@subscription, @subscription.orders.first)
 
-        subscription.save
+        if @subscription.save
+          flash[:success] = flash_message_for(@subscription, :subscription_created)
 
-        redirect_to location_after_save
+          redirect_to edit_object_url(@subscription)
+        else
+          flash[:error] = Spree.t(:subscription_could_not_be_created)
+
+          render :new
+        end
       end
 
       def renew

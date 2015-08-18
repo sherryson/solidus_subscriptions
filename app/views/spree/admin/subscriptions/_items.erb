@@ -1,4 +1,6 @@
+<% unless @subscription.new_record? %>
 <%= render :partial => 'add_subscription_item' %>
+<% end %>
 
 <fieldset class="index no-border-bottom">
   <legend align="center"><%= Spree.t("admin.subscription.current_items") %></legend>

@@ -23,6 +23,7 @@ en:
     error_renew: failed to renew subscription
     order_number: Order Number
     requires_order_id: Requires order id
+    subscription_created: subscription created
 
   time:
     formats:
