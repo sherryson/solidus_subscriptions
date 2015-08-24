@@ -119,7 +119,7 @@
           <%=
             unless subscription.cancelled?
               link_to_with_icon 'cancel', 'Cancel', cancel_admin_subscription_path(subscription),
-                no_text: true, data: { confirm: t(:are_you_sure), action: 'remove' }
+                no_text: true, method: :put, data: { confirm: t(:are_you_sure), action: 'remove' }
             end
           -%>
         </td>
