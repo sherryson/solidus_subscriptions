@@ -66,6 +66,24 @@ module Spree
         end
       end
 
+      def skip
+        if @object.skip_next_order
+          flash[:success] = flash_message_for(@object, :successfully_skipped)
+          respond_with(@object) do |format|
+            format.html { redirect_to location_after_save }
+          end
+        end
+      end
+
+      def undo_skip
+        if @object.undo_skip_next_order
+          flash[:success] = flash_message_for(@object, :successfully_undo_skip)
+          respond_with(@object) do |format|
+            format.html { redirect_to location_after_save }
+          end
+        end        
+      end
+
       # creates a new credit card and attaches it to the subscription
       def credit_card
         if request.post?

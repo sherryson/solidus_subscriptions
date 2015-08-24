@@ -24,6 +24,8 @@ en:
     order_number: Order Number
     requires_order_id: Requires order id
     subscription_created: subscription created
+    successfully_skipped: subscription next order has been skipped
+    successfully_undo_skip: subscription next order skip has been undone
 
   time:
     formats:

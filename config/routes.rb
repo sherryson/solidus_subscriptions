@@ -1,10 +1,12 @@
 Spree::Core::Engine.routes.draw do
   namespace :admin do
     resources :subscriptions, except: [:show, :destroy] do
-      member do 
-        get :cancel
-        get :credit_card
+      member do
+        put :cancel
         put :renew
+        put :skip
+        put :undo_skip
+        get :credit_card
         post :credit_card
       end
     end

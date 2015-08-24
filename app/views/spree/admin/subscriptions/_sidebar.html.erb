@@ -20,11 +20,16 @@
         (<%= link_to 'Renew Now', renew_admin_subscription_path(@subscription), method: :put, data: { confirm: 'Are you sure you want to renew the subscription?' } %>)
       </dd>
       <dt>Skip order</dt>
-      <dd><%= @subscription.skip_order_at ? 'Yes' : 'No' %></dd>
-      <% if @subscription.skip_order_at %>
-        <dt>Skip order at</dt>
-        <dd><%= l(@subscription.skip_order_at, format: :subscription_date_format) %></dd>
-      <% end %>
+      <dd><%= @subscription.skip_order_at ? 'Yes' : 'No' %></dd>      
+      <dt>Skip order at</dt>
+      <dd>
+        <%= l(@subscription.skip_order_at, format: :subscription_date_format) if @subscription.skip_order_at %>
+        <% if @subscription.skip_order_at.nil? %>
+        <%= link_to 'Skip Now', skip_admin_subscription_path(@subscription), method: :put %>
+        <% else %>
+        (<%= link_to 'Undo', undo_skip_admin_subscription_path(@subscription), method: :put %>)          
+        <% end %>
+      </dd>      
       <dt>Failed renewals</dt>
       <dd><%= @subscription.failure_count %></dd>
     <% end %>
