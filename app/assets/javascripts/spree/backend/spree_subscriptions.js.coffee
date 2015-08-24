@@ -53,12 +53,11 @@ toggleSubscriptionItemEdit = ->
 
   false
 
-subscriptionItemURL = (subscription_item_id) ->
-  #url = Spree.pathFor('api/subscription') + "/" + subscription_id + "/subscription_items/" + subscription_item_id + ".json"
-  url = Spree.pathFor('api/subscription_items') + "/" + subscription_item_id + ".json"
+subscriptionItemURL = (subscription_id, subscription_item_id) ->
+  url = Spree.pathFor('api/subscriptions/' + subscription_id + '/subscription_items/' + subscription_item_id)
 
 adjustSubscriptionItem = (subscription_item_id, quantity) ->
-  url = subscriptionItemURL(subscription_item_id)
+  url = subscriptionItemURL(subscription_id, subscription_item_id)
   $.ajax(
     type: "PUT",
     url: Spree.url(url),
