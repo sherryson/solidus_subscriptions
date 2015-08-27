@@ -18,6 +18,8 @@ module Spree
     validates_presence_of :bill_address
     validates_presence_of :user
 
+    after_save :reset_failure_count, if: :credit_card_id_changed?
+
     class << self
       def active
         where(state: 'active')
