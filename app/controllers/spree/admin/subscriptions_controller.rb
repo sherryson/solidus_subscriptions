@@ -81,20 +81,21 @@ module Spree
           respond_with(@object) do |format|
             format.html { redirect_to location_after_save }
           end
-        end        
+        end
       end
 
       # creates a new credit card and attaches it to the subscription
       def credit_card
         if request.post?
           begin
-            subscription = Spree::Subscription.find(params[:id])
             # get the payment_method_id
             credit_card_params = object_params[:source_attributes].merge Hash[*object_params.first]
-            subscription.add_new_credit_card(credit_card_params)
+            @object.add_new_credit_card(credit_card_params)
           rescue Spree::Core::GatewayError, CardStore::CardError => e
             flash[:error] = "#{e.message}"
           end
+
+          redirect_to credit_card_admin_subscription_url(@object)
         end
       end
 

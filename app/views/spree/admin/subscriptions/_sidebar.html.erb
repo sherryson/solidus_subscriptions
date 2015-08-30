@@ -40,7 +40,11 @@
     <dt>Shipping Method</dt>
     <dd><%= @subscription.shipping_method.name if @subscription.shipment && @subscription.shipping_method %></dd>
     <dt>Credit card </dt>
-    <dd><%= link_to @subscription.credit_card.display_number, credit_card_admin_subscription_path(@subscription) %></dd>
+    <% if @subscription.credit_card %> 
+      <dd><%= link_to @subscription.credit_card.display_number, credit_card_admin_subscription_path(@subscription) %></dd>
+    <% else %>    
+      <dd><%= link_to Spree.t(:create), credit_card_admin_subscription_path(@subscription) %></dd>
+    <% end %>
     <dt>Last updated</dt>
     <dd><%= l(@subscription.updated_at, format: :long) %></dd>    
   </dt>

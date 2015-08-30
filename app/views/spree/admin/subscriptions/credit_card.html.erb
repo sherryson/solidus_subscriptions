@@ -10,6 +10,7 @@
 
 <div class="alpha nine columns new_payment" id="new_payment">
   <div class="field">
+    <% if @object.credit_card %>    
     <label><%= Spree.t(:current) %></label>
     <fieldset class="no-border-bottom">
       <dl>
@@ -23,7 +24,7 @@
         <dt>Provider</dt><dd><%= @object.credit_card.payment_method.type %></dd>
       </dl>
     </fieldset>
-
+    <% end %>
     <%= form_tag credit_card_admin_subscription_path(@object) do |f| %>
       <label><%= Spree.t(:new_payment_method) %></label>
       <ul>
