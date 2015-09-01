@@ -176,6 +176,14 @@ module Spree
       skips.last.skip_at if skips.any? && skips.last.undo_at.nil?
     end
 
+    def pause
+      update_attributes(pause_at: Time.now, resume_at: nil, state: 'paused')
+    end
+
+    def resume
+      update_attributes(pause_at: nil, resume_at: Time.now, state: 'active')
+    end
+
     def completed_orders
       orders.complete
     end
