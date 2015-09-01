@@ -3,6 +3,20 @@ module Spree
     class SubscriptionsController < Spree::Api::BaseController
       before_action :find_subscription
 
+      def show
+        render json: @subscription.to_json
+      end
+
+      def update
+        result = @subscription.update_attributes(subscription_params)
+
+        if result
+          render json: @subscription.to_json
+        else
+          invalid_resource!(@subscription)
+        end
+      end
+
       def skip_next_order
         @subscription.skip_next_order
 
@@ -21,18 +35,16 @@ module Spree
         render json: @subscription.to_json
       end
 
-      def show
+      def pause
+        @subscription.pause
+
         render json: @subscription.to_json
       end
 
-      def update
-        result = @subscription.update_attributes(subscription_params)
+      def resume
+        @subscription.resume
 
-        if result
-          render json: @subscription.to_json
-        else
-          invalid_resource!(@subscription)
-        end
+        render json: @subscription.to_json
       end
 
       def create_address
