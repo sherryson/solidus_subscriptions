@@ -85,6 +85,10 @@ module Spree
       state == 'cancelled'
     end
 
+    def paused?
+      state == 'paused'
+    end
+
     def cancel
       update_attribute(:state, 'cancelled')
       update_attribute(:cancelled_at, Time.now)
@@ -203,7 +207,7 @@ module Spree
     end
 
     def can_renew?
-      interval && !cancelled?
+      interval && !cancelled? && !paused?
     end
 
     def add_new_credit_card(params)

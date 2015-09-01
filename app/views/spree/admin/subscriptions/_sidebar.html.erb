@@ -31,7 +31,15 @@
         <% end %>
       </dd>      
       <dt>Failed renewals</dt>
-      <dd><%= @subscription.failure_count %></dd>
+      <dd><%= @subscription.failure_count %></dd>      
+    <% end %>
+    <% if @subscription.paused? %>
+      <dt>Paused at</dt>
+      <dd><%= l(@subscription.pause_at, format: :subscription_date_format) %></dd>
+    <% end %>
+    <% if @subscription.resume_at %>
+      <dt>Resumed at</dt>
+      <dd><%= l(@subscription.resume_at, format: :subscription_date_format) %></dd>
     <% end %>
     <dt>Completed orders</dt>
     <dd><%= @subscription.orders.complete.count %></dd>
