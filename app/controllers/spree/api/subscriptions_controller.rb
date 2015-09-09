@@ -37,8 +37,6 @@ module Spree
 
       def pause
         @subscription.pause
-
-        render json: @subscription.to_json
       end
 
       def resume

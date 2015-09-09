@@ -36,21 +36,21 @@ describe Spree::Order do
     end
 
     context "with an eligible order" do
-      before do    
+      before do
         Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
         Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
-        order.line_items << line_items        
-        order.finalize!                        
+        order.line_items << line_items
+        order.finalize!
       end
 
-      it "creates a subscription and attaches it to the order" do        
+      it "creates a subscription and attaches it to the order" do
         order.subscription.should_not be_nil
         order.subscription.duration.should == 0
       end
 
       it "does not set the repeat_order flag" do
         order.reload
-        expect(order.repeat_order).to be_false
+        expect(order.repeat_order).to be false
       end
     end
   end

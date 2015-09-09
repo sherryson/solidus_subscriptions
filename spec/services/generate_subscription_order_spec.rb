@@ -45,7 +45,7 @@ describe GenerateSubscriptionOrder do
       @order.subscription.update_column(:duration, 2)
       GenerateSubscriptionOrder.new(subscription).call
       Spree::Order.complete.count.should == 2
-      GenerateSubscriptionOrder.new(subscription).call.should be_false
+      GenerateSubscriptionOrder.new(subscription).call.should be false
     end
   end
 

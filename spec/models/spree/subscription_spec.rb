@@ -16,7 +16,7 @@ describe Spree::Subscription do
   context "#products" do
     it 'should return a collection of products' do
       create_completed_subscription_order
-      @order.subscription.products.map(&:subscribable?).all?.should be_true 
+      @order.subscription.products.map(&:subscribable?).all?.should be true
     end
   end
 
@@ -55,20 +55,20 @@ describe Spree::Subscription do
     end
 
     it "should know if it's been paid for in advance" do
-      @order.subscription.prepaid?.should be_false
+      @order.subscription.prepaid?.should be false
     end
 
     it "should know if it has a prepaid balance remaining" do
-      @order.subscription.prepaid_balance_remaining?.should be_false
+      @order.subscription.prepaid_balance_remaining?.should be false
     end
 
     it "should be set to prepaid when a prepaid order is submitted" do
       setup_prepayable_subscription_variants
       create_completed_prepaid_subscription_order
-      @order.subscribable?.should be_true
+      @order.subscribable?.should be true
       @order.subscription.duration.should == 6
       @order.subscription.interval.should == 4
-      @order.subscription.prepaid?.should be_true
+      @order.subscription.prepaid?.should be true
     end
   end
 
@@ -79,7 +79,7 @@ describe Spree::Subscription do
       let(:subscription_state) { 'cancelled' }
 
       it "returns true" do
-        expect(subscription.cancelled?).to be_true
+        expect(subscription.cancelled?).to be true
       end
     end
 
@@ -87,7 +87,7 @@ describe Spree::Subscription do
       let(:subscription_state) { nil }
 
       it "returns false" do
-        expect(subscription.cancelled?).to be_false
+        expect(subscription.cancelled?).to be false
       end
     end
   end

@@ -21,17 +21,17 @@ describe Spree::Product do
   end
 
   it "should be subscribable" do
-    @product.reload.subscribable?.should be_true
+    @product.reload.subscribable?.should be true
   end
 
   it "should have subscribable to false by default" do
     simple_product.subscribable?.should be false
-  end 
+  end
 
   it "should return a list of subscribable variants" do
     @product.reload.subscribable_variants.map(&:sku).should == ['subscribable - 1']
   end
- 
+
   it "should return a list of prepayable variants" do
     @product.reload.prepayable_variants.map(&:sku).should == []
   end

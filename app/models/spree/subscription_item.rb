@@ -5,7 +5,7 @@ module Spree
     belongs_to :tax_category, class_name: "Spree::TaxCategory"
 
     has_one :product, through: :variant
-
+    
     before_validation :copy_price
     before_validation :copy_tax_category
 
