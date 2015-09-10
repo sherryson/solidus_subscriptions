@@ -2,11 +2,11 @@ FactoryGirl.define do
   factory :subscription, :class => Spree::Subscription do
     state nil
     interval 2
-    ship_address_id {
-      FactoryGirl.create(:address).id
+    ship_address {
+      FactoryGirl.create(:subscription_address)
     }
-    bill_address_id {
-      FactoryGirl.create(:address).id
+    bill_address {
+      FactoryGirl.create(:subscription_address)
     }
 
     association(:user)
