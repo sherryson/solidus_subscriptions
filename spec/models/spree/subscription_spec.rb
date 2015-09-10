@@ -104,4 +104,27 @@ describe Spree::Subscription do
     end
   end
 
+  describe "#pause" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: nil) }
+    it "pause the subscription" do
+      expect {
+        subscription.pause
+      }.to change {
+        subscription.state
+      }.from(nil).to('paused')
+    end
+  end
+
+  describe "#resume" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: 'paused') }
+    it "resumes the subscription" do
+      expect {
+        subscription.resume
+      }.to change {
+        subscription.state
+      }.from(nil).to('active')
+    end
+  end  
+  
+
 end
