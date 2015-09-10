@@ -158,4 +158,26 @@ describe Spree::Subscription do
     end
   end  
 
+  describe "can_renew?" do
+    let(:subscription) { FactoryGirl.create(:subscription, state: 'paused') }
+
+    context "completed order with subscription" do
+      before do
+        create_completed_subscription_order
+      end
+
+      it "can renew if subscription is active and has an interval" do
+        expect(@order.subscription.can_renew?).to be(true)
+      end
+    end
+
+    it "cannot renew if subscription is not active" do
+      expect(subscription.can_renew?).to be(false)
+    end
+
+    it "cannot renew if subscription does not have an interval" do
+      expect(subscription.can_renew?).to be(false)
+    end
+  end
+
 end
