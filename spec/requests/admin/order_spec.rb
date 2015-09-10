@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Orders' do
   stub_authorization!
-  context 'Orders Index' do
+  context 'Index' do
     scenario 'should allow administrators to filter by orders with a subscription' do
       create(:order, :created_at => Time.now + 1.day, :completed_at => Time.now + 1.day, :number => "R100")
       create(:order, :created_at => Time.now - 1.day, :completed_at => Time.now - 1.day, :number => "R200")
