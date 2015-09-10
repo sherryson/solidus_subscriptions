@@ -67,6 +67,20 @@ describe Spree::Subscription do
     end
   end
 
+  context "shipment" do
+    before do
+      create_completed_subscription_order
+    end
+
+    it "should have a shipment" do
+      expect(@order.subscription.shipment).not_to be_nil
+    end
+
+    it "should have a shipping method" do
+      expect(@order.subscription.shipping_method).not_to be_nil
+    end    
+  end
+
   context "#prepaid" do
     before do
       create_completed_subscription_order
@@ -143,6 +157,5 @@ describe Spree::Subscription do
       }.from('paused').to('active')
     end
   end  
-  
 
 end
