@@ -49,6 +49,24 @@ describe Spree::Subscription do
     end
   end
 
+  context "skipping orders" do
+    before do
+      Timecop.freeze
+      create_completed_subscription_order
+
+      @order.subscription.skip_next_order
+    end
+
+    it "should calculate the correct next shipment date if user decides to skip" do
+      @order.subscription.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
+    end
+
+    it "should fall back to the original shipment date after undoing" do
+      @order.subscription.undo_skip_next_order
+      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+    end
+  end
+
   context "#prepaid" do
     before do
       create_completed_subscription_order
@@ -105,7 +123,7 @@ describe Spree::Subscription do
   end
 
   describe "#pause" do
-    let(:subscription) { FactoryGirl.create(:subscription, state: nil) }
+    let(:subscription) { FactoryGirl.create(:subscription) }
     it "pause the subscription" do
       expect {
         subscription.pause
@@ -122,7 +140,7 @@ describe Spree::Subscription do
         subscription.resume
       }.to change {
         subscription.state
-      }.from(nil).to('active')
+      }.from('paused').to('active')
     end
   end  
   
