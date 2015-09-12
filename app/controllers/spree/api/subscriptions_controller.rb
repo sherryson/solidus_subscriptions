@@ -112,7 +112,6 @@ module Spree
       end
 
       def find_subscription_address
-        puts Spree::SubscriptionAddress.accessible_by(current_ability, :read).find(params[:address_id])
         @subscription_address ||= Spree::SubscriptionAddress.accessible_by(current_ability, :read).find(params[:address_id])
       end
 
