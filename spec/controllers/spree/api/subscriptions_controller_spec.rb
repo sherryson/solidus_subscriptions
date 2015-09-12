@@ -18,11 +18,14 @@ module Spree
 
       create_completed_subscription_order
       @subscription = Spree::Subscription.last
-      @subscription.update_column(:user_id, current_api_user.id)
+      @subscription.update_attribute(:user, current_api_user)
+      @subscription.shipping_address.update_attribute(:user, current_api_user)
+      @subscription.billing_address.update_attribute(:user, current_api_user)
     end
 
     it "restricts access to subscriptions" do
       @subscription.update_column(:user_id, 999)
+
       api_get :show, id: @subscription.id
       expect(json_response[:id]).to be nil
     end
@@ -74,6 +77,53 @@ module Spree
 
       expect(@subscription.state).to eq 'active'
       expect(@subscription.can_renew?).to be true
+    end
+
+    it "should create a billing address" do
+      billing_address = FactoryGirl.create(:subscription_address)
+
+      api_post :create_address, id: @subscription.id, address: billing_address.attributes, attribute: 'billing_address'
+
+      expect(@subscription.reload.billing_address.id).to be json_response[:id]
+    end
+
+    it "should create a shipping address" do
+      shipping_address = FactoryGirl.create(:subscription_address)
+
+      api_post :create_address, id: @subscription.id, address: shipping_address.attributes, attribute: 'shipping_address'
+
+      expect(@subscription.reload.shipping_address.id).to be json_response[:id]
+    end
+
+    it "should update an address" do
+      updated_shipping_address = @subscription.shipping_address
+      updated_shipping_address.firstname = 'new'
+      updated_shipping_address.lastname = 'new'
+      updated_shipping_address.address1 = '1 new address'
+      updated_shipping_address.zipcode = '90000'
+
+      api_post :update_address, id: @subscription.id, address: updated_shipping_address.attributes, attribute: 'shipping_address'
+
+      @subscription.reload
+      expect(@subscription.shipping_address.firstname).to eq json_response[:firstname]
+      expect(@subscription.shipping_address.lastname).to eq json_response[:lastname]
+      expect(@subscription.shipping_address.address1).to eq json_response[:address1]
+      expect(@subscription.shipping_address.zipcode).to eq json_response[:zipcode]
+    end
+
+    it "should select an existing address" do
+      # create a new shipping address for the subscription
+      new_shipping_address = FactoryGirl.create(:subscription_address)
+      existing_shipping_address = @subscription.shipping_address
+
+      api_post :create_address, id: @subscription.id, address: new_shipping_address.attributes, attribute: 'shipping_address'
+
+      expect(@subscription.reload.shipping_address.id).to be json_response[:id]
+
+      # now select the previous shipping address
+      api_post :select_address, id: @subscription.id, address_id: existing_shipping_address.id, attribute: 'shipping_address'
+
+      expect(@subscription.reload.shipping_address.id).to be existing_shipping_address.id
     end
   end
 end
