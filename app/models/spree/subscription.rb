@@ -207,7 +207,7 @@ module Spree
     end
 
     def can_renew?
-      interval && !cancelled? && !paused?
+      !(interval.nil? || interval.zero?) && !cancelled? && !paused?
     end
 
     def add_new_credit_card(params)
