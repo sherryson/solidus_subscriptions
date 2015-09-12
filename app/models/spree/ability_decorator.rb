@@ -5,6 +5,7 @@ module Spree
     def initialize(user)
       can :read, Spree::Subscription, user_id: user.id
       can :read, Spree::SubscriptionItem, subscription: { user_id: user.id}
+      can :read, Spree::SubscriptionAddress, user_id: user.id
     end
   end
 end

@@ -72,7 +72,7 @@ module Spree
       end
 
       def select_address
-        @subscription.send("#{params[:attribute]}_id=", params[:address_id])
+        @subscription.send("#{params[:attribute]}=", find_subscription_address)
         if @subscription.save
           render json: @subscription.send(params[:attribute]).to_json
         else
@@ -109,6 +109,11 @@ module Spree
 
       def find_subscription
         @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
+      end
+
+      def find_subscription_address
+        puts Spree::SubscriptionAddress.accessible_by(current_ability, :read).find(params[:address_id])
+        @subscription_address ||= Spree::SubscriptionAddress.accessible_by(current_ability, :read).find(params[:address_id])
       end
 
       def address_params
