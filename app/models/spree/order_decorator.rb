@@ -34,6 +34,8 @@ module Spree
 
         # create subscription items
         self.line_items.each do |line_item|
+          # and skip those are not subscribable
+          next unless line_item.product.subscribable?
           ::Spree::SubscriptionItem.create!(
             subscription: subscription,
             variant: line_item.variant,
