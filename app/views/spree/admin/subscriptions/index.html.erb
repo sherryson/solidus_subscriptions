@@ -71,7 +71,8 @@
        <col style="width: 10%;">
        <col style="width: 18%;">
        <col style="width: 15%;">
-       <col style="width: 3%;">       
+       <col style="width: 3%;">
+       <col style="width: 9%;">
        <col style="width: 9%;">
     </colgroup>
     <thead>
@@ -92,7 +93,7 @@
         <td class="align-center"><%= subscription.id %></td>
         <td class="align-center">
             <span class="state <%= subscription.active? ? 'success' : 'canceled' %>"><%= subscription.state %></span>
-        </td>        
+        </td>
         <td class="align-center">
           <% if subscription.can_renew? %>
           Every  <%= pluralize(subscription.interval, 'month') %>
