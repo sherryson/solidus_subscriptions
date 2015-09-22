@@ -116,11 +116,11 @@ module Spree
     def create_next_order!
       # just keeping safe
       non_existing_attributes = Spree::SubscriptionAddress.dup.attribute_names - Spree::Address.attribute_names
-      
-      # use subscription's addresses for the new order
+
+      # use subscription's addresses for the new order and email
       orders.create!(
         user: last_order.user,
-        email: last_order.email,
+        email: email,
         repeat_order: true,
         bill_address: Spree::Address.new(bill_address.dup.attributes.except(*non_existing_attributes)),
         ship_address: Spree::Address.new(ship_address.dup.attributes.except(*non_existing_attributes)),
