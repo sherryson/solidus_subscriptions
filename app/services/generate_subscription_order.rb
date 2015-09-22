@@ -39,7 +39,8 @@ class GenerateSubscriptionOrder
     transition_order_from_payment_to_complete!(next_order)
 
     subscription.decrement_prepaid_duration!
-    subscription.skip_order_at = nil
+    subscription.undo_skip_next_order
+    subscription.reset_failure_count
 
     true
   end
