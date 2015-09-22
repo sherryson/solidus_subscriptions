@@ -2,7 +2,7 @@ module Spree
   module UserExtensions
 
     def self.prepended(base)
-      base.has_many :subscriptions, -> { order 'created_at desc' }
+      base.has_many :subscriptions
     end
 
     def subscription_orders
