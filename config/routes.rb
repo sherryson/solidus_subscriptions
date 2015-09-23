@@ -17,6 +17,8 @@ Spree::Core::Engine.routes.draw do
       member do
         put :skip_next_order
         put :undo_skip_next_order
+        put :pause
+        put :resume
         post :create_address
         put :update_address
         put :select_address

@@ -11,6 +11,9 @@ module Spree
     belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
     alias_attribute :shipping_address, :ship_address
 
+    has_many :subscription_skips, dependent: :destroy, inverse_of: :subscription
+    alias_attribute :skips, :subscription_skips
+
     accepts_nested_attributes_for :ship_address
     accepts_nested_attributes_for :bill_address
 
@@ -80,6 +83,10 @@ module Spree
 
     def cancelled?
       state == 'cancelled'
+    end
+
+    def paused?
+      state == 'paused'
     end
 
     def cancel
@@ -163,11 +170,23 @@ module Spree
     end
 
     def skip_next_order
-      update_attribute(:skip_order_at, next_shipment_date)      
+      skips.create(skip_at: next_shipment_date) if skip_order_at.nil?
     end
 
     def undo_skip_next_order
-      update_attribute(:skip_order_at, nil)
+      skips.last.update_attribute(:undo_at, Time.now)
+    end
+
+    def skip_order_at
+      skips.last.skip_at if skips.any? && skips.last.undo_at.nil?
+    end
+
+    def pause
+      update_attributes(pause_at: Time.now, resume_at: nil, state: 'paused')
+    end
+
+    def resume
+      update_attributes(pause_at: nil, resume_at: Time.now, state: 'active')
     end
 
     def completed_orders
@@ -189,7 +208,7 @@ module Spree
     end
 
     def can_renew?
-      interval && !cancelled?
+      interval && !cancelled? && !paused?
     end
 
     def add_new_credit_card(params)
@@ -207,7 +226,7 @@ module Spree
 
     def as_json(options = { })
       super((options || { }).merge({
-          :methods => [:next_shipment_date]
+          :methods => [:next_shipment_date, :skip_order_at]
       }))
     end
 
