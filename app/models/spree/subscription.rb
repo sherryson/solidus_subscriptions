@@ -174,11 +174,15 @@ module Spree
     end
 
     def undo_skip_next_order
-      skips.last.update_attribute(:undo_at, Time.now)
+      skips.last.update_attribute(:undo_at, Time.now) if skipping?
+    end
+ 
+    def skip_order_at
+      skips.last.skip_at if skipping?
     end
 
-    def skip_order_at
-      skips.last.skip_at if skips.any? && skips.last.undo_at.nil?
+    def skipping?
+      skips.any? && skips.last.undo_at.nil?
     end
 
     def pause
