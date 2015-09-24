@@ -28,13 +28,20 @@ class GenerateSubscriptionOrder
 
     transition_order_from_cart_to_address!(next_order)
     transition_order_from_address_to_delivery!(next_order)
-
-    ensure_profile_exists_for_payment_source(previous_order)
-    ensure_credit_card_has_expiration_month
-    
     transition_order_from_delivery_to_payment!(next_order)
 
-    next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
+    # process payment if has store credits
+    if has_store_credits = has_available_store_credits(next_order)
+      next_order.create_store_credits_payment!
+    end
+
+    # else if there is none or store credits were not enough
+    if !has_store_credits || !next_order.covered_by_store_credit?
+      ensure_profile_exists_for_payment_source(previous_order)
+      ensure_credit_card_has_expiration_month
+      next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
+    end
+
     next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
 
     transition_order_from_payment_to_complete!(next_order)
@@ -93,5 +100,8 @@ class GenerateSubscriptionOrder
   def next_order
     @next_order ||= subscription.create_next_order!
   end
-end
 
+  def has_available_store_credits(order)
+    order.total_available_store_credit > 0 if payment_method = Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StoreCredit', active: true, environment: Rails.env)
+  end
+end
