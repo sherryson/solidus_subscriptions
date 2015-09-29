@@ -20,20 +20,22 @@ module Spree
 
         attrs = {
           user_id: user.id,
+          email: email,
           state: 'active',
           interval: subscription_interval,
           duration: subscription_duration,
           prepaid_amount: subscription_prepaid_amount,
           credit_card_id: credit_card_id_if_available
         }
-        subscription = self.create_subscription(attrs)
+        subscription = build_subscription(attrs)
 
         # create subscription addresses
         subscription.create_ship_address!(ship_address.dup.attributes.merge({user_id: user.id}))
         subscription.create_bill_address!(bill_address.dup.attributes.merge({user_id: user.id}))
 
+        subscription.save
         # create subscription items
-        self.line_items.each do |line_item|
+        line_items.each do |line_item|
           # and skip those are not subscribable
           next unless line_item.product.subscribable?
           ::Spree::SubscriptionItem.create!(
@@ -132,6 +134,10 @@ module Spree
         state: 'checkout'
       )
     end
+
+    def create_store_credits_payment!
+      add_store_credit_payments
+    end    
   end
 end
 

@@ -1,0 +1,23 @@
+<% if @subscription.skips.any? %>
+  <fieldset class="index no-border-bottom">
+    <legend align="center"><%= Spree.t("admin.subscription.skips_history") %></legend>
+  </fieldset>
+  <table class="subscription-skips index" data-hook="subscription-skips">
+    <thead>
+      <tr data-hook="admin_skips_index_headers">
+        <th><%= I18n.t(:created_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
+        <th><%= I18n.t(:skip_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
+        <th><%= I18n.t(:undo_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @subscription.skips.reorder(created_at: :desc).each do |skip| %>
+      <tr>
+        <td class="align-center"><%= l (skip.created_at).to_date %></td>
+        <td class="align-center"><%= l (skip.skip_at).to_date %></td>
+        <td class="align-center"><%= l (skip.undo_at).to_date  if skip.undo_at %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

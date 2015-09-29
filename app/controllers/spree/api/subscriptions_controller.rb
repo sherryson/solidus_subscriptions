@@ -133,7 +133,7 @@ module Spree
 
       def permitted_subscription_attributes
         [
-          :interval, :credit_card_id
+          :interval, :credit_card_id, :email
         ]
       end
     end

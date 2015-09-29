@@ -27,6 +27,13 @@ en:
     successfully_skipped: subscription next order has been skipped
     successfully_undo_skip: subscription next order skip has been undone
 
+  activerecord:
+    attributes:
+      spree/subscription:
+        created_at: created
+        skip_at: skipped date
+        undo_at: undo date
+
   time:
     formats:
       subscription_date_format: "%a, %b %d, %Y" 
