@@ -20,13 +20,13 @@ module Spree
       def skip_next_order
         @subscription.skip_next_order
 
-        render json: @subscription.to_json
+        render json: @subscription.to_json(include: :skips)
       end
 
       def undo_skip_next_order
         @subscription.undo_skip_next_order
 
-        render json: @subscription.to_json
+        render json: @subscription.to_json(include: :skips)
       end
 
       def cancel

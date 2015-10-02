@@ -4,6 +4,7 @@ module Spree
     has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
     belongs_to :user
     belongs_to :credit_card
+    alias_attribute :items, :subscription_items
 
     belongs_to :bill_address, foreign_key: :bill_address_id, class_name: 'Spree::SubscriptionAddress'
     alias_attribute :billing_address, :bill_address
@@ -170,20 +171,22 @@ module Spree
     end
 
     def skip_next_order
-      skips.create(skip_at: next_shipment_date) if skip_order_at.nil?
+      skips.create(skip_at: next_shipment_date)
     end
 
     def undo_skip_next_order
-      skips.last.update_attribute(:undo_at, Time.now) if skipping?
+      last_skip.update_attribute(:undo_at, Time.now) if skipping?
     end
  
     def skip_order_at
-      skips.last.skip_at if skipping?
+      last_skip.skip_at if last_skip
     end
 
-    def skipping?
-      skips.any? && skips.last.undo_at.nil?
+    def last_skip
+      skips.reverse.find{ |skip| skip.undo_at.nil? }
     end
+
+    alias_attribute :skipping?, :last_skip
 
     def pause
       update_attributes(pause_at: Time.now, resume_at: nil, state: 'paused')
