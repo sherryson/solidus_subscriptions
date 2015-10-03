@@ -4,14 +4,14 @@ module Spree
       before_action :find_subscription
 
       def show
-        render json: @subscription.to_json
+        render_subscription
       end
 
       def update
         result = @subscription.update_attributes(subscription_params)
 
         if result
-          render json: @subscription.to_json
+          render_subscription
         else
           invalid_resource!(@subscription)
         end
@@ -20,29 +20,31 @@ module Spree
       def skip_next_order
         @subscription.skip_next_order
 
-        render json: @subscription.to_json(include: :skips)
+        render_subscription
       end
 
       def undo_skip_next_order
         @subscription.undo_skip_next_order
 
-        render json: @subscription.to_json(include: :skips)
+        render_subscription
       end
 
       def cancel
         @subscription.cancel
 
-        render json: @subscription.to_json
+        render_subscription
       end
 
       def pause
         @subscription.pause
+
+        render_subscription
       end
 
       def resume
         @subscription.resume
 
-        render json: @subscription.to_json
+        render_subscription
       end
 
       def create_address
@@ -95,10 +97,8 @@ module Spree
 
             CardStore.store_card_for_user(try_spree_current_user, credit_card, credit_card.verification_value)
           end
-          render json: @subscription,
-            scope: try_spree_current_user,
-            serializer: SubscriptionSerializer,
-            root: false
+
+          render_subscription
         rescue CardStore::CardError
           @resource = credit_card
           render "sprangular/errors/invalid", status: 422
@@ -106,6 +106,13 @@ module Spree
       end
 
       private
+
+      def render_subscription
+        render json: @subscription,
+          scope: current_spree_user,
+          root: false,
+          serializer: SubscriptionSerializer
+      end
 
       def find_subscription
         @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
