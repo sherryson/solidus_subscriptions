@@ -171,7 +171,7 @@ module Spree
     end
 
     def skip_next_order
-      skips.create(skip_at: next_shipment_date)
+      skips.create(skip_at: next_shipment_date) if can_skip?
     end
 
     def undo_skip_next_order
@@ -187,6 +187,12 @@ module Spree
     end
 
     alias_attribute :skipping?, :last_skip
+
+    def can_skip
+      skipping? ? Date.today >= skip_order_at.to_date : true
+    end
+
+    alias_attribute :can_skip?, :can_skip
 
     def pause
       update_attributes(pause_at: Time.now, resume_at: nil, state: 'paused')
