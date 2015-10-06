@@ -1,7 +1,13 @@
 module Spree
   module Api
     class SubscriptionsController < Spree::Api::BaseController
-      before_action :find_subscription
+      before_action :find_subscription, except: [:index]
+
+      def index
+        render json: current_spree_user.subscriptions,
+          root: false,
+          each_serializer: SubscriptionSerializer
+      end
 
       def show
         render_subscription
