@@ -1,7 +1,7 @@
 module Spree
   class Subscription < ActiveRecord::Base
     has_many :orders, -> { order 'updated_at desc' }
-    has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
+    has_many :subscription_items, dependent: :destroy, inverse_of: :subscription, dependent: :destroy
     belongs_to :user
     belongs_to :credit_card
     alias_attribute :items, :subscription_items
@@ -12,7 +12,7 @@ module Spree
     belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
     alias_attribute :shipping_address, :ship_address
 
-    has_many :subscription_skips, dependent: :destroy, inverse_of: :subscription
+    has_many :subscription_skips, dependent: :destroy, inverse_of: :subscription, dependent: :destroy
     alias_attribute :skips, :subscription_skips
 
     accepts_nested_attributes_for :ship_address
