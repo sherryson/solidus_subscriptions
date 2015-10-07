@@ -37,7 +37,6 @@ class GenerateSubscriptionOrder
 
     # else if there is none or store credits were not enough
     if !has_store_credits || !next_order.covered_by_store_credit?
-      ensure_profile_exists_for_payment_source(previous_order)
       ensure_credit_card_has_expiration_month
       next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
     end
