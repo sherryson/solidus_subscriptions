@@ -5,7 +5,6 @@ module Spree
       base.alias_method_chain :finalize!, :create_subscription
 
       base.belongs_to :subscription, class_name: 'Spree::Subscription'
-      base.register_update_hook :reset_failure_count_for_subscription_orders
     end
 
     def finalize_with_create_subscription!
@@ -116,9 +115,15 @@ module Spree
       credit_cards.present? ? credit_cards.last.id : ''
     end
 
-    def reset_failure_count_for_subscription_orders
+    def reset_failure_count_for_subscription
       if completed? && has_subscription?
         subscription.reset_failure_count
+      end
+    end
+
+    def clear_skip_order_for_subscription
+      if completed? && has_subscription?
+        subscription.clear_skip_order
       end
     end
 
@@ -141,4 +146,7 @@ module Spree
   end
 end
 
-::Spree::Order.prepend Spree::OrderExtensions
+Spree::Order.prepend Spree::OrderExtensions
+
+Spree::Order.state_machine.after_transition to: :complete, do: :reset_failure_count_for_subscription
+Spree::Order.state_machine.after_transition to: :complete, do: :clear_skip_order_for_subscription

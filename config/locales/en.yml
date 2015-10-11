@@ -33,6 +33,7 @@ en:
         created_at: created
         skip_at: skipped date
         undo_at: undo date
+        renewed_at: renewed date
 
   time:
     formats:
