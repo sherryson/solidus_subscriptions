@@ -36,7 +36,7 @@ class GenerateSubscriptionOrder
     end
 
     # else if there is none or store credits were not enough
-    if !has_store_credits || !next_order.covered_by_store_credit?
+    if !(has_store_credits && next_order.covered_by_store_credit?)
       ensure_credit_card_has_expiration_month
       next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
     end
@@ -46,8 +46,6 @@ class GenerateSubscriptionOrder
     transition_order_from_payment_to_complete!(next_order)
 
     subscription.decrement_prepaid_duration!
-    subscription.undo_skip_next_order
-    subscription.reset_failure_count
 
     true
   end
