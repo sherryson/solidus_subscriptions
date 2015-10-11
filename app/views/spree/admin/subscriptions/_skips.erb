@@ -8,6 +8,7 @@
         <th><%= I18n.t(:created_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
         <th><%= I18n.t(:skip_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
         <th><%= I18n.t(:undo_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
+        <th><%= I18n.t(:renewed_at, :scope => 'activerecord.attributes.spree/subscription') %></th>
       </tr>
     </thead>
     <tbody>
@@ -16,6 +17,7 @@
         <td class="align-center"><%= l (skip.created_at).to_date %></td>
         <td class="align-center"><%= l (skip.skip_at).to_date %></td>
         <td class="align-center"><%= l (skip.undo_at).to_date  if skip.undo_at %></td>
+        <td class="align-center"><%= l (skip.renewed_at).to_date  if skip.renewed_at %></td>
       </tr>
       <% end %>
     </tbody>

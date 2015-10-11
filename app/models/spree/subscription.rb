@@ -179,17 +179,22 @@ module Spree
     end
  
     def skip_order_at
-      last_skip.skip_at if last_skip
+      last_skip.skip_at if skipping? 
     end
 
     def last_skip
-      skips.reverse.find{ |skip| skip.undo_at.nil? }
+      skips.last if skips.any? && skips.last.undo_at.nil? && skips.last.renewed_at.nil?
     end
 
     alias_attribute :skipping?, :last_skip
 
     def can_skip
+      # only allow skipping after date has pass
       skipping? ? Date.today >= skip_order_at.to_date : true
+    end
+
+    def clear_skip_order
+      last_skip.update_attribute(:renewed_at, Date.today) if skipping?
     end
 
     alias_attribute :can_skip?, :can_skip
