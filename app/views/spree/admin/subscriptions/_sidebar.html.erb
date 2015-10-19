@@ -20,18 +20,15 @@
         (<%= link_to 'Renew Now', renew_admin_subscription_path(@subscription), method: :put, data: { confirm: 'Are you sure you want to renew the subscription?' } %>)
       </dd>
       <dt>Skip order</dt>
-      <dd><%= @subscription.skip_order_at ? 'Yes' : 'No' %></dd>      
+      <dd><%= @subscription.skip_order_at ? 'Yes' : 'No' %></dd>
       <dt>Skip order at</dt>
       <dd>
-        <%= l(@subscription.skip_order_at, format: :subscription_date_format) if @subscription.skip_order_at %>
-        <% if @subscription.skip_order_at.nil? %>
-        <%= link_to 'Skip Now', skip_admin_subscription_path(@subscription), method: :put %>
-        <% else %>
-        (<%= link_to 'Undo', undo_skip_admin_subscription_path(@subscription), method: :put %>)          
-        <% end %>
-      </dd>      
+        <%= l(@subscription.skip_order_at, format: :subscription_date_format) if @subscription.skipping? %>
+        <%= link_to 'Skip', skip_admin_subscription_path(@subscription), method: :put if @subscription.can_skip? %>
+        <%= link_to 'Undo', undo_skip_admin_subscription_path(@subscription), method: :put if @subscription.skipping? %>
+      </dd>
       <dt>Failed renewals</dt>
-      <dd><%= @subscription.failure_count %></dd>      
+      <dd><%= @subscription.failure_count %></dd>
     <% end %>
     <% if @subscription.paused? %>
       <dt>Paused at</dt>
@@ -48,13 +45,13 @@
     <dt>Shipping Method</dt>
     <dd><%= @subscription.shipping_method.name if @subscription.shipment && @subscription.shipping_method %></dd>
     <dt>Credit card </dt>
-    <% if @subscription.credit_card %> 
+    <% if @subscription.credit_card %>
       <dd><%= link_to @subscription.credit_card.display_number, credit_card_admin_subscription_path(@subscription) %></dd>
-    <% else %>    
+    <% else %>
       <dd><%= link_to Spree.t(:create), credit_card_admin_subscription_path(@subscription) %></dd>
     <% end %>
     <dt>Last updated</dt>
-    <dd><%= l(@subscription.updated_at, format: :long) %></dd>    
+    <dd><%= l(@subscription.updated_at, format: :long) %></dd>
   </dt>
   </header>
 <% end %>
