@@ -94,6 +94,10 @@ module Spree
         end
       end
 
+      def failures
+        @subscriptions = Spree::Subscription.active.where('failure_count > 0').order('created_at desc')
+      end
+
       protected
         def collection
           return @collection if defined?(@collection)

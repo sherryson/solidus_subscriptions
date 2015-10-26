@@ -1,0 +1,30 @@
+<h2> Showing subscriptions that failed renewing</h2>
+<b> Total: <%= @subscriptions.count %>
+<br/>
+<br/>
+<table id="listing_subscriptions" class="index responsive">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>date</th>
+      <th>order</th>
+      <th>email</th>
+      <th>renewal date</th>
+      <th>attempts</th>
+      <th>info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @subscriptions.each do |subscription| %>
+      <tr>
+        <td><%= link_to subscription.id, edit_admin_subscription_path(subscription), target: '_blank' %>
+        <td><%= l(subscription.last_order_date, format: :subscription_date_format) %>
+        <td><%= link_to subscription.orders.first.number, edit_admin_order_path(subscription.orders.first), target: '_blank' %>
+        <td><%=link_to subscription.user.email, edit_admin_user_path(subscription.user), target: '_blank' %>
+        <td><%= l(subscription.next_shipment_date, format: :subscription_date_format) %>
+        <td><%= subscription.failure_count %> 
+        <td><%= link_to 'details', admin_log_entries_path(source_type: 'Spree::Payment', source_id: subscription.orders.first.payments.last.id), target: '_blank' if subscription.orders.first.payments.any? %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
