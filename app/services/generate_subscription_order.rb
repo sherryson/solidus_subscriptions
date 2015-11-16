@@ -41,8 +41,6 @@ class GenerateSubscriptionOrder
       next_order.create_payment!(payment_gateway_for_card(credit_card), credit_card)
     end
 
-    next_order.apply_employee_discount if previous_order.respond_to?(:has_employee_discount?) && previous_order.has_employee_discount?
-
     transition_order_from_payment_to_complete!(next_order)
 
     subscription.decrement_prepaid_duration!
