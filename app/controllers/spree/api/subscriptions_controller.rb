@@ -115,13 +115,12 @@ module Spree
 
       def render_subscription
         render json: @subscription,
-          scope: current_spree_user,
           root: false,
           serializer: SubscriptionSerializer
       end
 
       def find_subscription
-        @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
+        @subscription ||= @current_api_user.subscriptions.find(params[:id])
       end
 
       def find_subscription_address
