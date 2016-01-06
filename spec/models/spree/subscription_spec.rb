@@ -8,15 +8,15 @@ describe Spree::Subscription do
     setup_subscribable_products
   end
 
-  it { should have_many(:orders) }
-  it { should belong_to(:user) }
-  it { should belong_to(:credit_card)}
-  it { should respond_to(:resume_on)}
+  it { is_expected.to have_many(:orders) }
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:credit_card)}
+  it { is_expected.to respond_to(:resume_on)}
 
   context "#products" do
     it 'should return a collection of products' do
       create_completed_subscription_order
-      @order.subscription.products.map(&:subscribable?).all?.should be true
+      expect(@order.subscription.products.map(&:subscribable?).all?).to be true
     end
   end
 
@@ -37,11 +37,11 @@ describe Spree::Subscription do
     end
 
     it "should return the shipment date of the last order" do
-      @order.subscription.last_shipment_date.to_i.should == Time.now.to_i
+      expect(@order.subscription.last_shipment_date.to_i).to be == Time.now.to_i
     end
 
     it "should be able to calculate the date of the next shipment" do
-      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      expect(@order.subscription.next_shipment_date.to_i).to be == 2.weeks.from_now.to_i
     end
 
     after do
@@ -58,12 +58,12 @@ describe Spree::Subscription do
     end
 
     it "should calculate the correct next shipment date if user decides to skip" do
-      @order.subscription.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
+      expect(@order.subscription.next_shipment_date.to_i).to be == 4.weeks.from_now.to_i
     end
 
     it "should fall back to the original shipment date after undoing" do
       @order.subscription.undo_skip_next_order
-      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      expect(@order.subscription.next_shipment_date.to_i).to be == 2.weeks.from_now.to_i
     end
   end
 
@@ -78,7 +78,7 @@ describe Spree::Subscription do
 
     it "should have a shipping method" do
       expect(@order.subscription.shipping_method).not_to be_nil
-    end    
+    end
   end
 
   context "#prepaid" do
@@ -87,20 +87,20 @@ describe Spree::Subscription do
     end
 
     it "should know if it's been paid for in advance" do
-      @order.subscription.prepaid?.should be false
+      expect(@order.subscription.prepaid?).to be false
     end
 
     it "should know if it has a prepaid balance remaining" do
-      @order.subscription.prepaid_balance_remaining?.should be false
+      expect(@order.subscription.prepaid_balance_remaining?).to be false
     end
 
     it "should be set to prepaid when a prepaid order is submitted" do
       setup_prepayable_subscription_variants
       create_completed_prepaid_subscription_order
-      @order.subscribable?.should be true
-      @order.subscription.duration.should == 6
-      @order.subscription.interval.should == 4
-      @order.subscription.prepaid?.should be true
+      expect(@order.subscribable?).to be true
+      expect(@order.subscription.duration).to be == 6
+      expect(@order.subscription.interval).to be == 4
+      expect(@order.subscription.prepaid?).to be true
     end
   end
 
@@ -156,7 +156,7 @@ describe Spree::Subscription do
         subscription.state
       }.from('paused').to('active')
     end
-  end  
+  end
 
   describe "can_renew?" do
     let(:subscription) { FactoryGirl.create(:subscription) }
