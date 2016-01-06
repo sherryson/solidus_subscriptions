@@ -4,7 +4,7 @@ module Spree
       before_action :find_subscription, except: [:index]
 
       def index
-        render json: current_spree_user.subscriptions,
+        render json: current_api_user.subscriptions,
           root: false,
           each_serializer: SubscriptionSerializer
       end
@@ -95,13 +95,13 @@ module Spree
         credit_card = nil
         begin
           ::Spree::CreditCard.transaction do
-            credit_card = try_spree_current_user.credit_cards.build(credit_card_params)
+            credit_card = current_api_user.credit_cards.build(credit_card_params)
             credit_card.save
 
             @subscription.credit_card = credit_card
             @subscription.save
 
-            CardStore.store_card_for_user(try_spree_current_user, credit_card, credit_card.verification_value)
+            CardStore.store_card_for_user(current_api_user, credit_card, credit_card.verification_value)
           end
 
           render_subscription
