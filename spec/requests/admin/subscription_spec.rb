@@ -8,7 +8,6 @@ feature 'Subscription' do
       visit spree.admin_path
       click_link "Subscriptions"
     end
-
   end
 
 end

@@ -8,7 +8,7 @@ gem 'active_model_serializers', '~> 0.8.3'
 group :test do
   gem 'factory_girl', '4.5.0'
   gem 'launchy'
-  gem "shoulda-matchers"
+  gem "shoulda-matchers", '2.8.0'
   gem 'haml-rails'
   gem 'database_cleaner', '1.4.1'
   gem 'timecop'
