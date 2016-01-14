@@ -34,7 +34,8 @@ Spree::Core::Engine.add_routes do
 
   resources :subscriptions do
     member do
-        get :pause
+        put :pause
+        put :resume
     end
   end
 end

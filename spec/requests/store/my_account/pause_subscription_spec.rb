@@ -4,21 +4,51 @@ feature "Subscription" do
   include OrderMacros
   include ProductMacros
 
-  context "Pausing a subscriptions" do
-    before(:each) do
-      user = create(:user)
-      setup_subscription_for user
-      sign_up_with user.email, user.password
-    end
+  before(:each) do
+    user = create(:user)
+    setup_subscription_for user
+    sign_up_with user.email, user.password
+  end
 
+  context "Pausing a subscription" do
     scenario "changes its state to pause" do
       visit "/account"
 
-      given_a_subscription do
+      within a_given_subscription do
         click_link("Pause")
       end
 
-      expect(state_column).to have_text("Paused")
+      within a_given_subscription do
+        expect(state_column).to have_text("Paused")
+        expect(page).to_not have_css("a.pause-subscription")
+      end
+    end
+
+    context "A paused subscription" do
+
+      before(:each) do
+        pause_the_subscription
+
+        visit "/account"
+      end
+
+      scenario "has a 'resume at' function" do
+        pending
+        within a_given_subscription do
+          expect(page).to have_text("Resume At")
+          expect(page).to have_css("input#resume-at")
+        end
+      end
+
+      scenario "can be resumed" do
+        within a_given_subscription do
+          click_button("Resume")
+        end
+
+        within a_given_subscription do
+          expect(state_column).to have_text("Active")
+        end
+      end
     end
   end
 
@@ -47,18 +77,16 @@ feature "Subscription" do
     @order.update_attribute(:user, user)
   end
 
-  def given_a_subscription
-    within subscription_row do
-      yield
-    end
-  end
-
-  def subscription_row
+  def a_given_subscription
     "div#content table.subscription-summary > tbody > tr:first-of-type"
   end
 
   def state_column
-    find(subscription_row + " > td:nth-of-type(4)")
+    find("td:nth-of-type(4)")
+  end
+
+  def pause_the_subscription
+    @subscription.pause
   end
 
 end

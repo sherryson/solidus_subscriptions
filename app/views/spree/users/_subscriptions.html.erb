@@ -19,8 +19,18 @@
             <td><%= subscription.last_shipment_date %></td>
             <td><%= subscription.next_shipment_date %></td>
             <td><%= t(subscription.state, scope: 'subscription_state', default: t('subscription_state.active')).titleize %></td>
-            <td><a href="/subscriptions/<%= subscription.id  %>/pause">Pause</a></td>
-            <td><%= link_to t('action.pause'), pause_subscription_path(subscription) %></td>
+            <td>
+              <% if !subscription.paused? %>
+                <%= link_to t('action.pause'), pause_subscription_path(subscription), :method => :put, :class => "pause-subscription" %>
+              <% else %>
+                <%= button_to 'Resume', resume_subscription_path(subscription), :method => :put %>
+                <!-- <%= form_for subscription, :url => resume_subscription_path(subscription)  do |f| %>
+                  <%= f.label(:resume_at, "Resume on") %>
+                  <%= f.date_field(:resume_at) %>
+                  <%= f.submit("Resume") %>
+                <% end %> -->
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
