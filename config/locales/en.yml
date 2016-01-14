@@ -15,7 +15,10 @@ en:
   subscription_state:
     active: Active
     cancelled: Cancelled
+    paused: Paused
   are_you_sure: "Are you sure?"
+  action:
+    pause: Pause
 
   spree:
     successfully_cancelled: successfully cancelled subscription
@@ -37,4 +40,4 @@ en:
 
   time:
     formats:
-      subscription_date_format: "%a, %b %d, %Y" 
+      subscription_date_format: "%a, %b %d, %Y"

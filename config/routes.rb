@@ -9,7 +9,7 @@ Spree::Core::Engine.add_routes do
         get :credit_card
         post :credit_card
       end
-      collection do 
+      collection do
         get :failures
       end
     end
@@ -29,6 +29,12 @@ Spree::Core::Engine.add_routes do
         post :create_credit_card
       end
       resources :subscription_items
+    end
+  end
+
+  resources :subscriptions do
+    member do
+        get :pause
     end
   end
 end

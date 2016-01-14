@@ -1,7 +1,7 @@
 module Spree
   class Subscription < ActiveRecord::Base
     has_many :orders, -> { order 'updated_at desc' }
-    has_many :subscription_items, dependent: :destroy, inverse_of: :subscription, dependent: :destroy
+    has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
     belongs_to :user
     belongs_to :credit_card
     alias_attribute :items, :subscription_items
@@ -12,7 +12,7 @@ module Spree
     belongs_to :ship_address, foreign_key: :ship_address_id, class_name: 'Spree::SubscriptionAddress'
     alias_attribute :shipping_address, :ship_address
 
-    has_many :subscription_skips, dependent: :destroy, inverse_of: :subscription, dependent: :destroy
+    has_many :subscription_skips, dependent: :destroy, inverse_of: :subscription
     alias_attribute :skips, :subscription_skips
 
     accepts_nested_attributes_for :ship_address
@@ -50,7 +50,7 @@ module Spree
           last_order = subscription.last_order
           next unless last_order
           next if subscription.prepaid?
-          subscription.next_shipment_date.to_date <= Date.today          
+          subscription.next_shipment_date.to_date <= Date.today
         end
 
         where(id: subscriptions.collect(&:id))
@@ -75,7 +75,7 @@ module Spree
     end
 
     def calc_next_renewal_date
-      { weeks: interval }      
+      { weeks: interval }
     end
 
     def active?
@@ -177,9 +177,9 @@ module Spree
     def undo_skip_next_order
       last_skip.update_attribute(:undo_at, Time.now) if skipping?
     end
- 
+
     def skip_order_at
-      last_skip.skip_at if skipping? 
+      last_skip.skip_at if skipping?
     end
 
     def last_skip

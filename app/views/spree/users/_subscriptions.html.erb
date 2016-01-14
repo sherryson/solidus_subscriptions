@@ -9,6 +9,7 @@
           <th><%= t(:last_shipped_on) %></th>
           <th><%= t(:next_shipment) %> </th>
           <th><%= t(:status) %></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -17,7 +18,9 @@
             <td><%= subscription.products.collect(&:name).to_sentence %></td>
             <td><%= subscription.last_shipment_date %></td>
             <td><%= subscription.next_shipment_date %></td>
-            <td><%= t(subscription.state, :scope => 'subscription_state', default: t('subscription_state.active')).titleize %></td>
+            <td><%= t(subscription.state, scope: 'subscription_state', default: t('subscription_state.active')).titleize %></td>
+            <td><a href="/subscriptions/<%= subscription.id  %>/pause">Pause</a></td>
+            <td><%= link_to t('action.pause'), pause_subscription_path(subscription) %></td>
           </tr>
         <% end %>
       </tbody>
