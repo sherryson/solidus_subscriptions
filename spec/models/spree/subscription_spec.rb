@@ -2,11 +2,6 @@ require 'spec_helper'
 
 describe Spree::Subscription do
   include OrderMacros
-  include ProductMacros
-
-  before do
-    setup_subscribable_products
-  end
 
   it { should have_many(:orders) }
   it { should belong_to(:user) }
@@ -78,7 +73,7 @@ describe Spree::Subscription do
 
     it "should have a shipping method" do
       expect(@order.subscription.shipping_method).not_to be_nil
-    end    
+    end
   end
 
   context "#prepaid" do
@@ -156,7 +151,7 @@ describe Spree::Subscription do
         subscription.state
       }.from('paused').to('active')
     end
-  end  
+  end
 
   describe "can_renew?" do
     let(:subscription) { FactoryGirl.create(:subscription) }

@@ -1,6 +1,5 @@
 require 'spec_helper'
 include OrderMacros
-include ProductMacros
 
 module Spree
   describe Api::SubscriptionsController, type: :controller do

@@ -3,8 +3,8 @@ module Spree
 
     def self.prepended(base)
       base.alias_method_chain :finalize!, :create_subscription
-
       base.belongs_to :subscription, class_name: 'Spree::Subscription'
+      base.register_line_item_comparison_hook(:line_item_interval_match)
     end
 
     def finalize_with_create_subscription!
@@ -12,36 +12,45 @@ module Spree
       finalize_without_create_subscription!
     end
 
+    def line_item_interval_match(line_item, options)
+      return true unless options[:interval].present?
+      line_item.interval == options[:interval]
+    end
+
     def create_subscription_if_eligible
       begin
-        return unless subscribable?
-        return if repeat_order?
+        items = subscribable_line_items.group_by { |item| item.interval }
+        # pull user by email, this considers existing users opted for guest checkout
+        user = User.find_by_email email
+        items.keys.each do |interval|
+          attrs = {
+            user_id: user.id,
+            email: email,
+            state: 'active',
+            interval: interval,
+            prepaid_amount: subscription_prepaid_amount,
+            credit_card_id: credit_card_id_if_available
+          }
+          subscription = create_subscription(attrs)
 
-        attrs = {
-          user_id: user.id,
-          email: email,
-          state: 'active',
-          interval: subscription_interval,
-          duration: subscription_duration,
-          prepaid_amount: subscription_prepaid_amount,
-          credit_card_id: credit_card_id_if_available
-        }
-        subscription = build_subscription(attrs)
+          # create subscription addresses
+          subscription.create_ship_address!(ship_address.dup.attributes.merge({user_id: user.id}))
+          subscription.create_bill_address!(bill_address.dup.attributes.merge({user_id: user.id}))
 
-        # create subscription addresses
-        subscription.create_ship_address!(ship_address.dup.attributes.merge({user_id: user.id}))
-        subscription.create_bill_address!(bill_address.dup.attributes.merge({user_id: user.id}))
+          # orders can have many subscriptions
+          subscriptions << subscription
 
-        subscription.save
-        # create subscription items
-        line_items.each do |line_item|
-          # and skip those are not subscribable
-          next unless line_item.product.subscribable?
-          ::Spree::SubscriptionItem.create!(
-            subscription: subscription,
-            variant: line_item.variant,
-            quantity: line_item.quantity
-          )
+          # create subscription items
+          items[interval].each do |line_item|
+            # and skip those are not subscribable
+            next unless line_item.product.subscribable?
+            ::Spree::SubscriptionItem.create!(
+              subscription: subscription,
+              variant: line_item.variant,
+              quantity: line_item.quantity,
+              interval: interval
+            )
+          end
         end
       rescue => e
         # TODO: Hook into error reporting
@@ -51,64 +60,25 @@ module Spree
     end
 
     def subscribable?
-      subscribable_option_values.any? || prepayable_option_values.any?
-    end
-
-    def will_create_prepaid_subscription?
-      !repeat_order? && prepayable_option_values.any?
+      false
     end
 
     def subscription_interval
-      subscribable_option_values.any? ? subscribable_option_values.collect(&:name).max : 4
+      subscription.interval
     end
 
     def subscription_duration
-      prepayable_option_values.present? ? prepayable_option_values.first.name.to_i : 0
     end
 
     def subscription_prepaid_amount
-      prepayable_option_values.present? ? total : 0
     end
-
-    def subscribable_option_values
-      line_items.collect(&:variant).collect(&:option_values).flatten.select do |ov|
-        ov.name.to_i > 0 && ov.option_type.name == frequency_option_type
-      end
-    end
-
-    def prepayable_option_values
-      line_items.collect(&:variant).collect(&:option_values).flatten.select do |ov|
-        ov.name.to_i > 0 && ov.option_type.name == prepaid_option_type
-      end
-    end
-
-    def frequency_option_type
-      ::Spree::OptionType.find_by_name('frequency').name
-    end
-
-    def prepaid_option_type
-      ::Spree::OptionType.find_by_name('number_of_months').name
-    end
-
 
     def has_subscription?
       subscription_id.present?
     end
 
     def subscription_products
-      line_items.map { |li| li.variant.product }.select { |p| p.subscribable? }
-    end
-
-    def line_items_variants
-      line_items.inject({}) do |hash, li|
-        if li.variant.product.subscribable_variants.include? li.variant
-          hash[li.variant.id] = li.quantity
-        elsif li.variant.product.prepayable_variants.include? li.variant
-          hash[li.variant.id] = li.quantity
-        end
-
-        hash
-      end
+      line_items.group_by { |item| item.interval }.reject{ |interval| interval.zero? }
     end
 
     def credit_card_id_if_available
@@ -140,9 +110,13 @@ module Spree
       )
     end
 
-    def create_store_credits_payment!
-      add_store_credit_payments
-    end    
+    def subscribable_line_items
+      line_items.where('interval > 0')
+    end
+
+    # def create_store_credits_payment!
+    #   add_store_credit_payments
+    # end
   end
 end
 

@@ -3,7 +3,7 @@ module OrderMacros
 
   def create_completed_prepaid_subscription_order
     order_factory
-    @order.line_items << FactoryGirl.create(:line_item, variant: @prepaid_variant)
+    @order.line_items << FactoryGirl.create(:line_item, variant: @prepaid_variant, interval: 2)
     @order.create_proposed_shipments
     @order.payments.create!({source: @card, payment_method: @gateway, amount: @order.total})
 
@@ -35,7 +35,9 @@ module OrderMacros
     @user = double(Spree::User, email: "spree@example.com")
     @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
     @line_items = [
-      FactoryGirl.create(:line_item, variant: @subscribable_variant)
+      FactoryGirl.create(:line_item, variant: create(:subscribable_variant), interval: 2),
+      FactoryGirl.create(:line_item, variant: create(:subscribable_variant), interval: 4),
+      FactoryGirl.create(:line_item, variant: create(:variant))
     ]
     @gateway = Spree::Gateway::Bogus.create!({environment: 'test', active: true, name: 'Credit Card'})
     @card = FactoryGirl.create(:credit_card)

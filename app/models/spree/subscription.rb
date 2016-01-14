@@ -38,7 +38,7 @@ module Spree
       end
 
       def prepaid
-        where('duration > 1')
+        where(prepaid: true)
       end
 
       def good_standing
@@ -50,7 +50,7 @@ module Spree
           last_order = subscription.last_order
           next unless last_order
           next if subscription.prepaid?
-          subscription.next_shipment_date.to_date <= Date.today          
+          subscription.next_shipment_date.to_date <= Date.today
         end
 
         where(id: subscriptions.collect(&:id))
@@ -59,7 +59,7 @@ module Spree
     end
 
     def products
-      last_order.subscription_products
+      subscription_items.map(&:variant)
     end
 
     def last_shipment_date
@@ -75,7 +75,7 @@ module Spree
     end
 
     def calc_next_renewal_date
-      { weeks: interval }      
+      { weeks: interval }
     end
 
     def active?
@@ -137,10 +137,6 @@ module Spree
       created_order
     end
 
-    def prepaid?
-      duration && duration > 0
-    end
-
     def eligible_for_processing?
       active? && (!prepaid? || duration > 1)
     end
@@ -161,15 +157,6 @@ module Spree
       update_column(:failure_count, 0)
     end
 
-    def decrement_prepaid_duration!
-      return unless prepaid?
-      update_column(:duration, duration-1)
-    end
-
-    def remaining_shipments
-      duration - 2
-    end
-
     def skip_next_order
       skips.create(skip_at: next_shipment_date) if can_skip?
     end
@@ -177,9 +164,9 @@ module Spree
     def undo_skip_next_order
       last_skip.update_attribute(:undo_at, Time.now) if skipping?
     end
- 
+
     def skip_order_at
-      last_skip.skip_at if skipping? 
+      last_skip.skip_at if skipping?
     end
 
     def last_skip

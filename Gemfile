@@ -5,6 +5,10 @@ gem 'spree', github: 'spree/spree', branch: '2-4-stable'
 gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '2-4-stable'
 gem 'active_model_serializers', '~> 0.8.3'
 
+# For use with prepaid subscriptions
+gem 'spree_store_credits', github: 'bryanmtl/spree_store_credit_payment_method', branch: 'master'
+
+
 group :test do
   gem 'factory_girl', '4.5.0'
   gem 'launchy'

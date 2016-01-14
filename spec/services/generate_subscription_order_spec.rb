@@ -2,11 +2,6 @@ require 'spec_helper'
 
 describe GenerateSubscriptionOrder do
   include OrderMacros
-  include ProductMacros
-  before do
-    setup_subscribable_products
-    setup_prepayable_subscription_variants
-  end
 
   context "#call" do
     it 'should generate a new subscription order when called' do
