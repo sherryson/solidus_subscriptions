@@ -76,28 +76,27 @@ describe Spree::Subscription do
     end
   end
 
-  context "#prepaid" do
-    before do
-      create_completed_subscription_order
-    end
-
-    it "should know if it's been paid for in advance" do
-      @order.subscription.prepaid?.should be false
-    end
-
-    it "should know if it has a prepaid balance remaining" do
-      @order.subscription.prepaid_balance_remaining?.should be false
-    end
-
-    it "should be set to prepaid when a prepaid order is submitted" do
-      setup_prepayable_subscription_variants
-      create_completed_prepaid_subscription_order
-      @order.subscribable?.should be true
-      @order.subscription.duration.should == 6
-      @order.subscription.interval.should == 4
-      @order.subscription.prepaid?.should be true
-    end
-  end
+  # context "#prepaid" do
+  #   before do
+  #     create_completed_subscription_order
+  #   end
+  #
+  #   it "should know if it's been paid for in advance" do
+  #     @order.subscription.prepaid?.should be false
+  #   end
+  #
+  #   it "should know if it has a prepaid balance remaining" do
+  #     @order.subscription.prepaid_balance_remaining?.should be false
+  #   end
+  #
+  #   it "should be set to prepaid when a prepaid order is submitted" do
+  #     create_completed_prepaid_subscription_order
+  #     @order.subscribable?.should be true
+  #     @order.subscription.duration.should == 6
+  #     @order.subscription.interval.should == 4
+  #     @order.subscription.prepaid?.should be true
+  #   end
+  # end
 
   describe "#cancelled?" do
     let(:subscription) { FactoryGirl.create(:subscription, state: subscription_state) }
