@@ -1,7 +1,5 @@
 FactoryGirl.define do
   factory :subscribable_variant, parent: :base_variant do
-    sku = "subscribe-to-me-#{Spree::Variant.count}"
-
     after(:create) do |variant|
       build(:stock_item, variant: variant)
     end

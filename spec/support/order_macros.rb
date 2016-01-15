@@ -45,7 +45,8 @@ module OrderMacros
 
   def ship_order(order)
     shipment = order.shipments.first
-    shipment.state = 'ready'
-    shipment.ship!
+    shipment.inventory_units.update_all state: 'on_hand'
+    shipment.update_column('state', 'ready')
+    shipment.reload.ship
   end
 end
