@@ -19,6 +19,10 @@ en:
   are_you_sure: "Are you sure?"
   action:
     pause: Pause
+    resume: Resume
+    change: Change
+  resume_at: "Resume on"
+
 
   spree:
     successfully_cancelled: successfully cancelled subscription

@@ -156,6 +156,30 @@ describe Spree::Subscription do
         subscription.state
       }.from('paused').to('active')
     end
+
+    it "resumes the subscription if the resume date is today" do
+      expect {
+        subscription.resume(Time.now)
+      }.to change {
+        subscription.state
+      }.from('paused').to('active')
+    end
+
+    it "resumes the subscription for past resume date" do
+      expect {
+        subscription.resume(Time.now - 1.month)
+      }.to change {
+        subscription.state
+      }.from('paused').to('active')
+    end
+
+    it "keeps the subscription paused for future resume date" do
+        expect {
+          subscription.resume(Time.now + 1.month)
+        }.to_not change {
+          subscription.state
+        }
+    end
   end
 
   describe "can_renew?" do

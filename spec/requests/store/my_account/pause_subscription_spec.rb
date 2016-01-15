@@ -11,43 +11,52 @@ feature "Subscription" do
   end
 
   context "Pausing a subscription" do
-    scenario "changes its state to pause" do
-      visit "/account"
 
+    before(:each) do
+      visit "/account"
+    end
+
+    scenario "changes its state to pause" do
       within a_given_subscription do
-        click_link("Pause")
+        find(".pause-subscription").click
       end
 
       within a_given_subscription do
         expect(state_column).to have_text("Paused")
-        expect(page).to_not have_css("a.pause-subscription")
+        expect(page).to_not have_css(".pause-subscription")
+      end
+    end
+  end
+
+  context "A paused subscription" do
+
+    before(:each) do
+      pause_the_subscription
+      visit "/account"
+    end
+
+    scenario "can be resumed with today's date" do
+      within a_given_subscription do
+        fill_in "subscription[resume_at]", with: Date.today
+        click_button("Resume")
+      end
+
+      within a_given_subscription do
+        expect(state_column).to have_text("Active")
       end
     end
 
-    context "A paused subscription" do
+    scenario "can be set to be resumed on a specific date" do
+      resume_at = Date.today + 1.month
 
-      before(:each) do
-        pause_the_subscription
-
-        visit "/account"
+      within a_given_subscription do
+        fill_in "subscription[resume_at]", with: resume_at
+        click_button("Resume")
       end
 
-      scenario "has a 'resume at' function" do
-        pending
-        within a_given_subscription do
-          expect(page).to have_text("Resume At")
-          expect(page).to have_css("input#resume-at")
-        end
-      end
-
-      scenario "can be resumed" do
-        within a_given_subscription do
-          click_button("Resume")
-        end
-
-        within a_given_subscription do
-          expect(state_column).to have_text("Active")
-        end
+      within a_given_subscription do
+        expect(state_column).to have_text("Paused")
+        expect(page).to have_text("Will be resumed on #{resume_at}")
       end
     end
   end

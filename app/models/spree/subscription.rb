@@ -203,8 +203,9 @@ module Spree
       update_attributes(pause_at: Time.now, resume_at: nil, state: 'paused')
     end
 
-    def resume
-      update_attributes(pause_at: nil, resume_at: Time.now, state: 'active')
+    def resume(resume_at_date = Time.now)
+      update_attributes(resume_at: resume_at_date)
+      update_attributes(pause_at: nil, state: 'active') if (resume_at_date.to_date <= Date.today)
     end
 
     def completed_orders
