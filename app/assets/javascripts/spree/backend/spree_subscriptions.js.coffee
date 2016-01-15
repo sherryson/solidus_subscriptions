@@ -24,13 +24,13 @@ $(document).ready ->
       toggleItemEdit()
       deleteSubscriptionItem(subscription_item_id)
 
-  # handle adding 
+  # handle adding
   $('#add_subscription_item_variant_id').change ->
     variant_id = parseInt($(this).val())
     variant = _.find(window.variants, (variant) ->
       variant.id == variant_id
     )
-    
+
     $('#stock_details').html variantLineItemTemplate(variant: variant)
     $('#stock_details').show()
     $('button.add_variant').click addSubscriptionVariant
@@ -65,7 +65,7 @@ adjustSubscriptionItem = (subscription_item_id, quantity) ->
       subscription_item:
         quantity: quantity
       token: Spree.api_key
-  ).done (msg) ->    
+  ).done (msg) ->
     show_flash 'success', 'Successfully updated the quantity.'
     $('.subscription-item-qty-show').text(quantity)
     $('a.edit-subscription-item').trigger 'click'

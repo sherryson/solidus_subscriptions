@@ -23,15 +23,18 @@
               <% if !subscription.paused? %>
                 <%= button_to t('action.pause'), pause_subscription_path(subscription), method: :put, class: "pause-subscription" %>
               <% else %>
-                <% if subscription.resume_at.nil? %>
+                <div class='resume-subscription-on' <% if !subscription.resume_at.nil? %>style="display: none" <% end %>>
                   <%= form_for subscription, url: resume_subscription_path(subscription), method: :put  do |f| %>
                     <%= f.label(:resume_at, t('resume_at')) %>
                     <%= f.date_field(:resume_at, value: subscription.resume_at ? subscription.resume_at.to_date : Date.today, min: Date.today) %>
                     <%= f.submit(t('action.resume')) %>
                   <% end %>
-                <% else %>
-                  Will be resumed on <%= subscription.resume_at.to_date %>
-                  <%= button_to t('action.change'), onclick: "alert('')" %>
+                </div>
+                <% if !subscription.resume_at.nil? %>
+                  <div class='subscription-will-resume-on'>
+                    Will be resumed on <%= subscription.resume_at.to_date %>
+                    <%= tag :input, { type: :button, value: t('action.change'), class: 'change-resume-subscription-on' } %>
+                  </div>
                 <% end %>
               <% end %>
             </td>
