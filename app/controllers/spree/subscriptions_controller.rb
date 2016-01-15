@@ -12,6 +12,11 @@ module Spree
       redirect_to :back
     end
 
+    def cancel
+      @subscription.cancel
+      redirect_to :back
+    end
+
 
     private
 

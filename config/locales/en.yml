@@ -21,6 +21,7 @@ en:
     pause: Pause
     resume: Resume
     change: Change
+    cancel: Cancel
   resume_at: "Resume on"
 
 

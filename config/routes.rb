@@ -36,6 +36,7 @@ Spree::Core::Engine.add_routes do
     member do
         put :pause
         put :resume
+        put :cancel
     end
   end
 end
