@@ -3,7 +3,7 @@ module Spree
 
     def self.prepended(base)
       base.alias_method_chain :finalize!, :create_subscription
-      base.belongs_to :subscription, class_name: 'Spree::Subscription'
+      base.has_and_belongs_to_many :subscriptions, join_table: :spree_orders_subscriptions
       base.register_line_item_comparison_hook(:line_item_interval_match)
     end
 
@@ -31,7 +31,8 @@ module Spree
             prepaid_amount: subscription_prepaid_amount,
             credit_card_id: credit_card_id_if_available
           }
-          subscription = create_subscription(attrs)
+
+          subscription = Spree::Subscription.create(attrs)
 
           # create subscription addresses
           subscription.create_ship_address!(ship_address.dup.attributes.merge({user_id: user.id}))
@@ -73,10 +74,6 @@ module Spree
     def subscription_prepaid_amount
     end
 
-    def has_subscription?
-      subscription_id.present?
-    end
-
     def subscription_products
       line_items.group_by { |item| item.interval }.reject{ |interval| interval.zero? }
     end
@@ -86,13 +83,13 @@ module Spree
     end
 
     def reset_failure_count_for_subscription
-      if completed? && has_subscription?
+      if completed? && repeat_order?
         subscription.reset_failure_count
       end
     end
 
     def clear_skip_order_for_subscription
-      if completed? && has_subscription?
+      if completed? && repeat_order?
         subscription.clear_skip_order
       end
     end

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Spree::Subscription do
   include OrderMacros
 
-  it { should have_many(:orders) }
+  it { should have_and_belong_to_many(:orders) }
   it { should belong_to(:user) }
   it { should belong_to(:credit_card)}
   it { should respond_to(:resume_on)}
@@ -11,7 +11,7 @@ describe Spree::Subscription do
   context "#products" do
     it 'should return a collection of products' do
       create_completed_subscription_order
-      @order.subscription.products.map(&:subscribable?).all?.should be true
+      @order.subscription.last.products.map(&:subscribable?).all?.should be true
     end
   end
 
@@ -21,7 +21,7 @@ describe Spree::Subscription do
     end
 
     it "should be automatically associated with a credit card when the initial order is completed" do
-      expect(@order.subscription.credit_card).not_to be_nil
+      expect(@order.subscriptions.last.credit_card).not_to be_nil
     end
   end
 
@@ -32,11 +32,11 @@ describe Spree::Subscription do
     end
 
     it "should return the shipment date of the last order" do
-      @order.subscription.last_shipment_date.to_i.should == Time.now.to_i
+      @order.subscriptions.last.last_shipment_date.to_i.should == Time.now.to_i
     end
 
     it "should be able to calculate the date of the next shipment" do
-      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      @order.subscription.last.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
     end
 
     after do
@@ -49,16 +49,16 @@ describe Spree::Subscription do
       Timecop.freeze
       create_completed_subscription_order
 
-      @order.subscription.skip_next_order
+      @order.subscriptions.last.skip_next_order
     end
 
     it "should calculate the correct next shipment date if user decides to skip" do
-      @order.subscription.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
+      @order.subscriptions.last.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
     end
 
     it "should fall back to the original shipment date after undoing" do
-      @order.subscription.undo_skip_next_order
-      @order.subscription.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      @order.subscriptions.last.undo_skip_next_order
+      @order.subscriptions.last.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
     end
   end
 
@@ -68,11 +68,11 @@ describe Spree::Subscription do
     end
 
     it "should have a shipment" do
-      expect(@order.subscription.shipment).not_to be_nil
+      expect(@order.subscriptions.last.shipment).not_to be_nil
     end
 
     it "should have a shipping method" do
-      expect(@order.subscription.shipping_method).not_to be_nil
+      expect(@order.subscriptions.last.shipping_method).not_to be_nil
     end
   end
 

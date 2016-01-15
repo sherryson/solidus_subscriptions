@@ -1,6 +1,6 @@
 module Spree
   class Subscription < ActiveRecord::Base
-    has_many :orders, -> { order 'updated_at desc' }
+    has_and_belongs_to_many :orders, join_table: :spree_orders_subscriptions
     has_many :subscription_items, dependent: :destroy, inverse_of: :subscription, dependent: :destroy
     belongs_to :user
     belongs_to :credit_card
@@ -135,6 +135,10 @@ module Spree
       )
       created_order.update_column(:email, email) if email
       created_order
+    end
+
+    def prepaid?
+      false
     end
 
     def eligible_for_processing?

@@ -11,7 +11,6 @@ describe Spree::Order do
 
   it { should respond_to(:subscribable?) }
   it { should respond_to(:repeat_order?) }
-  it { should respond_to(:has_subscription?) }
 
   context "#finalize!" do
     let(:order) { create(:order) }
@@ -31,7 +30,7 @@ describe Spree::Order do
       it "doesn't create a subscription" do
         order.finalize!
 
-        expect(order.subscription).to be_nil
+        expect(order.subscriptions).to be_empty
       end
     end
 
@@ -46,7 +45,7 @@ describe Spree::Order do
       end
 
       it "creates a subscription and attaches it to the order" do
-        expect(order.subscription).not_to be_nil
+        expect(order.subscriptions).not_to be_nil
       end
 
       it "does not set the repeat_order flag" do
