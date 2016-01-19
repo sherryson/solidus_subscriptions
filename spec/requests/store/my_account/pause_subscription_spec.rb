@@ -15,7 +15,7 @@ feature "Subscription", type: :request do
     end
 
     scenario "changes its state to pause" do
-      subscription = @my_account.subscriptions.first
+      subscription = @my_account.any_subscription
 
       subscription.pause
 
@@ -33,7 +33,7 @@ feature "Subscription", type: :request do
     end
 
     scenario "can be resumed with today's date" do
-      subscription = @my_account.subscriptions.first
+      subscription = @my_account.any_subscription
 
       subscription.resume Date.today
 
@@ -41,7 +41,7 @@ feature "Subscription", type: :request do
     end
 
     scenario "can be set to be resumed on a specific date" do
-      subscription = @my_account.subscriptions.first
+      subscription = @my_account.any_subscription
 
       subscription.resume next_month
 

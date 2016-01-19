@@ -15,7 +15,7 @@ feature "Subscription", type: :request do
     end
 
     scenario "can be cancelled" do
-      subscription = @my_account.subscriptions.first
+      subscription = @my_account.any_subscription
 
       subscription.cancel
 

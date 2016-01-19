@@ -7,23 +7,11 @@ module MyAccount
         visit "/account"
     end
 
-    def subscriptions
-      Subscriptions.new(find("div#content table.subscription-summary"))
+    def any_subscription
+      Subscription.new(find("div#content table.subscription-summary > tbody > tr:first-of-type"))
     end
   end
-
-  class Subscriptions
-    include Capybara::DSL
-
-    def initialize(subscriptions)
-      @subscriptions = subscriptions
-    end
-
-    def first
-      Subscription.new(@subscriptions.find("tbody > tr:first-of-type"))
-    end
-  end
-
+  
   class Subscription
     include Capybara::DSL
 
