@@ -21,7 +21,7 @@ module Spree
       begin
         items = subscribable_line_items.group_by { |item| item.interval }
         # pull user by email, this considers existing users opted for guest checkout
-        user = User.find_by_email email
+        user = User.find_by(email: email)
         items.keys.each do |interval|
           attrs = {
             user_id: user.id,
@@ -109,6 +109,11 @@ module Spree
 
     def subscribable_line_items
       line_items.where('interval > 0')
+    end
+
+    # convenience method for displaying internval and true/false in the admin
+    def subscription
+      subscriptions.last
     end
 
     # def create_store_credits_payment!

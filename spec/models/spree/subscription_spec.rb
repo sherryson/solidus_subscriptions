@@ -11,7 +11,7 @@ describe Spree::Subscription do
   context "#products" do
     it 'should return a collection of products' do
       create_completed_subscription_order
-      @order.subscription.last.products.map(&:subscribable?).all?.should be true
+      @order.subscriptions.last.products.map(&:subscribable?).all?.should be true
     end
   end
 
@@ -36,7 +36,7 @@ describe Spree::Subscription do
     end
 
     it "should be able to calculate the date of the next shipment" do
-      @order.subscription.last.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      @order.subscriptions.last.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
     end
 
     after do
@@ -53,12 +53,12 @@ describe Spree::Subscription do
     end
 
     it "should calculate the correct next shipment date if user decides to skip" do
-      @order.subscriptions.last.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
+      @order.subscriptions.last.next_shipment_date.to_i.should == 8.weeks.from_now.to_i
     end
 
     it "should fall back to the original shipment date after undoing" do
       @order.subscriptions.last.undo_skip_next_order
-      @order.subscriptions.last.next_shipment_date.to_i.should == 2.weeks.from_now.to_i
+      @order.subscriptions.last.next_shipment_date.to_i.should == 4.weeks.from_now.to_i
     end
   end
 
@@ -161,7 +161,7 @@ describe Spree::Subscription do
       end
 
       it "can renew if subscription is active and has an interval" do
-        expect(@order.subscription.can_renew?).to be_truthy
+        expect(@order.subscriptions.last.can_renew?).to be_truthy
       end
     end
 

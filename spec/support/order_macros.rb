@@ -32,7 +32,7 @@ module OrderMacros
     country_zone.members.create(:zoneable => @country)
     @shipping_method = create(:shipping_method)
 
-    @user = double(Spree::User, email: "spree@example.com")
+    @user = double(Spree::User, email: "spree@example.com", spree_api_key: 'anykey')
     @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
     @line_items = [
       FactoryGirl.create(:line_item, variant: create(:subscribable_variant), interval: 2),
