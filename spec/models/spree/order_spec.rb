@@ -6,12 +6,11 @@ describe Spree::Order do
   let(:order) { stub_model(Spree::Order, :user => user) }
   let(:line_items) {[
     FactoryGirl.create(:line_item),
-    FactoryGirl.create(:line_item, variant: FactoryGirl.create(:subscribable_variant))
+    FactoryGirl.create(:line_item, interval: 2, variant: FactoryGirl.create(:subscribable_variant))
   ]}
 
   it { should respond_to(:subscribable?) }
   it { should respond_to(:repeat_order?) }
-  it { should respond_to(:has_subscription?) }
 
   context "#finalize!" do
     let(:order) { create(:order) }
@@ -31,21 +30,22 @@ describe Spree::Order do
       it "doesn't create a subscription" do
         order.finalize!
 
-        expect(order.subscription).to be_nil
+        expect(order.subscriptions).to be_empty
       end
     end
 
     context "with an eligible order" do
       before do
-        Spree::OptionType.create(name: 'frequency', presentation: 'frequency')
-        Spree::OptionType.create(name: 'number_of_months', presentation: 'Number of Months')
         order.line_items << line_items
         order.finalize!
       end
 
+      it "can return a list of line items being subscribed to" do
+        expect(order.subscribable_line_items.count).to eq(1)
+      end
+
       it "creates a subscription and attaches it to the order" do
-        order.subscription.should_not be_nil
-        order.subscription.duration.should == 0
+        expect(order.subscriptions).not_to be_nil
       end
 
       it "does not set the repeat_order flag" do

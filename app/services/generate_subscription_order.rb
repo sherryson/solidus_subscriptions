@@ -43,7 +43,7 @@ class GenerateSubscriptionOrder
 
     transition_order_from_payment_to_complete!(next_order)
 
-    subscription.decrement_prepaid_duration!
+    # subscription.decrement_prepaid_duration!
 
     true
   end

@@ -1,7 +1,7 @@
 module Spree
   class Subscription < ActiveRecord::Base
-    has_many :orders, -> { order 'updated_at desc' }
     has_many :subscription_items, dependent: :destroy, inverse_of: :subscription
+    has_and_belongs_to_many :orders, join_table: :spree_orders_subscriptions
     belongs_to :user
     belongs_to :credit_card
     alias_attribute :items, :subscription_items
@@ -38,7 +38,7 @@ module Spree
       end
 
       def prepaid
-        where('duration > 1')
+        where(prepaid: true)
       end
 
       def good_standing
@@ -59,7 +59,7 @@ module Spree
     end
 
     def products
-      last_order.subscription_products
+      subscription_items.map(&:variant)
     end
 
     def last_shipment_date
@@ -138,7 +138,7 @@ module Spree
     end
 
     def prepaid?
-      duration && duration > 0
+      false
     end
 
     def eligible_for_processing?
@@ -159,15 +159,6 @@ module Spree
 
     def reset_failure_count
       update_column(:failure_count, 0)
-    end
-
-    def decrement_prepaid_duration!
-      return unless prepaid?
-      update_column(:duration, duration-1)
-    end
-
-    def remaining_shipments
-      duration - 2
     end
 
     def skip_next_order

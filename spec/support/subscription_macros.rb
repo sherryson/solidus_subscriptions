@@ -1,9 +1,7 @@
 module SubscriptionMacros
   include OrderMacros
-  include ProductMacros
 
   def setup_subscription_for(user)
-    setup_subscribable_products
     create_completed_subscription_order
     associate_subscription_to user
   end

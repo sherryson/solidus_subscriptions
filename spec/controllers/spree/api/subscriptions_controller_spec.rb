@@ -1,6 +1,5 @@
 require 'spec_helper'
 include OrderMacros
-include ProductMacros
 
 module Spree
   describe Api::SubscriptionsController, type: :controller do
@@ -13,14 +12,12 @@ module Spree
     end
 
     before do
-      stub_authentication!
-      setup_subscribable_products
-
       create_completed_subscription_order
       @subscription = Spree::Subscription.last
       @subscription.update_attribute(:user, current_api_user)
       @subscription.shipping_address.update_attribute(:user, current_api_user)
       @subscription.billing_address.update_attribute(:user, current_api_user)
+      stub_authentication!
     end
 
     it "restricts access to subscriptions" do
@@ -37,18 +34,18 @@ module Spree
 
     context "skipping" do
       it "should skip next order" do
-        @subscription.next_shipment_date.to_date.should == 2.weeks.from_now.to_date
+        @subscription.next_shipment_date.to_date.should == 4.weeks.from_now.to_date
 
         api_get :skip_next_order, id: @subscription.id
-        @subscription.next_shipment_date.to_date.should == 4.weeks.from_now.to_date
+        @subscription.next_shipment_date.to_date.should == 8.weeks.from_now.to_date
       end
 
       it "should be able to undo a skip next order" do
         @subscription.skip_next_order
-        @subscription.next_shipment_date.to_date.should == 4.weeks.from_now.to_date
+        @subscription.next_shipment_date.to_date.should == 8.weeks.from_now.to_date
 
         api_get :undo_skip_next_order, id: @subscription.id
-        @subscription.next_shipment_date.to_date.should == 2.weeks.from_now.to_date
+        @subscription.next_shipment_date.to_date.should == 4.weeks.from_now.to_date
       end
     end
 
