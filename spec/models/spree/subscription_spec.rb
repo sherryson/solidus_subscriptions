@@ -174,6 +174,28 @@ describe Spree::Subscription do
           subscription.state
         }
     end
+
+    it "lists only subscriptions that are due to be resumed today" do
+      scheduled_to_be_resumed = create_subscriptions([
+        { state: :paused, resume_at: Time.now - 1.day },
+        { state: :paused, resume_at: Time.now }
+      ])
+      others = create_subscriptions([
+        { state: :active, resume_at: Time.now - 6.months },
+        { state: :paused, resume_at: Time.now + 1.day }
+      ])
+
+      to_resume = Spree::Subscription.ready_to_resume
+
+      expect(to_resume).to eq(scheduled_to_be_resumed)
+    end
+
+    def create_subscriptions(subscriptions_attr)
+      subscriptions = []
+      subscriptions_attr.each { |attributes| subscriptions << FactoryGirl.create(:subscription, attributes) }
+      subscriptions.each(&:save!)
+      subscriptions
+    end
   end
 
   describe "can_renew?" do

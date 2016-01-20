@@ -56,6 +56,9 @@ module Spree
         where(id: subscriptions.collect(&:id))
       end
 
+      def ready_to_resume
+        where(["state = ? and resume_at <= ?", :paused, Time.now])
+      end
     end
 
     def products
