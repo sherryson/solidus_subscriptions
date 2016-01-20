@@ -9,7 +9,6 @@ describe Spree::Order do
     FactoryGirl.create(:line_item, interval: 2, variant: FactoryGirl.create(:subscribable_variant))
   ]}
 
-  it { should respond_to(:subscribable?) }
   it { should respond_to(:repeat_order?) }
 
   context "#finalize!" do
@@ -54,4 +53,22 @@ describe Spree::Order do
       end
     end
   end
+
+  context "Subscription Interval" do
+    it "returns the interval of the last subscription" do
+      first = create(:subscription, interval: 3)
+      last = create(:subscription, interval: 12)
+      order = create(:order, subscriptions: [first, last])
+
+      expect(order.subscription_interval).to eq(12)
+    end
+
+    it "returns 4 weeks if it doesn't have previous subscriptions" do
+      order = create(:order, subscriptions: [])
+
+      expect(order.subscription_interval).to eq(4)
+    end
+  end
+
+
 end

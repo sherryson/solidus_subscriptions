@@ -1,7 +1,7 @@
 module Spree
   module Admin
     class SubscriptionsController < ResourceController
-      
+
       before_action :require_order_id, only: [:new]
       before_action :load_payment_methods, only: [:credit_card]
 
@@ -112,7 +112,7 @@ module Spree
             per(params[:per_page] || Spree::Config[:orders_per_page])
 
           @collection
-        end    
+        end
 
         def location_after_save
           edit_object_url(@object)
@@ -131,8 +131,6 @@ module Spree
             user_id: order.user.id,
             state: 'active',
             interval: order.subscription_interval,
-            duration: order.subscription_duration,
-            prepaid_amount: order.subscription_prepaid_amount,
             credit_card_id: order.credit_card_id_if_available
           }
           order.build_subscription(attrs)

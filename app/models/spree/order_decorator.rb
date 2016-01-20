@@ -18,6 +18,7 @@ module Spree
     end
 
     def create_subscription_if_eligible
+      byebug
       begin
         items = subscribable_line_items.group_by { |item| item.interval }
         # pull user by email, this considers existing users opted for guest checkout
@@ -28,7 +29,6 @@ module Spree
             email: email,
             state: 'active',
             interval: interval,
-            prepaid_amount: subscription_prepaid_amount,
             credit_card_id: credit_card_id_if_available
           }
 
@@ -60,18 +60,8 @@ module Spree
       end
     end
 
-    def subscribable?
-      false
-    end
-
     def subscription_interval
       subscription.interval
-    end
-
-    def subscription_duration
-    end
-
-    def subscription_prepaid_amount
     end
 
     def subscription_products

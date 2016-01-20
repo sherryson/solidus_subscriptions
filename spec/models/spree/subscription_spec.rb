@@ -175,7 +175,7 @@ describe Spree::Subscription do
         }
     end
 
-    it "lists only subscriptions that are due to be resumed today" do
+    it "lists subscriptions that are due to be resumed today" do
       scheduled_to_be_resumed = create_subscriptions([
         { state: :paused, resume_at: Time.now - 1.day },
         { state: :paused, resume_at: Time.now }
