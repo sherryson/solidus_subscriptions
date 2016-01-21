@@ -18,9 +18,9 @@ module Spree
     end
 
     def update
-      @subscription.bill_address.update_attributes(address_params(:bill_address_attributes))
-      @subscription.ship_address.update_attributes(address_params(:ship_address_attributes))
-      redirect_to :back
+      @subscription.bill_address_attributes=(address_params(:bill_address_attributes))
+      @subscription.ship_address_attributes=(address_params(:ship_address_attributes))
+      render :edit
     end
 
     private
