@@ -18,9 +18,11 @@ module Spree
     end
 
     def update
-      @subscription.bill_address_attributes=(address_params(:bill_address_attributes))
-      @subscription.ship_address_attributes=(address_params(:ship_address_attributes))
-      render :edit
+      if @subscription.attributes = resource_params
+        render :edit
+      else
+        invalid_resource!(@subscription)
+      end
     end
 
     private
@@ -35,8 +37,8 @@ module Spree
 
     private
 
-    def address_params(address_attributes)
-      params.require(:subscription).require(address_attributes).permit!
+    def resource_params
+      params.require(:subscription).permit!
     end
 
   end

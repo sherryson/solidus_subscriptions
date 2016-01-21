@@ -4,6 +4,11 @@
 
 <%= form_for @subscription, :url => subscription_path(@subscription) do |form| %>
 
+  <fieldset class="index no-border-bottom">
+    <legend align="center"><%= Spree.t("admin.subscription") %></legend>
+    <%= render :partial => 'spree/shared/form', :locals => { :f => form } %>
+  </fieldset>
+
   <div class="row">
   <div class="col-sm-6" data-hook="billing_fieldset_wrapper">
   <div class="panel panel-default" id="billing" data-hook>

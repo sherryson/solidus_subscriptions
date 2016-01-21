@@ -45,6 +45,22 @@ module MyAccount
   class SubscriptionPage
     include Capybara::DSL
 
+    def interval
+      find_field("Frequency")
+    end
+
+    def interval=(new_interval)
+      interval.set new_interval
+    end
+
+    def email
+      find_field("Email")
+    end
+
+    def email=(new_email)
+      email.set new_email
+    end
+
     def billing_address
       AddressForm.new("div#billing")
     end
