@@ -17,6 +17,11 @@ module Spree
       redirect_to :back
     end
 
+    def update
+      @subscription.bill_address.update_attributes(address_params(:bill_address_attributes))
+      @subscription.ship_address.update_attributes(address_params(:ship_address_attributes))
+      redirect_to :back
+    end
 
     private
 
@@ -26,6 +31,12 @@ module Spree
 
     def resume_at_param
       Date.parse(params.require(:subscription).require(:resume_at))
+    end
+
+    private
+
+    def address_params(address_attributes)
+      params.require(:subscription).require(address_attributes).permit!
     end
 
   end

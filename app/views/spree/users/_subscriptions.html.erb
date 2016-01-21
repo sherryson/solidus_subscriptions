@@ -5,6 +5,7 @@
     <table class="subscription-summary">
       <thead>
         <tr>
+          <th><%= t(:id) %></th>
           <th><%= t(:products) %></th>
           <th><%= t(:last_shipped_on) %></th>
           <th><%= t(:next_shipment) %> </th>
@@ -16,6 +17,7 @@
       <tbody>
         <% @user.subscriptions.each do |subscription| %>
           <tr>
+            <td><%= link_to subscription.id, edit_subscription_path(subscription), class: "edit-subscription" %></td>
             <td><%= subscription.products.collect(&:name).to_sentence %></td>
             <td><%= subscription.last_shipment_date %></td>
             <td><%= subscription.next_shipment_date %></td>

@@ -18,7 +18,6 @@ module Spree
     end
 
     def create_subscription_if_eligible
-      byebug
       begin
         items = subscribable_line_items.group_by { |item| item.interval }
         # pull user by email, this considers existing users opted for guest checkout
@@ -61,7 +60,7 @@ module Spree
     end
 
     def subscription_interval
-      subscription.interval
+      subscription ? subscription.interval : 4
     end
 
     def subscription_products

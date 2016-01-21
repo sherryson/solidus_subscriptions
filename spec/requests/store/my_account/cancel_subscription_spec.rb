@@ -9,7 +9,7 @@ feature "Subscription", type: :request do
     sign_in_as! user
   end
 
-  context "Subscription" do
+  context "Cancelling a subscription" do
     before(:each) do
       @my_account = MyAccount::Page.new
     end
