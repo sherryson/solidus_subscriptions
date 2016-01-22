@@ -12,7 +12,7 @@ feature "Editing a subscription", type: :request do
     @edit_subscription = my_account.any_subscription.edit
   end
 
-  scenario "removing an item from the subscription" do
+  scenario "removing an item" do
     line_item = @edit_subscription.any_line_item
 
     line_item.delete
@@ -20,7 +20,16 @@ feature "Editing a subscription", type: :request do
     expect(@edit_subscription).to_not have_css(line_items)
   end
 
+  scenario "adding an item" do
+    a_new_variant = create(:subscribable_variant, sku: "SKU-42")
+    @edit_subscription.find("div#add-line-item input[type = 'text']").set a_new_variant.id
+
+    @edit_subscription.find("div#add-line-item input[type = 'submit']").click
+
+    expect(find("#line-items table > tbody > tr:nth-of-type(2) > td:first-of-type")).to have_text("SKU-42")
+  end
+
   def line_items
-    "#line-items > tbody > tr"
+    "#line-items table > tbody > tr"
   end
 end
