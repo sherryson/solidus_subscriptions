@@ -28,7 +28,7 @@ module Spree
     private
 
     def find_subscription
-      @subscription ||= Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
+      @subscription = Spree::Subscription.accessible_by(current_ability, :read).find(params[:id])
     end
 
     def resume_at_param

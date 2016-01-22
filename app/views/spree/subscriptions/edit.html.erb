@@ -2,7 +2,7 @@
   <%= t(:editing_subscription) %>
 <% end %>
 
-<%= form_for @subscription, :url => subscription_path(@subscription) do |form| %>
+<%= form_for @subscription, url: subscription_path(@subscription) do |form| %>
 
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription") %></legend>
@@ -40,7 +40,8 @@
 
   <div class="well text-right form-buttons" data-hook="buttons">
   <%= submit_tag Spree.t(:save_and_continue), :class => 'btn btn-lg btn-success' %>
-
   </div>
 
 <% end %>
+
+  <%= render partial: 'items' %>

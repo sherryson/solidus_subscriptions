@@ -38,5 +38,6 @@ Spree::Core::Engine.add_routes do
         put :resume
         put :cancel
     end
+    resources :subscription_items
   end
 end

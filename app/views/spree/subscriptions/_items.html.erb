@@ -1,0 +1,25 @@
+<table id="line-items">
+  <thead>
+    <th><%= Spree.t(:name) %></th>
+    <th><%= Spree.t(:price) %></th>
+    <th><%= Spree.t(:quantity) %></th>
+    <th><%= Spree.t(:total_price) %></th>
+    <th>&nbsp;</th>
+  </thead>
+
+  <tbody>
+    <% @subscription.subscription_items.each do |item| %>
+      <tr>
+        <td>
+          <%= item.variant.product.name %><br><%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
+        </td>
+        <td><%= number_to_currency(item.variant.price) %></td>
+        <td><%= item.quantity %></td>
+        <td><%= line_item_shipment_price(item, item.quantity) %></td>
+        <td>
+          <%= button_to t('action.delete'), [@subscription, item], method: :delete, class: "delete-subscription-item" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

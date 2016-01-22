@@ -69,8 +69,24 @@ module MyAccount
       AddressForm.new("div#shipping")
     end
 
+    def any_line_item
+      LineItem.new("#line-items > tbody > tr:first-of-type")
+    end
+
     def submit
       find("input.btn-success").click
+    end
+  end
+
+  class LineItem
+    include Capybara::DSL
+
+    def initialize(line_item)
+      @line_item = line_item
+    end
+
+    def delete
+      find(@line_item).find(".delete-subscription-item").click
     end
   end
 
