@@ -61,6 +61,18 @@ module MyAccount
       email.set new_email
     end
 
+    def add_variant_section
+      find("div#add-line-item")
+    end
+
+    def select_new_variant_to_add(variant_id)
+       add_variant_section.find("input[type = 'text']").set variant_id
+    end
+
+    def add_new_variant
+      add_variant_section.find("input[type = 'submit']").click
+    end
+
     def billing_address
       AddressForm.new("div#billing")
     end

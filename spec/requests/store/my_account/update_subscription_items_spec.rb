@@ -22,14 +22,18 @@ feature "Editing a subscription", type: :request do
 
   scenario "adding an item" do
     a_new_variant = create(:subscribable_variant, sku: "SKU-42")
-    @edit_subscription.find("div#add-line-item input[type = 'text']").set a_new_variant.id
+    @edit_subscription.select_new_variant_to_add a_new_variant.id
 
-    @edit_subscription.find("div#add-line-item input[type = 'submit']").click
+    @edit_subscription.add_new_variant
 
-    expect(find("#line-items table > tbody > tr:nth-of-type(2) > td:first-of-type")).to have_text("SKU-42")
+    expect(newly_added_item).to have_text("SKU-42")
   end
 
   def line_items
     "#line-items table > tbody > tr"
+  end
+
+  def newly_added_item
+    find("#line-items table > tbody > tr:nth-of-type(2) > td:first-of-type")
   end
 end
