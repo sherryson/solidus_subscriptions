@@ -1,0 +1,62 @@
+<div id="payment-info">
+  <% credit_card = @subscription.credit_card %>
+  <dl id="current-payment-info">
+    <dt>ID</dt><dd><%= credit_card.id %></dd>
+    <dt>Name</dt><dd><%= credit_card.name %> </dd>
+    <dt>Number</dt><dd><%= credit_card.display_number %></dd>
+    <dt>Expiration</dt><dd><%= credit_card.month %>/<%= credit_card.year %></dd>
+    <dt>Type</dt><dd><%= credit_card.cc_type %></dd>
+    <dt>Gateway customer id</dt><dd> <%= credit_card.gateway_customer_profile_id %></dd>
+    <dt>Gateway credit card id</dt><dd> <%= credit_card.gateway_payment_profile_id %></dd>
+    <dt>Provider</dt><dd><%= credit_card.payment_method.type %></dd>
+  </dl>
+
+  <%= form_tag credit_card_subscription_path(@subscription) do |form| %>
+    <label><%= Spree.t(:new_payment_method) %></label>
+    <ul>
+      <% @payment_methods.each do |method| %>
+        <li>
+          <label>
+            <%= radio_button_tag 'payment[payment_method_id]', method.id, method == @payment_method %>
+            <%= Spree.t(method.name, scope: :payment_methods, default: method.name) %>
+          </label>
+        </li>
+      <% end %>
+    </ul>
+
+    <% @payment_methods.each do |method| %>
+      <div class="card_form">
+        <% if method.source_required? %>
+          <% param_prefix = "payment_source[#{method.id}]" %>
+          <%= hidden_field_tag "#{param_prefix}[cc_type]" %>
+
+          <div class="form-group">
+            <%= label_tag "card_number#{method.id}", raw(Spree.t(:card_number)) %><span class="required">*</span><br />
+            <%= text_field_tag "#{param_prefix}[number]", '',  id: "card_number#{method.id}",  maxlength: 19, class: "card_number" %>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag "card_name#{method.id}", raw(Spree.t(:name)) %><span class="required">*</span><br />
+            <%= text_field_tag "#{param_prefix}[name]", '', id: "card_name#{method.id}", maxlength: 19, class: "card_name" %>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag "card_expiry#{method.id}", raw(Spree.t(:expiration)) %><span class="required">*</span><br />
+            <%= text_field_tag "#{param_prefix}[expiry]", '', id: "card_expiry#{method.id}", placeholder: "MM / YY", class: "card_expiry" %>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag "card_code#{method.id}", raw(Spree.t(:card_code)) %><span class="required">*</span><br />
+            <%= text_field_tag "#{param_prefix}[verification_value]", '', id: "card_code#{method.id}", size: 5, class: "card_code" %>
+            <a href="/content/cvv" class="info cvvLink" target="_blank">
+              (<%= Spree.t(:what_is_this) %>)
+            </a>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= submit_tag t("action.add") %>
+  <% end %>
+
+</div>

@@ -88,6 +88,11 @@ module MyAccount
     def submit
       find("input.btn-success").click
     end
+
+    def payment_details
+      find("#payment-info a.payment-details").click
+      PaymentPage.new
+    end
   end
 
   class LineItem
@@ -179,6 +184,54 @@ module MyAccount
 
     def phone=(new_phone)
       phone.set new_phone
+    end
+  end
+
+  class PaymentPage
+    include Capybara::DSL
+
+    def current_payment_info
+      find("#current-payment-info")
+    end
+
+    def new_payment_method
+      find("form div.card_form")
+    end
+
+    def number
+      new_payment_method.find("input.card_number")
+    end
+
+    def number=(new_number)
+      number.set new_number
+    end
+
+    def name
+      new_payment_method.find("input.card_name")
+    end
+
+    def name=(new_name)
+      name.set new_name
+    end
+
+    def expiry
+      new_payment_method.find("input.card_expiry")
+    end
+
+    def expiry=(new_expiry)
+      expiry.set new_expiry
+    end
+
+    def code
+      new_payment_method.find("input.card_code")
+    end
+
+    def code=(new_code)
+      code.set new_code
+    end
+
+    def submit
+      find("#payment-info > form > input[type = 'submit']").click
     end
   end
 end

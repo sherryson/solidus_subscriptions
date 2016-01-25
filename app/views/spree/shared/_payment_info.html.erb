@@ -1,0 +1,4 @@
+<dl id="payment-info">
+  <dt>Credit card</dt>
+  <dd><%= link_to @subscription.credit_card.display_number, credit_card_subscription_path(@subscription), class: "payment-details" %></dd>
+</dl>

@@ -38,6 +38,8 @@ Spree::Core::Engine.add_routes do
         put :resume
         put :cancel
         post :add_item
+        get :credit_card
+        post :credit_card
     end
     resources :subscription_items
   end

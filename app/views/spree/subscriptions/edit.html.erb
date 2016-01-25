@@ -7,6 +7,7 @@
   <fieldset class="index no-border-bottom">
     <legend align="center"><%= Spree.t("admin.subscription") %></legend>
     <%= render partial: 'spree/shared/form', locals: { f: form } %>
+    <%= render partial: 'spree/shared/payment_info' %>
   </fieldset>
 
   <div class="row">

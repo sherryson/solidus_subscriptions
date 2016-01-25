@@ -13,6 +13,7 @@ group :test do
   gem 'database_cleaner', '1.4.1'
   gem 'timecop'
   gem 'guard-rspec', require: false
+  gem 'stripe'
 end
 
 gemspec
