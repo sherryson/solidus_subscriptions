@@ -12,7 +12,7 @@ feature "Editing a subscription", type: :request do
     @edit_subscription = my_account.any_subscription.edit
   end
 
-  scenario "removing an item from the subscription" do
+  scenario "removing an item" do
     line_item = @edit_subscription.any_line_item
 
     line_item.delete
@@ -30,7 +30,7 @@ feature "Editing a subscription", type: :request do
   end
 
   def line_items
-    "#line-items > tbody > tr"
+    "#line-items table > tbody > tr"
   end
 
   def newly_added_item

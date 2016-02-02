@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'solidus', github: 'solidusio/solidus', branch: 'master'
+gem 'spree', github: 'spree/spree', branch: '2-4-stable'
 # Provides basic authentication functionality for testing parts of your engine
-gem 'solidus_auth_devise', github: 'solidusio/solidus_auth_devise', branch: 'master'
+gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '2-4-stable'
 gem 'active_model_serializers', '~> 0.8.3'
 
 group :test do

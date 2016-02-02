@@ -82,7 +82,7 @@ module MyAccount
     end
 
     def any_line_item
-      LineItem.new("#line-items > tbody > tr:first-of-type")
+      LineItem.new("#line-items table > tbody > tr:first-of-type")
     end
 
     def submit

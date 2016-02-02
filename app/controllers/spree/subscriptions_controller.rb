@@ -19,11 +19,21 @@ module Spree
     end
 
     def update
-      if @subscription.attributes = resource_params
-        render :edit
-      else
-        invalid_resource!(@subscription)
-      end
+      @subscription.attributes = resource_params
+      render :edit
+    end
+
+    def add_item
+      variant = Spree::Variant.accessible_by(current_ability, :read).find(params[:variant_id])
+
+      return unless variant.product.subscribable?
+      ::Spree::SubscriptionItem.create!(
+        subscription: @subscription,
+        variant: variant,
+        quantity: 1,
+        interval: @subscription.interval
+      )
+      render :edit
     end
 
     def credit_card
