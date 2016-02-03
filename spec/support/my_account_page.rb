@@ -195,7 +195,7 @@ module MyAccount
     end
 
     def new_payment_method
-      find("form div.card_form")
+      find("form div.card_form:first-of-type")
     end
 
     def number

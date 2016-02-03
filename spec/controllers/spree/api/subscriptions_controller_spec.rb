@@ -1,5 +1,5 @@
 require 'spec_helper'
-include OrderMacros
+include SubscriptionMacros
 
 module Spree
   describe Api::SubscriptionsController, type: :controller do
@@ -12,11 +12,7 @@ module Spree
     end
 
     before do
-      create_completed_subscription_order
-      @subscription = Spree::Subscription.last
-      @subscription.update_attribute(:user, current_api_user)
-      @subscription.shipping_address.update_attribute(:user, current_api_user)
-      @subscription.billing_address.update_attribute(:user, current_api_user)
+      setup_subscription_for current_api_user
       stub_authentication!
     end
 

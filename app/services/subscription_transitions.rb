@@ -26,8 +26,8 @@ module SubscriptionTransitions
 
   def transition_order_from_confirm_to_complete!(order)
     # order.payments.clear if subscription.prepaid?
-    order.next! unless order.completed?
-  rescue StateMachine::InvalidTransition
+    order.complete unless order.completed?
+  rescue StateMachines::InvalidTransition
     # ::NotificationMailer.delay.subscription_payment_failure(order, subscription.retry_count)
     raise PaymentError
   end

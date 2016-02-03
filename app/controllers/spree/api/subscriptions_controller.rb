@@ -68,7 +68,7 @@ module Spree
       end
 
       def update_address
-        result = @subscription.send(params[:attribute]).update_attributes(address_params)
+        result = @subscription.send(params[:attribute]).dup.update_attributes(address_params)
 
         if result
           @subscription.touch
@@ -144,9 +144,7 @@ module Spree
       end
 
       def permitted_subscription_attributes
-        [
-          :interval, :credit_card_id, :email
-        ]
+        [:interval, :credit_card_id, :email]
       end
     end
   end

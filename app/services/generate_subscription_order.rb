@@ -49,7 +49,7 @@ class GenerateSubscriptionOrder
   end
 
   def payment_gateway_for_card(credit_card)
-    @eligible_gateways ||= ::Spree::PaymentMethod.where(environment: Rails.env)
+    @eligible_gateways ||= ::Spree::PaymentMethod.where(active: true)
     if credit_card.payment_provider == 'Stripe'
       gateway = @eligible_gateways.where(type: 'Spree::Gateway::StripeGateway').first
     end
@@ -91,6 +91,6 @@ class GenerateSubscriptionOrder
   end
 
   def has_available_store_credits(order)
-    order.total_available_store_credit > 0 if Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StoreCredit', active: true, environment: Rails.env)
+    order.total_available_store_credit > 0 if Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StoreCredit', active: true)
   end
 end
