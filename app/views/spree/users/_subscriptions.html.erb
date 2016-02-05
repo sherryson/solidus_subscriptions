@@ -1,7 +1,7 @@
 <div data-hook="account_my_subscriptions">
 
   <h3><%= t(:my_subscriptions) %></h3>
-  <% if @user.subscriptions.present? %>
+  <% if subscriptions.present? %>
     <table class="subscriptions-summary">
       <thead>
         <tr>
@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @user.subscriptions.each do |subscription| %>
+        <% subscriptions.each do |subscription| %>
           <tr>
             <td><%= link_to subscription.id, edit_subscription_path(subscription), class: "edit-subscription" %></td>
             <td><%= subscription.products.collect(&:name).to_sentence %></td>
