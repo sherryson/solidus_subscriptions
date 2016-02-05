@@ -8,7 +8,7 @@ module MyAccount
     end
 
     def any_subscription
-      Subscription.new("#content table.subscription-summary > tbody > tr:first-of-type")
+      Subscription.new("#content table.subscriptions-summary > tbody > tr:first-of-type")
     end
   end
 
@@ -39,6 +39,10 @@ module MyAccount
 
     def state
       find(@subscription).find("td:nth-of-type(5)").text
+    end
+
+    def element
+      find(@subscription)
     end
   end
 
@@ -232,6 +236,18 @@ module MyAccount
 
     def submit
       find("#payment-info > form > input[type = 'submit']").click
+    end
+  end
+
+  class ListSubscriptionsPage
+    include Capybara::DSL
+
+    def initialize
+      visit "/subscriptions"
+    end
+
+    def subscriptions
+      find("table.subscriptions-summary")
     end
   end
 end

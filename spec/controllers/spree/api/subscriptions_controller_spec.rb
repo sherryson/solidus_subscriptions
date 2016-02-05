@@ -12,7 +12,8 @@ module Spree
     end
 
     before do
-      setup_subscription_for current_api_user
+      setup_subscriptions_for current_api_user
+      @subscription = current_api_user.subscriptions.last
       stub_authentication!
     end
 

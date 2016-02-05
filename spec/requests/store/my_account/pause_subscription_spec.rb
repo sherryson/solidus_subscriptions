@@ -3,9 +3,10 @@ require "spec_helper"
 feature "Subscription", type: :request do
   include SubscriptionMacros
 
+  let(:user) { create(:user) }
+
   before(:each) do
-    user = create(:user)
-    setup_subscription_for user
+    setup_subscriptions_for user
     sign_in_as! user
   end
 
@@ -20,15 +21,13 @@ feature "Subscription", type: :request do
       subscription.pause
 
       expect(subscription.state).to eq('Paused')
-      expect(subscription).to_not have_css(".pause-subscription")
-
+      expect(subscription).to satisfy { |s| s.element.has_no_css? ".pause-subscription" }
     end
   end
 
   context "A paused subscription" do
     before(:each) do
-      @subscription.pause
-
+      pause_all_subscriptions_for user
       @my_account = MyAccount::Page.new
     end
 
@@ -55,6 +54,10 @@ feature "Subscription", type: :request do
 
   def next_month
     Date.today + 1.month
+  end
+
+  def pause_all_subscriptions_for(user)
+    user.subscriptions.each { |s| s.pause }
   end
 
 end

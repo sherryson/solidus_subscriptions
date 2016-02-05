@@ -5,7 +5,7 @@ feature "Subscription", type: :request do
 
   before(:each) do
     user = create(:user)
-    setup_subscription_for user
+    setup_subscriptions_for user
     sign_in_as! user
   end
 
@@ -20,8 +20,8 @@ feature "Subscription", type: :request do
       subscription.cancel
 
       expect(subscription.state).to eq('Cancelled')
-      expect(subscription).to_not have_css(".pause-subscription")
-      expect(subscription).to_not have_css(".cancel-subscription")
+      expect(subscription).to satisfy { |s| s.element.has_no_css? ".pause-subscription" }
+      expect(subscription).to satisfy { |s| s.element.has_no_css? ".cancel-subscription" }
     end
   end
 

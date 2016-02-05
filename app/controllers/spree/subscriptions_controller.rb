@@ -1,7 +1,11 @@
 module Spree
   class SubscriptionsController < Spree::StoreController
-    before_action :find_subscription
+    before_action :find_subscription, except: [:index]
     before_action :load_payment_methods, only: [:credit_card]
+
+    def index
+      @subscriptions = Spree::Subscription.accessible_by(current_ability, :read)
+    end
 
     def pause
       @subscription.pause

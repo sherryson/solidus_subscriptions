@@ -1,8 +1,8 @@
 module OrderMacros
   include SubscriptionTransitions
 
-  def create_completed_subscription_order
-    order_factory
+  def create_completed_subscription_order(user = default_user)
+    order_factory(user)
     @order.create_proposed_shipments
     @order.payments.create!({source: @card, payment_method: @gateway, amount: @order.total})
 
@@ -12,15 +12,14 @@ module OrderMacros
     ship_order(@order)
   end
 
-  def order_factory
+  def order_factory(user)
     country_zone = create(:zone)
     @state = create(:state)
     @country = @state.country
     country_zone.members.create(:zoneable => @country)
     @shipping_method = create(:shipping_method)
 
-    @user = double(Spree::User, email: "spree@example.com", spree_api_key: 'anykey')
-    @order = FactoryGirl.create(:order, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
+    @order = FactoryGirl.create(:order, user: user, ship_address: FactoryGirl.create(:address), bill_address: FactoryGirl.create(:address))
     line_items = [
       FactoryGirl.create(:line_item, order: @order, variant: create(:subscribable_variant), interval: 2),
       FactoryGirl.create(:line_item, order: @order, variant: create(:subscribable_variant), interval: 4),
@@ -35,5 +34,11 @@ module OrderMacros
     shipment.inventory_units.update_all state: 'on_hand'
     shipment.update_column('state', 'ready')
     shipment.reload.ship
+  end
+
+  def default_user
+    user = Spree.user_class.new(email: "spree@example.com", password: 'dynamo1234')
+    user.generate_spree_api_key!
+    user
   end
 end

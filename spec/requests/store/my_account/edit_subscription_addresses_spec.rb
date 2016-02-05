@@ -5,7 +5,7 @@ feature "Editing a subscription", type: :request do
 
   before(:each) do
     user = create(:user)
-    setup_subscription_for user
+    setup_subscriptions_for user
     sign_in_as! user
 
     my_account = MyAccount::Page.new
