@@ -6,10 +6,16 @@ require 'spree/testing_support/common_rake'
 
 RSpec::Core::RakeTask.new
 
-task :default => [:spec]
+task :default do
+  if Dir["spec/dummy"].empty?
+    Rake::Task[:test_app].invoke
+    Dir.chdir("../../")
+  end
+  Rake::Task[:spec].invoke
+end
 
-desc 'Generates a dummy app for testing'
+desc "Generates a dummy app for testing"
 task :test_app do
   ENV['LIB_NAME'] = 'solidus_subscriptions'
-  Rake::Task['common:test_app'].invoke "Spree::User"
+  Rake::Task['common:test_app'].invoke
 end
