@@ -1,9 +1,9 @@
-module SpreeSubscriptions
+module SolidusSubscriptions
   module Generators
     class InstallGenerator < Rails::Generators::Base
 
       def add_migrations
-        run 'bundle exec rake railties:install:migrations FROM=spree_subscriptions'
+        run 'bundle exec rake railties:install:migrations FROM=solidus_subscriptions'
       end
 
       def run_migrations

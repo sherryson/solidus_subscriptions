@@ -4,7 +4,7 @@ Spree Subscriptions
 This extension allows for administrators to mark certain products as
 'susbscribable'. Products marked as such will allow shopers to decide to
 create a subscription to automatically have those items re-shipped to
-them at the interval of their chosing. 
+them at the interval of their chosing.
 
 Features
 =======
@@ -15,12 +15,12 @@ Installation
 
 Add the gem to your Gemfile:
 
-    gem 'spree_subscriptions', github: 'DynamoMTL/spree_subscriptions.git'
+    gem 'solidus_subscriptions', github: 'glossier/solidus_subscriptions'
     bundle install
 
 Run the generator and the included migrations:
-    
-    rails g spree_subscriptions:install
+
+    rails g solidus_subscriptions:install
 
 
 

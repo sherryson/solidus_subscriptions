@@ -1,8 +1,8 @@
-module SpreeSubscriptions
+module SolidusSubscriptions
   class Engine < Rails::Engine
     require 'spree/core'
     isolate_namespace Spree
-    engine_name 'spree_subscriptions'
+    engine_name 'solidus_subscriptions'
 
     config.autoload_paths += %W(#{config.root}/lib)
 
