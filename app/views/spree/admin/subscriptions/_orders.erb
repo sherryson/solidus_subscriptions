@@ -17,10 +17,9 @@
     </colgroup>
 
     <thead>
-      <tr data-hook="admin_orders_index_headers">        
+      <tr data-hook="admin_orders_index_headers">
         <th><%= I18n.t(:created_at, :scope => 'activerecord.attributes.spree/order') %></th>
         <th><%= I18n.t(:number, :scope => 'activerecord.attributes.spree/order') %></th>
-        <th><%= I18n.t(:considered_risky, :scope => 'activerecord.attributes.spree/order') %></th>
         <th><%= I18n.t(:state, :scope => 'activerecord.attributes.spree/order') %></th>
         <th><%= I18n.t(:payment_state, :scope => 'activerecord.attributes.spree/order') %></th>
          <% if Spree::Order.checkout_step_names.include?(:delivery) %>
@@ -34,11 +33,10 @@
 
     <tbody>
       <% @subscription.orders.each do |order| %>
-        
+
       <tr data-hook="admin_orders_index_rows" class="state-<%= order.state.downcase %> <%= cycle('odd', 'even') %>">
         <td class="align-center"><%= l (order.created_at).to_date %></td>
         <td class="align-center"><%= link_to order.number, edit_admin_order_path(order) %></td>
-        <td class="align-center"><span class="state <%= order.considered_risky ? 'considered_risky' : 'considered_safe' %>"></span></td>
         <td class="align-center"><span class="state <%= order.state.downcase %>"><%= Spree.t("order_state.#{order.state.downcase}") %></span></td>
         <td class="align-center"><span class="state <%= order.payment_state %>"><%= link_to Spree.t("payment_states.#{order.payment_state}"), admin_order_payments_path(order) if order.payment_state %></span></td>
           <% if Spree::Order.checkout_step_names.include?(:delivery) %>
@@ -62,6 +60,6 @@
       </tr>
       <% end %>
       <% end %>
-    </tbody>    
+    </tbody>
   </table>
 <% end %>

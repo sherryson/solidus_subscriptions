@@ -1,0 +1,20 @@
+<div data-hook="admin_subscription_form_fields" class="row">
+  <div class="alpha six columns">
+    <%= f.field_container :interval do %>
+      <%= f.label :interval, Spree.t(:frequency) %> <span class="required">*</span><br />
+      <%= f.number_field :interval, min: 0.00, step: :any %>
+      <%= f.error_message_on :interval %>
+    <% end %>
+  </div>
+  <div class="right six columns omega">
+    <%= f.field_container :email do %>
+      <%= f.label :email, Spree.t(:email) %><br />
+      <%= f.text_field :email, class: 'fullwidth' %>
+      <%= f.error_message_on :email %>
+    <% end %>    
+  </div>
+</div>
+
+<%= javascript_tag do -%>
+    var subscription_id = '<%= @subscription.id %>';
+<% end -%>    
