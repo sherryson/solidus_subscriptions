@@ -6,6 +6,7 @@ en:
   subscription: "subscription"
   subscriptions: "subscriptions"
   my_subscriptions: "My subscriptions"
+  listing_subscriptions: Subscriptions
   products: "Products"
   last_shipped_on: "Last Shipment"
   next_shipment: "Next Shipment"
@@ -28,6 +29,7 @@ en:
 
 
   spree:
+    id: "ID"
     successfully_cancelled: successfully cancelled subscription
     successfully_renewed: successfully renewed subscription
     error_renew: failed to renew subscription
@@ -36,6 +38,10 @@ en:
     subscription_created: subscription created
     successfully_skipped: subscription next order has been skipped
     successfully_undo_skip: subscription next order skip has been undone
+    subscription: Subscription
+    admin:
+      tab:
+        subscriptions: "Subscriptions"
 
   activerecord:
     attributes:
