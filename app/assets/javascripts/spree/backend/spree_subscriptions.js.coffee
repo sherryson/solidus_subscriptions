@@ -86,9 +86,11 @@ deleteSubscriptionItem = (subscription_item_id) ->
 addSubscriptionVariant = ->
   $('#stock_details').hide()
   variant_id = $('input.variant_autocomplete').val()
-  quantity = $('input.quantity[data-variant-id=\'' + variant_id + '\']').val()
+  inputs = $('input.quantity[data-variant-id=\'' + variant_id + '\']')
+  sorted = inputs.sort (a, b) ->
+    return $(a).val() < $(b).val()
+  quantity = sorted[0].value
   adjustSubscriptionItems subscription_id, variant_id, quantity
-  1
 
 adjustSubscriptionItems = (subscription_id, variant_id, quantity) ->
   url = Spree.pathFor('api/subscriptions/' + subscription_id + '/subscription_items')
@@ -100,4 +102,3 @@ adjustSubscriptionItems = (subscription_id, variant_id, quantity) ->
         variant_id: variant_id
         quantity: quantity
       token: Spree.api_key).done (msg) ->
-#    window.location.reload()
