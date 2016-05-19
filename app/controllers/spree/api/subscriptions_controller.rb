@@ -123,11 +123,11 @@ module Spree
       private
 
       def deliver_cancellation_email
-        Spree::SubscriptionMailer.cancel(@subscription).deliver_now
+        Spree::SubscriptionMailer.cancel(@subscription).deliver_later
       end
 
       def deliver_pause_email
-        Spree::SubscriptionMailer.pause(@subscription).deliver_now
+        Spree::SubscriptionMailer.pause(@subscription).deliver_later
       end
 
       def touch_user
