@@ -98,6 +98,10 @@ module Spree
         @subscriptions = Spree::Subscription.active.where('failure_count > 0').order('created_at desc')
       end
 
+      def adjust_sku
+        @subscriptions = Spree::Subscription.all
+      end
+
       protected
         def collection
           return @collection if defined?(@collection)
