@@ -164,7 +164,7 @@ module Spree
         end
 
         def subscription_includes
-          [:user, :orders]
+          [:user, :orders, :subscription_items]
         end
     end
   end
