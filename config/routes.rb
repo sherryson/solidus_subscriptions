@@ -11,6 +11,8 @@ Spree::Core::Engine.add_routes do
       end
       collection do
         get :failures
+        get :adjust_sku
+        post :adjust_sku
       end
     end
   end
