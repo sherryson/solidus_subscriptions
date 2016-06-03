@@ -19,7 +19,6 @@ class AdjustSkuService
       subscriptions
     end
     rescue => error
-      byebug
       error
     end
 
