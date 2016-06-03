@@ -1,0 +1,41 @@
+<h2> Update the SKU's of Subscriptions</h2>
+
+<form method="POST">
+  <fieldset class="index no-border-bottom">
+    <label for="old_sku">Old SKU</label>
+    <input type="text" name="old_sku"/>
+    <label for="new_sku">New SKU</label>
+    <input type="text" name="new_sku"/>
+    <%= button_to "Adjust SKU" %>
+  </fieldset>
+</form>
+
+<% if @subscriptions %>
+  <h4>Updated subscriptions</h3>
+  <b> Total: <%= @subscriptions.count %>
+  <table id="listing_subscriptions" class="index responsive">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Last Order</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @subscriptions.each do |subscription| %>
+      <tr>
+        <td><%= subscription.id %>
+        <td><%= subscription.email %>
+        <td>
+          <span class="state <%= subscription.orders.first.state.downcase %>">
+            <%= link_to subscription.orders.first.number, edit_admin_order_path(subscription.last_order), target: '_blank' %>
+          </span>
+          <br />
+          <%= l(subscription.last_order_date, format: :long)  %>
+          <br />
+          <%= subscription.shipping_method.name if subscription.shipment && subscription.shipment.shipping_method %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+<% end %>
